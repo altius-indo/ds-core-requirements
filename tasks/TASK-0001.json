@@ -9,9 +9,9 @@
   "status": "in-progress",
   "estimate": "2d",
   "tags": [],
-  "next_action": "Create Cargo.toml workspace with crates server/, importer/, harness/ and rust-toolchain.toml pinning stable.",
+  "next_action": "Add a GitHub remote to ~/work/altius-indo/ds-core, push, and confirm the ci workflow (fmt, clippy, build --locked, test) goes green; then mark done. Skeleton committed locally and passes all four steps.",
   "next_action_set": "2026-10-06",
-  "version": 2,
+  "version": 3,
   "created": "2026-10-06T13:58:30+00:00",
-  "updated": "2026-10-06T14:08:32+00:00"
+  "updated": "2026-10-06T14:32:30+00:00"
 }
