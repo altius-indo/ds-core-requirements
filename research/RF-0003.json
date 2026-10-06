@@ -1,0 +1,12 @@
+{
+  "id": "RF-0003",
+  "claim": "Jepsen found TiDB 2.1.7 to 3.0.0-beta.1 exhibited read skew and lost updates due to transaction auto-retry, fixed by disabling retry by default in 3.0.0-rc.2.",
+  "grade": "VERIFIED",
+  "sources": [
+    "https://jepsen.io/analyses/tidb-2.1.7"
+  ],
+  "date": "2026-10-05",
+  "perishability": "slow",
+  "refresh_by": "2027-04-03",
+  "created": "2026-10-06T04:50:53+00:00"
+}

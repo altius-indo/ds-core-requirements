@@ -1,0 +1,15 @@
+{
+  "id": "DEC-0007",
+  "title": "Schemaless graph",
+  "context": "Options: enforced GQL graph types, optional graph types, schemaless.",
+  "decision": "No graph types: any node may carry any labels and link to any node with any edge type; applications own data shape.",
+  "status": "accepted",
+  "requirements": [
+    "REQ-0008"
+  ],
+  "accepted_at": "2026-10-05",
+  "tags": [],
+  "version": 1,
+  "created": "2026-10-06T04:50:53+00:00",
+  "updated": "2026-10-06T04:50:53+00:00"
+}

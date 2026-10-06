@@ -1,0 +1,16 @@
+{
+  "id": "DEC-0005",
+  "title": "GQL as the only query language",
+  "context": "PartiQL was first chosen; once the data was framed as an entity-relationship graph, options were SQL/PGQ, GQL, a PartiQL extension or API-only traversal.",
+  "decision": "GQL (ISO/IEC 39075:2024) replaces PartiQL as the only query and data-manipulation language.",
+  "status": "accepted",
+  "requirements": [
+    "REQ-0003",
+    "REQ-0004"
+  ],
+  "accepted_at": "2026-10-05",
+  "tags": [],
+  "version": 1,
+  "created": "2026-10-06T04:50:53+00:00",
+  "updated": "2026-10-06T04:50:53+00:00"
+}

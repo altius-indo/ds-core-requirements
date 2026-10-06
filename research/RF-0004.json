@@ -1,0 +1,12 @@
+{
+  "id": "RF-0004",
+  "claim": "Jepsen found MongoDB 4.2.6 transactions defaulted to read concern local and w:1 and showed snapshot isolation violations including read skew.",
+  "grade": "VERIFIED",
+  "sources": [
+    "https://jepsen.io/analyses/mongodb-4.2.6"
+  ],
+  "date": "2026-10-05",
+  "perishability": "fast",
+  "refresh_by": "2026-12-04",
+  "created": "2026-10-06T04:50:53+00:00"
+}

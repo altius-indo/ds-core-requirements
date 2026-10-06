@@ -1,0 +1,31 @@
+{
+  "id": "REQ-0023",
+  "title": "Shard-local one-hop traversal",
+  "statement": "The system shall serve a one-hop traversal from a node with up to 10,000 incident edges by reading from 1 shard, within 20 ms at the 99th percentile.",
+  "type": "quality",
+  "category": "performance-efficiency",
+  "priority": "must",
+  "status": "proposed",
+  "rationale": "Range-partitioned ordered keys with edges stored under their node's key prefix make neighbourhood reads a single range scan.",
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "text": "Tracing shows MATCH (n {id:$id})-[e:T]->(m) RETURN e for a node with ≤ 10,000 edges reads adjacency from exactly 1 shard."
+    },
+    {
+      "id": "AC2",
+      "text": "Over 30 minutes at 70% of rated throughput, p99 latency for returning the edges (not neighbour properties) of nodes with ≤ 1,000 edges is ≤ 20 ms."
+    }
+  ],
+  "tags": [
+    "performance",
+    "graph",
+    "sharding"
+  ],
+  "standards": [],
+  "stakeholders": [],
+  "source": "Design recommendation 2026-10-05 — PO to confirm thresholds",
+  "version": 1,
+  "created": "2026-10-06T04:50:53+00:00",
+  "updated": "2026-10-06T04:50:53+00:00"
+}

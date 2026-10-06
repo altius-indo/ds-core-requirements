@@ -1,0 +1,28 @@
+{
+  "id": "REQ-0029",
+  "title": "Reject DELETE of connected nodes",
+  "statement": "The system shall reject a plain DELETE of any node that has one or more incident edges.",
+  "type": "functional",
+  "category": "graph-mutation",
+  "priority": "must",
+  "status": "proposed",
+  "rationale": "PO decision: standard GQL semantics; prevents dangling edges.",
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "text": "DELETE on a node with 1 or more incident edges fails with a constraint error and changes nothing."
+    }
+  ],
+  "tags": [
+    "graph",
+    "gql"
+  ],
+  "standards": [
+    "RF-0017"
+  ],
+  "stakeholders": [],
+  "source": "PO elicitation 2026-10-05",
+  "version": 1,
+  "created": "2026-10-06T04:50:53+00:00",
+  "updated": "2026-10-06T04:50:53+00:00"
+}

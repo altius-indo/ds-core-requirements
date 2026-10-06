@@ -1,0 +1,36 @@
+{
+  "id": "REQ-0003",
+  "title": "GQL as the only query language",
+  "statement": "The system shall accept GQL (ISO/IEC 39075:2024) as its only query and data-manipulation language for nodes and edges.",
+  "type": "interface",
+  "category": "api",
+  "priority": "must",
+  "status": "proposed",
+  "rationale": "PO decision: GQL replaces PartiQL; the data is an entity-relationship graph.",
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "text": "A published conformance matrix lists every GQL feature as supported, partially supported or unsupported."
+    },
+    {
+      "id": "AC2",
+      "text": "All statements marked supported in the conformance matrix pass the project's GQL conformance test suite."
+    },
+    {
+      "id": "AC3",
+      "text": "Unsupported GQL syntax returns a parse error naming the unsupported feature."
+    }
+  ],
+  "tags": [
+    "api",
+    "gql"
+  ],
+  "standards": [
+    "RF-0017"
+  ],
+  "stakeholders": [],
+  "source": "PO elicitation 2026-10-05",
+  "version": 1,
+  "created": "2026-10-06T04:50:53+00:00",
+  "updated": "2026-10-06T04:50:53+00:00"
+}

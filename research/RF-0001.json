@@ -1,0 +1,12 @@
+{
+  "id": "RF-0001",
+  "claim": "The Raft paper recommends a 150-300 ms election timeout and requires broadcast time to be much less than the election timeout, which must be much less than MTBF.",
+  "grade": "VERIFIED",
+  "sources": [
+    "https://raft.github.io/raft.pdf"
+  ],
+  "date": "2026-10-05",
+  "perishability": "slow",
+  "refresh_by": "2027-04-03",
+  "created": "2026-10-06T04:50:53+00:00"
+}

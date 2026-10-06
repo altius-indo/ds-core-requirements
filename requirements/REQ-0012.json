@@ -1,0 +1,32 @@
+{
+  "id": "REQ-0012",
+  "title": "Bounded physical erasure",
+  "statement": "The system shall make deleted nodes and edges unrecoverable from data files, WAL, replicas and backups within 30 days of deletion.",
+  "type": "data",
+  "category": "lifecycle",
+  "priority": "should",
+  "status": "proposed",
+  "rationale": "GDPR Art. 17: deletes in log-structured/replicated engines leave copies in tombstones, WAL, replicas and backups.",
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "text": "30 days after a delete, a byte-level scan of data files, WAL segments and analytics replicas finds no plaintext of the deleted node or edge."
+    },
+    {
+      "id": "AC2",
+      "text": "Backups older than the delete become unreadable for the deleted data via destruction of the associated encryption key within 30 days."
+    }
+  ],
+  "tags": [
+    "gdpr",
+    "lifecycle"
+  ],
+  "standards": [
+    "RF-0016"
+  ],
+  "stakeholders": [],
+  "source": "Research default — PO to confirm 30-day bound",
+  "version": 1,
+  "created": "2026-10-06T04:50:53+00:00",
+  "updated": "2026-10-06T04:50:53+00:00"
+}

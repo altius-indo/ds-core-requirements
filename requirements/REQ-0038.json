@@ -1,0 +1,33 @@
+{
+  "id": "REQ-0038",
+  "title": "Role-based access control",
+  "statement": "The system shall deny 100% of operations not permitted by the requesting principal's roles, with privileges scoped to individual graphs.",
+  "type": "quality",
+  "category": "security",
+  "priority": "must",
+  "status": "proposed",
+  "rationale": "SOC 2 / ISO 27001 access-control evidence; least-privilege built-in roles.",
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "text": "A user granted read on graph A receives a permission error on any write to A and any read of graph B."
+    },
+    {
+      "id": "AC2",
+      "text": "Built-in roles (reader, writer, admin, clusterAdmin) are documented with their exact privileges."
+    }
+  ],
+  "tags": [
+    "security",
+    "authz"
+  ],
+  "standards": [
+    "RF-0016"
+  ],
+  "stakeholders": [],
+  "source": "Research default",
+  "notes": "Label-level privileges are a possible later refinement.",
+  "version": 1,
+  "created": "2026-10-06T04:50:53+00:00",
+  "updated": "2026-10-06T04:50:53+00:00"
+}

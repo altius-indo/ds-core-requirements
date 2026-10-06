@@ -1,0 +1,12 @@
+{
+  "id": "RF-0008",
+  "claim": "etcd documents typical fdatasync latency of about 10 ms on spinning disks and under 1 ms on SSDs, and that cluster performance is bounded by network RTT and disk I/O.",
+  "grade": "VERIFIED",
+  "sources": [
+    "https://etcd.io/docs/v3.5/op-guide/performance/"
+  ],
+  "date": "2026-10-05",
+  "perishability": "slow",
+  "refresh_by": "2027-04-03",
+  "created": "2026-10-06T04:50:53+00:00"
+}

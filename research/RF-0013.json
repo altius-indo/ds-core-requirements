@@ -1,0 +1,12 @@
+{
+  "id": "RF-0013",
+  "claim": "RFC 8259 says JSON object names SHOULD be unique, parser behaviour on duplicates is unpredictable, and exact integer interoperability is only guaranteed within ±(2^53−1).",
+  "grade": "VERIFIED",
+  "sources": [
+    "https://www.rfc-editor.org/rfc/rfc8259"
+  ],
+  "date": "2026-10-05",
+  "perishability": "slow",
+  "refresh_by": "2027-04-03",
+  "created": "2026-10-06T04:50:53+00:00"
+}

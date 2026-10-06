@@ -1,0 +1,32 @@
+{
+  "id": "REQ-0006",
+  "title": "Nodes as labelled documents",
+  "statement": "The system shall store each entity as a node with a unique identifier, zero or more labels, and a property document that may contain nested records and lists.",
+  "type": "data",
+  "category": "model",
+  "priority": "must",
+  "status": "proposed",
+  "rationale": "PO: data is a graph of entities with nested attributes. Owned, identity-less attributes nest inside the node; shared or independently identified things become separate nodes.",
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "text": "A node with 3 labels and properties nested 5 levels deep (records within lists within records) is inserted and returned unchanged by MATCH on its identifier."
+    },
+    {
+      "id": "AC2",
+      "text": "Inserting a node whose identifier already exists fails with a uniqueness error."
+    }
+  ],
+  "tags": [
+    "graph",
+    "data-model"
+  ],
+  "standards": [
+    "RF-0017"
+  ],
+  "stakeholders": [],
+  "source": "PO elicitation 2026-10-05",
+  "version": 1,
+  "created": "2026-10-06T04:50:53+00:00",
+  "updated": "2026-10-06T04:50:53+00:00"
+}

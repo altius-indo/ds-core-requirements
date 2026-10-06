@@ -1,0 +1,31 @@
+{
+  "id": "REQ-0004",
+  "title": "Versioned client protocol",
+  "statement": "The system shall expose a documented, versioned client protocol for submitting GQL statements and controlling transactions (begin, commit, rollback).",
+  "type": "interface",
+  "category": "api",
+  "priority": "must",
+  "status": "proposed",
+  "rationale": "GQL is a language, not a transport; clients need a stable protocol.",
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "text": "The protocol specification is published with a version number, and the server rejects unsupported client protocol versions with a version-mismatch error."
+    },
+    {
+      "id": "AC2",
+      "text": "A client can begin, commit and roll back a multi-statement transaction through the protocol."
+    }
+  ],
+  "tags": [
+    "api",
+    "protocol"
+  ],
+  "standards": [],
+  "stakeholders": [],
+  "source": "Derived from PO decision",
+  "notes": "Open: transport (gRPC vs HTTP/2 vs custom binary).",
+  "version": 1,
+  "created": "2026-10-06T04:50:53+00:00",
+  "updated": "2026-10-06T04:50:53+00:00"
+}

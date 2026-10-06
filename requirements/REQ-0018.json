@@ -1,0 +1,32 @@
+{
+  "id": "REQ-0018",
+  "title": "Leader failover time",
+  "statement": "The system shall elect a new shard leader and resume serving writes within 10 seconds (p99) of the current leader's node failing.",
+  "type": "quality",
+  "category": "reliability",
+  "priority": "must",
+  "status": "proposed",
+  "rationale": "Bounds write unavailability per shard; no verified industry figure found.",
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "text": "Across 100 leader-node kills in a 3-AZ cluster, p99 time from kill to first successful write on the affected shard is ≤ 10 s."
+    },
+    {
+      "id": "AC2",
+      "text": "Configuration validation rejects election timeouts less than 10× the measured heartbeat round trip."
+    }
+  ],
+  "tags": [
+    "raft",
+    "availability"
+  ],
+  "standards": [
+    "RF-0001"
+  ],
+  "stakeholders": [],
+  "source": "Research — PO to confirm 10 s bound",
+  "version": 1,
+  "created": "2026-10-06T04:50:53+00:00",
+  "updated": "2026-10-06T04:50:53+00:00"
+}

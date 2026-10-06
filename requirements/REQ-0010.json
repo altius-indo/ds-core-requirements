@@ -1,0 +1,30 @@
+{
+  "id": "REQ-0010",
+  "title": "Consistent bidirectional adjacency",
+  "statement": "The system shall make every committed edge traversable from both its source node and its target node, with 0 one-sided edges visible on voting replicas.",
+  "type": "data",
+  "category": "quality",
+  "priority": "must",
+  "status": "proposed",
+  "rationale": "Edges are stored as an out-entry under the source and an in-entry under the target; both must be written in the same transaction.",
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "text": "For any committed edge, MATCH (a)-[e]->(b) from a and MATCH (b)<-[e]-(a) from b both return e with identical properties."
+    },
+    {
+      "id": "AC2",
+      "text": "The Jepsen-style suite with concurrent edge inserts, updates and deletes across shards finds 0 edges visible from only one endpoint on voting replicas."
+    }
+  ],
+  "tags": [
+    "graph",
+    "consistency"
+  ],
+  "standards": [],
+  "stakeholders": [],
+  "source": "Design recommendation 2026-10-05",
+  "version": 1,
+  "created": "2026-10-06T04:50:53+00:00",
+  "updated": "2026-10-06T04:50:53+00:00"
+}

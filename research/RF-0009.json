@@ -1,0 +1,12 @@
+{
+  "id": "RF-0009",
+  "claim": "TiDB log backup for PITR can reach an RPO as short as five minutes, with about 5% overhead and restore at about 30 GiB per hour per TiKV node.",
+  "grade": "THIN",
+  "sources": [
+    "https://docs.pingcap.com/tidb/stable/backup-and-restore-overview/"
+  ],
+  "date": "2026-10-05",
+  "perishability": "fast",
+  "refresh_by": "2026-12-04",
+  "created": "2026-10-06T04:50:53+00:00"
+}

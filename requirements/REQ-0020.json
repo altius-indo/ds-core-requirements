@@ -1,0 +1,32 @@
+{
+  "id": "REQ-0020",
+  "title": "Point-in-time recovery",
+  "statement": "The system shall restore a cluster to any chosen timestamp within a 7-day retention window, losing no more than 5 minutes of committed transactions.",
+  "type": "quality",
+  "category": "reliability",
+  "priority": "must",
+  "status": "proposed",
+  "rationale": "Quorum replication protects against node loss, not operator error or corruption.",
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "text": "After destroying the cluster, restoring to a chosen timestamp recovers all transactions committed at least 5 minutes before the loss."
+    },
+    {
+      "id": "AC2",
+      "text": "Restore throughput is measured and published per node, and the documented RTO formula predicts measured restore time within 20%."
+    }
+  ],
+  "tags": [
+    "backup",
+    "recovery"
+  ],
+  "standards": [
+    "RF-0009"
+  ],
+  "stakeholders": [],
+  "source": "Research default — PO to confirm",
+  "version": 1,
+  "created": "2026-10-06T04:50:53+00:00",
+  "updated": "2026-10-06T04:50:53+00:00"
+}

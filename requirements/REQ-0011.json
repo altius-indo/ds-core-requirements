@@ -1,0 +1,28 @@
+{
+  "id": "REQ-0011",
+  "title": "Reject duplicate property names",
+  "statement": "The system shall reject at ingest any node or edge whose property record contains duplicate property names within the same record.",
+  "type": "data",
+  "category": "quality",
+  "priority": "must",
+  "status": "proposed",
+  "rationale": "RFC 8259 leaves duplicate-key behaviour undefined; parsers disagree.",
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "text": "An INSERT or SET containing a record with a repeated property name fails with a validation error and stores nothing."
+    }
+  ],
+  "tags": [
+    "data-model",
+    "validation"
+  ],
+  "standards": [
+    "RF-0013"
+  ],
+  "stakeholders": [],
+  "source": "Research default",
+  "version": 1,
+  "created": "2026-10-06T04:50:53+00:00",
+  "updated": "2026-10-06T04:50:53+00:00"
+}

@@ -1,0 +1,33 @@
+{
+  "id": "REQ-0016",
+  "title": "Durable quorum commit",
+  "statement": "The system shall lose 0 acknowledged writes when every node loses power simultaneously, acknowledging a write only after a majority of the shard's voting replicas have fsynced it.",
+  "type": "quality",
+  "category": "reliability",
+  "priority": "must",
+  "status": "proposed",
+  "rationale": "Prevents loss of acknowledged writes on correlated power loss. Analytics replicas never count toward the quorum.",
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "text": "After power-cutting all nodes of a 3-voter shard immediately after acknowledgment, every acknowledged write is present on restart (1,000 trials, zero losses)."
+    },
+    {
+      "id": "AC2",
+      "text": "With only one voter plus any number of analytics replicas reachable, writes to that shard are not acknowledged."
+    }
+  ],
+  "tags": [
+    "durability",
+    "raft"
+  ],
+  "standards": [
+    "RF-0008",
+    "RF-0006"
+  ],
+  "stakeholders": [],
+  "source": "Research default",
+  "version": 1,
+  "created": "2026-10-06T04:50:53+00:00",
+  "updated": "2026-10-06T04:50:53+00:00"
+}

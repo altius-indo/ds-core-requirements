@@ -1,0 +1,30 @@
+{
+  "id": "REQ-0005",
+  "title": "Retryable serialization-conflict error",
+  "statement": "The system shall return a distinct, documented retryable error code when a transaction aborts because of a serialization conflict.",
+  "type": "interface",
+  "category": "api",
+  "priority": "must",
+  "status": "proposed",
+  "rationale": "Serializable isolation raises abort rates; clients must tell retryable conflicts from permanent failures.",
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "text": "A forced write-write conflict between two concurrent transactions returns the documented serialization-conflict code to the aborted client."
+    },
+    {
+      "id": "AC2",
+      "text": "Non-retryable failures (syntax, permission, constraint violation) never return the serialization-conflict code."
+    }
+  ],
+  "tags": [
+    "api",
+    "transactions"
+  ],
+  "standards": [],
+  "stakeholders": [],
+  "source": "Derived from PO decision",
+  "version": 1,
+  "created": "2026-10-06T04:50:53+00:00",
+  "updated": "2026-10-06T04:50:53+00:00"
+}

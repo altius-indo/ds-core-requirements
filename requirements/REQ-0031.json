@@ -1,0 +1,29 @@
+{
+  "id": "REQ-0031",
+  "title": "Transactional property indexes",
+  "statement": "The system shall maintain secondary indexes on node and edge properties, keyed by label and property, within the same transaction as the indexed write.",
+  "type": "functional",
+  "category": "indexing",
+  "priority": "must",
+  "status": "proposed",
+  "rationale": "Asynchronous indexes would violate serializable reads through indexes.",
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "text": "A MATCH using a property index issued after a transaction commits returns that transaction's writes."
+    },
+    {
+      "id": "AC2",
+      "text": "A unique property index rejects a duplicate value across shards with a constraint-violation error."
+    }
+  ],
+  "tags": [
+    "indexing"
+  ],
+  "standards": [],
+  "stakeholders": [],
+  "source": "Research default",
+  "version": 1,
+  "created": "2026-10-06T04:50:53+00:00",
+  "updated": "2026-10-06T04:50:53+00:00"
+}

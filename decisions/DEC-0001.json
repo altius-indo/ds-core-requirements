@@ -1,0 +1,19 @@
+{
+  "id": "DEC-0001",
+  "title": "DS-CORE is a KV store modelling a property graph for HTAP",
+  "context": "PO defined engine type (key-value/document), HTAP workload, and that data is a graph of entities with nested attributes and relationships.",
+  "decision": "Ordered key-value storage. Nodes are labelled documents with nested properties; edges are typed, directed, may carry properties and are stored as out- and in-entries under their endpoint nodes' key prefixes; parallel edges allowed.",
+  "status": "accepted",
+  "requirements": [
+    "REQ-0006",
+    "REQ-0007",
+    "REQ-0010",
+    "REQ-0009",
+    "REQ-0023"
+  ],
+  "accepted_at": "2026-10-05",
+  "tags": [],
+  "version": 1,
+  "created": "2026-10-06T04:50:53+00:00",
+  "updated": "2026-10-06T04:50:53+00:00"
+}

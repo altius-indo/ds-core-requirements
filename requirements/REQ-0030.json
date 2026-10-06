@@ -1,0 +1,28 @@
+{
+  "id": "REQ-0030",
+  "title": "Atomic DETACH DELETE",
+  "statement": "The system shall remove a node together with all its incident edges in one transaction when DETACH DELETE is issued.",
+  "type": "functional",
+  "category": "graph-mutation",
+  "priority": "must",
+  "status": "proposed",
+  "rationale": "PO decision: standard GQL semantics.",
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "text": "DETACH DELETE on a node with edges on 3 shards removes the node and every incident edge atomically; no edge to the node is visible afterwards on voting replicas."
+    }
+  ],
+  "tags": [
+    "graph",
+    "gql"
+  ],
+  "standards": [
+    "RF-0017"
+  ],
+  "stakeholders": [],
+  "source": "PO elicitation 2026-10-05",
+  "version": 1,
+  "created": "2026-10-06T04:50:53+00:00",
+  "updated": "2026-10-06T04:50:53+00:00"
+}

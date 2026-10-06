@@ -1,0 +1,30 @@
+{
+  "id": "REQ-0024",
+  "title": "Supernode capacity",
+  "statement": "The system shall accept at least 10 million incident edges on a single node with 0 rejected writes.",
+  "type": "quality",
+  "category": "flexibility",
+  "priority": "should",
+  "status": "proposed",
+  "rationale": "Hub entities (e.g. a popular product or account) overflow a single shard; the node's adjacency range is split across shards when it exceeds the shard size limit.",
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "text": "Inserting 10 million edges on one node completes with zero rejected writes, and the node's adjacency spans more than one shard."
+    },
+    {
+      "id": "AC2",
+      "text": "On that node, a one-hop traversal with LIMIT 100 completes within 50 ms at p99."
+    }
+  ],
+  "tags": [
+    "scalability",
+    "graph"
+  ],
+  "standards": [],
+  "stakeholders": [],
+  "source": "Design recommendation 2026-10-05 — PO to confirm 10M",
+  "version": 1,
+  "created": "2026-10-06T04:50:53+00:00",
+  "updated": "2026-10-06T04:50:53+00:00"
+}

@@ -1,0 +1,12 @@
+{
+  "id": "RF-0006",
+  "claim": "TiFlash replicas are Raft learners that replicate asynchronously and do not participate in commit quorum.",
+  "grade": "VERIFIED",
+  "sources": [
+    "https://docs.pingcap.com/tidb/stable/tiflash-overview/"
+  ],
+  "date": "2026-10-05",
+  "perishability": "fast",
+  "refresh_by": "2026-12-04",
+  "created": "2026-10-06T04:50:53+00:00"
+}

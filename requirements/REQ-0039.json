@@ -1,0 +1,30 @@
+{
+  "id": "REQ-0039",
+  "title": "Encryption at rest",
+  "statement": "The system shall encrypt data files, WAL, backups and analytics replicas at rest with AES-256 using data keys wrapped by a KMS-managed key.",
+  "type": "quality",
+  "category": "security",
+  "priority": "must",
+  "status": "proposed",
+  "rationale": "Confidentiality; enables crypto-shredding for erasure.",
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "text": "A byte-level scan of data files, WAL segments and backup files finds no plaintext of a known inserted marker value."
+    },
+    {
+      "id": "AC2",
+      "text": "Rotating the KMS key does not require downtime and old data remains readable."
+    }
+  ],
+  "tags": [
+    "security",
+    "encryption"
+  ],
+  "standards": [],
+  "stakeholders": [],
+  "source": "Research default",
+  "version": 1,
+  "created": "2026-10-06T04:50:53+00:00",
+  "updated": "2026-10-06T04:50:53+00:00"
+}

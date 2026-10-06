@@ -1,0 +1,12 @@
+{
+  "id": "RF-0010",
+  "claim": "Cloud Spanner commits 99.999% monthly uptime for multi-region and dual-region instances and 99.99% for regional instances, computed per month per project per region.",
+  "grade": "THIN",
+  "sources": [
+    "https://cloud.google.com/spanner/sla"
+  ],
+  "date": "2026-10-05",
+  "perishability": "fast",
+  "refresh_by": "2026-12-04",
+  "created": "2026-10-06T04:50:53+00:00"
+}

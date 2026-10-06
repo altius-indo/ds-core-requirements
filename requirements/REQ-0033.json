@@ -1,0 +1,30 @@
+{
+  "id": "REQ-0033",
+  "title": "Automatic range split and rebalance",
+  "statement": "The system shall partition the ordered keyspace into contiguous ranges, automatically split ranges exceeding a configurable size, and rebalance replicas across nodes without rejecting client requests.",
+  "type": "quality",
+  "category": "flexibility",
+  "priority": "must",
+  "status": "proposed",
+  "rationale": "Range partitioning keeps a node and its adjacency together; hash partitioning would scatter one-hop reads.",
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "text": "Adding a node to a cluster under YCSB workload A results in replica counts per node within ±10% of the mean within 1 hour, with zero failed client requests."
+    },
+    {
+      "id": "AC2",
+      "text": "The Jepsen-style suite with continuous splits finds zero serializability anomalies."
+    }
+  ],
+  "tags": [
+    "scalability",
+    "sharding"
+  ],
+  "standards": [],
+  "stakeholders": [],
+  "source": "Research + design recommendation",
+  "version": 1,
+  "created": "2026-10-06T04:50:53+00:00",
+  "updated": "2026-10-06T04:50:53+00:00"
+}

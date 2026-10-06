@@ -1,0 +1,19 @@
+{
+  "id": "DEC-0002",
+  "title": "Range-sharded deployment with Raft",
+  "context": "Choice of deployment and consistency model; graph locality needs ordered keys.",
+  "decision": "Partition the ordered keyspace into contiguous ranges, each replicated with Raft for strong consistency.",
+  "status": "accepted",
+  "requirements": [
+    "REQ-0001",
+    "REQ-0033",
+    "REQ-0016",
+    "REQ-0017",
+    "REQ-0018"
+  ],
+  "accepted_at": "2026-10-05",
+  "tags": [],
+  "version": 1,
+  "created": "2026-10-06T04:50:53+00:00",
+  "updated": "2026-10-06T04:50:53+00:00"
+}

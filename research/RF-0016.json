@@ -1,0 +1,12 @@
+{
+  "id": "RF-0016",
+  "claim": "GDPR Article 17 erasure applies to personal data held in storage files, backups, replicas and logs; SOC 2 and ISO/IEC 27001:2022 expect evidence of access control, encryption and logging.",
+  "grade": "THIN",
+  "sources": [
+    "https://gdpr-info.eu/art-17-gdpr/"
+  ],
+  "date": "2026-10-05",
+  "perishability": "slow",
+  "refresh_by": "2027-04-03",
+  "created": "2026-10-06T04:50:53+00:00"
+}

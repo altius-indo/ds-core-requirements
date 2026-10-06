@@ -1,0 +1,32 @@
+{
+  "id": "REQ-0013",
+  "title": "Property document size limit",
+  "statement": "The system shall enforce a configurable maximum size for a node's or edge's property document, defaulting to 16 MiB, and reject larger documents with a size-limit error.",
+  "type": "quality",
+  "category": "performance-efficiency",
+  "priority": "must",
+  "status": "proposed",
+  "rationale": "Unbounded documents risk memory exhaustion and oversized Raft log entries.",
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "text": "With default configuration, a 16 MiB property document is accepted and a 16 MiB + 1 byte document is rejected with the size-limit error."
+    },
+    {
+      "id": "AC2",
+      "text": "Changing the configured limit takes effect without a cluster restart."
+    }
+  ],
+  "tags": [
+    "limits"
+  ],
+  "standards": [
+    "RF-0012",
+    "RF-0014"
+  ],
+  "stakeholders": [],
+  "source": "Research default",
+  "version": 1,
+  "created": "2026-10-06T04:50:53+00:00",
+  "updated": "2026-10-06T04:50:53+00:00"
+}

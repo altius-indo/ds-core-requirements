@@ -1,0 +1,31 @@
+{
+  "id": "REQ-0019",
+  "title": "Regional availability SLA",
+  "statement": "The system shall achieve at least 99.99% monthly availability for a regional deployment spanning 3 availability zones.",
+  "type": "quality",
+  "category": "reliability",
+  "priority": "must",
+  "status": "proposed",
+  "rationale": "Research default aligned with Spanner regional SLA structure.",
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "text": "Availability is measured per calendar month as the fraction of 1-minute intervals in which a synthetic probe's read and write both succeed, and is ≥ 99.99%."
+    },
+    {
+      "id": "AC2",
+      "text": "Loss of one full availability zone causes no interval of unavailability longer than the failover bound."
+    }
+  ],
+  "tags": [
+    "availability"
+  ],
+  "standards": [
+    "RF-0010"
+  ],
+  "stakeholders": [],
+  "source": "Research default — PO to confirm",
+  "version": 1,
+  "created": "2026-10-06T04:50:53+00:00",
+  "updated": "2026-10-06T04:50:53+00:00"
+}

@@ -1,0 +1,32 @@
+{
+  "id": "REQ-0007",
+  "title": "Relationships as typed directed edges",
+  "statement": "The system shall store each relationship as a directed edge with a unique identifier, one type label, a source node, a target node and an optional nested property document, allowing multiple edges of the same type between the same pair of nodes.",
+  "type": "data",
+  "category": "model",
+  "priority": "must",
+  "status": "proposed",
+  "rationale": "Property-graph model; parallel edges needed for repeated relationships (e.g. multiple transactions between two accounts).",
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "text": "Two edges of the same type between the same source and target are both stored and both returned by MATCH."
+    },
+    {
+      "id": "AC2",
+      "text": "An edge with nested properties is returned unchanged by MATCH on its identifier."
+    }
+  ],
+  "tags": [
+    "graph",
+    "data-model"
+  ],
+  "standards": [
+    "RF-0017"
+  ],
+  "stakeholders": [],
+  "source": "PO elicitation 2026-10-05",
+  "version": 1,
+  "created": "2026-10-06T04:50:53+00:00",
+  "updated": "2026-10-06T04:50:53+00:00"
+}

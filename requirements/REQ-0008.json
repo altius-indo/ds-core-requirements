@@ -1,0 +1,27 @@
+{
+  "id": "REQ-0008",
+  "title": "Schemaless graph",
+  "statement": "The system shall accept nodes and edges with any labels, edge types and properties, and edges between nodes of any labels, without a predeclared graph type.",
+  "type": "data",
+  "category": "model",
+  "priority": "must",
+  "status": "proposed",
+  "rationale": "PO decision: schemaless; any node may link to any node with any label.",
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "text": "On an empty database, inserting nodes with previously unseen labels and an edge of a previously unseen type between them succeeds without any DDL."
+    }
+  ],
+  "tags": [
+    "graph",
+    "data-model"
+  ],
+  "standards": [],
+  "stakeholders": [],
+  "source": "PO elicitation 2026-10-05",
+  "notes": "Consequence: no enforcement of allowed endpoints, cardinality or required properties; applications own data shape.",
+  "version": 1,
+  "created": "2026-10-06T04:50:53+00:00",
+  "updated": "2026-10-06T04:50:53+00:00"
+}

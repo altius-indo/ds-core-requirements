@@ -1,0 +1,32 @@
+{
+  "id": "REQ-0015",
+  "title": "Safe internal transaction retry",
+  "statement": "The system shall produce 0 lost updates and 0 serializability anomalies attributable to internal transaction retry.",
+  "type": "quality",
+  "category": "functional-suitability",
+  "priority": "must",
+  "status": "proposed",
+  "rationale": "TiDB's auto-retry caused lost updates and read skew (Jepsen 2.1.7).",
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "text": "An interactive transaction whose read set changed is never silently retried; the client receives the serialization-conflict error."
+    },
+    {
+      "id": "AC2",
+      "text": "The Jepsen-style suite run for at least 1 hour with internal retry enabled reports 0 lost updates."
+    }
+  ],
+  "tags": [
+    "transactions",
+    "consistency"
+  ],
+  "standards": [
+    "RF-0003"
+  ],
+  "stakeholders": [],
+  "source": "Research",
+  "version": 1,
+  "created": "2026-10-06T04:50:53+00:00",
+  "updated": "2026-10-06T04:50:53+00:00"
+}

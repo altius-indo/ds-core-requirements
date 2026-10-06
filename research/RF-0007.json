@@ -1,0 +1,12 @@
+{
+  "id": "RF-0007",
+  "claim": "YCSB core workloads are A update-heavy 50/50, B read-mostly 95/5, C read-only, D read-latest, E short ranges and F read-modify-write.",
+  "grade": "VERIFIED",
+  "sources": [
+    "https://github.com/brianfrankcooper/YCSB/wiki/Core-Workloads"
+  ],
+  "date": "2026-10-05",
+  "perishability": "slow",
+  "refresh_by": "2027-04-03",
+  "created": "2026-10-06T04:50:53+00:00"
+}

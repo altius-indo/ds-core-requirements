@@ -1,0 +1,33 @@
+{
+  "id": "REQ-0014",
+  "title": "Serializable isolation by default",
+  "statement": "The system shall execute every transaction, including single-statement and cross-shard transactions, at serializable isolation regardless of session or client settings.",
+  "type": "quality",
+  "category": "functional-suitability",
+  "priority": "must",
+  "status": "proposed",
+  "rationale": "PO decision: serializable by default. Jepsen found weak defaults undercutting advertised guarantees.",
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "text": "No session or client option can lower isolation below serializable; attempts return a configuration error."
+    },
+    {
+      "id": "AC2",
+      "text": "A Jepsen-style test (network partitions, node crashes, clock skew, membership changes and shard splits) runs for at least 1 hour per release and an Elle-style checker finds zero serializability anomalies."
+    }
+  ],
+  "tags": [
+    "transactions",
+    "consistency"
+  ],
+  "standards": [
+    "RF-0005",
+    "RF-0004"
+  ],
+  "stakeholders": [],
+  "source": "PO elicitation 2026-10-05",
+  "version": 1,
+  "created": "2026-10-06T04:50:53+00:00",
+  "updated": "2026-10-06T04:50:53+00:00"
+}

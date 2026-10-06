@@ -1,0 +1,32 @@
+{
+  "id": "REQ-0001",
+  "title": "Raft replication per shard",
+  "statement": "The system shall replicate every shard using the Raft consensus protocol with an odd number of voting replicas (default 3) placed in distinct availability zones.",
+  "type": "constraint",
+  "category": "technology",
+  "priority": "must",
+  "status": "proposed",
+  "rationale": "PO decision: distributed, sharded, strong consistency via Raft.",
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "text": "Every shard has 3 or 5 voting replicas; even voter counts are rejected by configuration validation."
+    },
+    {
+      "id": "AC2",
+      "text": "With 3 AZs available, no two voters of the same shard are placed in the same AZ."
+    }
+  ],
+  "tags": [
+    "raft",
+    "replication"
+  ],
+  "standards": [
+    "RF-0001"
+  ],
+  "stakeholders": [],
+  "source": "PO elicitation 2026-10-05",
+  "version": 1,
+  "created": "2026-10-06T04:50:53+00:00",
+  "updated": "2026-10-06T04:50:53+00:00"
+}

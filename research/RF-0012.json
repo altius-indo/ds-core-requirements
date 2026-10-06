@@ -1,0 +1,12 @@
+{
+  "id": "RF-0012",
+  "claim": "MongoDB limits BSON documents to 16 MiB, nesting to 100 levels and indexes to 64 per collection.",
+  "grade": "VERIFIED",
+  "sources": [
+    "https://www.mongodb.com/docs/manual/reference/limits/"
+  ],
+  "date": "2026-10-05",
+  "perishability": "fast",
+  "refresh_by": "2026-12-04",
+  "created": "2026-10-06T04:50:53+00:00"
+}

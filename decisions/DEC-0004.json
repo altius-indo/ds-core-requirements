@@ -1,0 +1,17 @@
+{
+  "id": "DEC-0004",
+  "title": "Analytics on same-format replicas, eventually consistent",
+  "context": "How to isolate analytics from OLTP and how fresh analytics must be.",
+  "decision": "Dedicated non-voting analytics replicas in the same format; reads and traversals are eventually consistent with no freshness bound.",
+  "status": "accepted",
+  "requirements": [
+    "REQ-0026",
+    "REQ-0027",
+    "REQ-0025"
+  ],
+  "accepted_at": "2026-10-05",
+  "tags": [],
+  "version": 1,
+  "created": "2026-10-06T04:50:53+00:00",
+  "updated": "2026-10-06T04:50:53+00:00"
+}

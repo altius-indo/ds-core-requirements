@@ -1,0 +1,12 @@
+{
+  "id": "RF-0011",
+  "claim": "TiDB supports online rolling upgrades with leader eviction before node stop and a 5-minute default leader-transfer timeout.",
+  "grade": "VERIFIED",
+  "sources": [
+    "https://docs.pingcap.com/tidb/stable/upgrade-tidb-using-tiup/"
+  ],
+  "date": "2026-10-05",
+  "perishability": "fast",
+  "refresh_by": "2026-12-04",
+  "created": "2026-10-06T04:50:53+00:00"
+}

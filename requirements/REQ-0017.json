@@ -1,0 +1,32 @@
+{
+  "id": "REQ-0017",
+  "title": "Safe membership change",
+  "statement": "The system shall keep at most 1 leader per shard per Raft term in 100% of voter membership changes, using joint consensus or single-server changes.",
+  "type": "quality",
+  "category": "reliability",
+  "priority": "must",
+  "status": "proposed",
+  "rationale": "Single-step multi-voter changes can produce split majorities. New replicas join as learners and are promoted after catch-up.",
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "text": "Under the Jepsen-style suite with continuous add/remove of replicas, no two leaders are observed in the same term for a shard."
+    },
+    {
+      "id": "AC2",
+      "text": "A newly added replica is not counted as a voter until its log lag is below the configured bound."
+    }
+  ],
+  "tags": [
+    "raft",
+    "replication"
+  ],
+  "standards": [
+    "RF-0002"
+  ],
+  "stakeholders": [],
+  "source": "Research",
+  "version": 1,
+  "created": "2026-10-06T04:50:53+00:00",
+  "updated": "2026-10-06T04:50:53+00:00"
+}

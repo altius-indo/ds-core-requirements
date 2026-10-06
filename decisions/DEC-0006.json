@@ -1,0 +1,16 @@
+{
+  "id": "DEC-0006",
+  "title": "DETACH DELETE semantics for connected nodes",
+  "context": "Options: reject plain delete with DETACH DELETE, always cascade, or allow dangling edges.",
+  "decision": "Plain DELETE of a node with incident edges is rejected; DETACH DELETE removes the node and its edges in one transaction.",
+  "status": "accepted",
+  "requirements": [
+    "REQ-0029",
+    "REQ-0030"
+  ],
+  "accepted_at": "2026-10-05",
+  "tags": [],
+  "version": 1,
+  "created": "2026-10-06T04:50:53+00:00",
+  "updated": "2026-10-06T04:50:53+00:00"
+}

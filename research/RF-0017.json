@@ -1,0 +1,12 @@
+{
+  "id": "RF-0017",
+  "claim": "GQL is standardised as ISO/IEC 39075:2024, a property-graph query language with MATCH patterns, INSERT/SET/REMOVE/DELETE and DETACH DELETE; not verified against the primary standard text.",
+  "grade": "THIN",
+  "sources": [
+    "https://www.iso.org/standard/76120.html"
+  ],
+  "date": "2026-10-05",
+  "perishability": "slow",
+  "refresh_by": "2027-04-03",
+  "created": "2026-10-06T04:50:53+00:00"
+}

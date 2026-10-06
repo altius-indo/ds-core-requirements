@@ -1,0 +1,29 @@
+{
+  "id": "REQ-0034",
+  "title": "Operational telemetry",
+  "statement": "The system shall export metrics and traces via OpenTelemetry covering request latency, commit latency, WAL fsync latency, transaction abort rate, leader changes and analytics-replica replication lag.",
+  "type": "quality",
+  "category": "maintainability",
+  "priority": "should",
+  "status": "proposed",
+  "rationale": "Operators need visibility, particularly of analytics lag since it carries no SLA.",
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "text": "An OpenTelemetry collector receives each listed metric from every node at least every 15 seconds."
+    },
+    {
+      "id": "AC2",
+      "text": "Analytics replication lag per shard is exported in seconds and in log entries."
+    }
+  ],
+  "tags": [
+    "observability"
+  ],
+  "standards": [],
+  "stakeholders": [],
+  "source": "Research default",
+  "version": 1,
+  "created": "2026-10-06T04:50:53+00:00",
+  "updated": "2026-10-06T04:50:53+00:00"
+}

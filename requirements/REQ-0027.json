@@ -1,0 +1,31 @@
+{
+  "id": "REQ-0027",
+  "title": "Eventual consistency of analytics reads",
+  "statement": "The system shall document that analytics-replica reads and traversals are eventually consistent, with no freshness bound, no cross-shard snapshot and possible one-sided or dangling edges.",
+  "type": "functional",
+  "category": "htap",
+  "priority": "must",
+  "status": "proposed",
+  "rationale": "PO decision: eventual, no freshness guarantee. Graph traversals make the inconsistency visible as edges whose other endpoint is missing or stale.",
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "text": "User documentation for analytical queries states the absence of freshness and cross-shard snapshot guarantees and the possibility of one-sided or dangling edges."
+    },
+    {
+      "id": "AC2",
+      "text": "Every analytical query result includes the per-shard replication positions it read from."
+    }
+  ],
+  "tags": [
+    "htap",
+    "analytics",
+    "consistency"
+  ],
+  "standards": [],
+  "stakeholders": [],
+  "source": "PO elicitation 2026-10-05",
+  "version": 1,
+  "created": "2026-10-06T04:50:53+00:00",
+  "updated": "2026-10-06T04:50:53+00:00"
+}

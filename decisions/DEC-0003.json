@@ -1,0 +1,17 @@
+{
+  "id": "DEC-0003",
+  "title": "Serializable isolation by default",
+  "context": "Options: snapshot isolation, serializable, single-document only.",
+  "decision": "All transactions run at serializable isolation; higher abort rates mitigated by a retryable error contract.",
+  "status": "accepted",
+  "requirements": [
+    "REQ-0014",
+    "REQ-0015",
+    "REQ-0005"
+  ],
+  "accepted_at": "2026-10-05",
+  "tags": [],
+  "version": 1,
+  "created": "2026-10-06T04:50:53+00:00",
+  "updated": "2026-10-06T04:50:53+00:00"
+}

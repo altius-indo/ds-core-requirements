@@ -1,0 +1,25 @@
+{
+  "id": "REQ-0028",
+  "title": "Multi-node cross-shard transactions",
+  "statement": "The system shall commit or abort atomically all writes of a transaction spanning multiple nodes, edges and shards.",
+  "type": "functional",
+  "category": "transactions",
+  "priority": "must",
+  "status": "proposed",
+  "rationale": "Graph mutations routinely touch several entities and both ends of each edge.",
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "text": "A transaction writing nodes and edges on 3 different shards, with a coordinator crash injected at each commit phase, leaves either all or none of the writes visible after recovery (100 trials)."
+    }
+  ],
+  "tags": [
+    "transactions"
+  ],
+  "standards": [],
+  "stakeholders": [],
+  "source": "Derived from PO decisions",
+  "version": 1,
+  "created": "2026-10-06T04:50:53+00:00",
+  "updated": "2026-10-06T04:50:53+00:00"
+}

@@ -1,0 +1,31 @@
+{
+  "id": "REQ-0021",
+  "title": "Rolling upgrade without downtime",
+  "statement": "The system shall upgrade one node at a time between consecutive minor versions while continuing to serve reads and writes, transferring shard leadership off each node before it stops.",
+  "type": "quality",
+  "category": "reliability",
+  "priority": "should",
+  "status": "proposed",
+  "rationale": "Planned maintenance must not consume the availability budget.",
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "text": "During a rolling upgrade under YCSB workload A, the synthetic probe records no failed interval and OLTP p99 stays within its target +50%."
+    },
+    {
+      "id": "AC2",
+      "text": "A mixed-version cluster of N and N+1 minor versions passes the transaction test suite."
+    }
+  ],
+  "tags": [
+    "operations"
+  ],
+  "standards": [
+    "RF-0011"
+  ],
+  "stakeholders": [],
+  "source": "Research default",
+  "version": 1,
+  "created": "2026-10-06T04:50:53+00:00",
+  "updated": "2026-10-06T04:50:53+00:00"
+}

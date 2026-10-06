@@ -1,0 +1,26 @@
+{
+  "id": "REQ-0025",
+  "title": "OLTP latency under analytical load",
+  "statement": "The system shall keep OLTP p99 latency within 10% of its no-analytics baseline while analytical queries saturate the analytics replicas.",
+  "type": "quality",
+  "category": "performance-efficiency",
+  "priority": "must",
+  "status": "proposed",
+  "rationale": "The purpose of dedicated analytics replicas is workload isolation.",
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "text": "Running YCSB workload A concurrently with a multi-hop analytical traversal load at 100% analytics-replica CPU, OLTP p99 read and write latency increase by no more than 10% versus the same run without analytics."
+    }
+  ],
+  "tags": [
+    "performance",
+    "htap"
+  ],
+  "standards": [],
+  "stakeholders": [],
+  "source": "Research default — PO to confirm 10% bound",
+  "version": 1,
+  "created": "2026-10-06T04:50:53+00:00",
+  "updated": "2026-10-06T04:50:53+00:00"
+}

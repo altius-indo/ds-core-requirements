@@ -1,0 +1,28 @@
+{
+  "id": "REQ-0036",
+  "title": "Mutual TLS between cluster nodes",
+  "statement": "The system shall refuse 100% of intra-cluster connections not authenticated by a valid cluster certificate.",
+  "type": "quality",
+  "category": "security",
+  "priority": "must",
+  "status": "proposed",
+  "rationale": "Prevents rogue nodes joining or impersonating peers.",
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "text": "A peer connection presenting no certificate, an expired certificate or a certificate from another CA is refused and audit-logged."
+    }
+  ],
+  "tags": [
+    "security",
+    "tls"
+  ],
+  "standards": [
+    "RF-0015"
+  ],
+  "stakeholders": [],
+  "source": "Research default",
+  "version": 1,
+  "created": "2026-10-06T04:50:53+00:00",
+  "updated": "2026-10-06T04:50:53+00:00"
+}

@@ -1,0 +1,33 @@
+{
+  "id": "REQ-0022",
+  "title": "OLTP point read/write latency",
+  "statement": "The system shall serve single-node or single-edge point reads by identifier within 10 ms and point writes within 20 ms at the 99th percentile in a 3-AZ single-region deployment on SSD storage, at 70% of rated cluster throughput.",
+  "type": "quality",
+  "category": "performance-efficiency",
+  "priority": "must",
+  "status": "proposed",
+  "rationale": "PO decision on p99 targets; a GQL MATCH on an identifier must resolve to a single key read.",
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "text": "YCSB workloads A, B, C and F, mapped to GQL MATCH/SET/INSERT on node identifiers, run for 30 minutes each at 70% of rated throughput; p99 read latency ≤ 10 ms."
+    },
+    {
+      "id": "AC2",
+      "text": "In the same runs, p99 write latency ≤ 20 ms."
+    }
+  ],
+  "tags": [
+    "performance",
+    "oltp"
+  ],
+  "standards": [
+    "RF-0007",
+    "RF-0008"
+  ],
+  "stakeholders": [],
+  "source": "PO elicitation 2026-10-05",
+  "version": 1,
+  "created": "2026-10-06T04:50:53+00:00",
+  "updated": "2026-10-06T04:50:53+00:00"
+}

@@ -1,0 +1,33 @@
+{
+  "id": "REQ-0026",
+  "title": "Analytics on dedicated replicas",
+  "statement": "The system shall execute queries marked analytical only on dedicated non-voting analytics replicas that store data in the same format as voting replicas.",
+  "type": "functional",
+  "category": "htap",
+  "priority": "must",
+  "status": "proposed",
+  "rationale": "PO decision: dedicated same-format analytics replicas.",
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "text": "An analytical query is never executed on a voting replica; tracing shows only analytics replicas served it."
+    },
+    {
+      "id": "AC2",
+      "text": "If no analytics replica is available, an analytical query fails with an explicit error rather than falling back to voting replicas."
+    }
+  ],
+  "tags": [
+    "htap",
+    "analytics"
+  ],
+  "standards": [
+    "RF-0006"
+  ],
+  "stakeholders": [],
+  "source": "PO elicitation 2026-10-05",
+  "notes": "Open: how a query is marked analytical (hint, session, separate endpoint).",
+  "version": 1,
+  "created": "2026-10-06T04:50:53+00:00",
+  "updated": "2026-10-06T04:50:53+00:00"
+}

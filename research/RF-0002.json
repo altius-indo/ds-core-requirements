@@ -1,0 +1,12 @@
+{
+  "id": "RF-0002",
+  "claim": "Raft handles membership changes with two-phase joint consensus in which both old and new configurations apply until the joint configuration commits.",
+  "grade": "VERIFIED",
+  "sources": [
+    "https://raft.github.io/raft.pdf"
+  ],
+  "date": "2026-10-05",
+  "perishability": "slow",
+  "refresh_by": "2027-04-03",
+  "created": "2026-10-06T04:50:53+00:00"
+}

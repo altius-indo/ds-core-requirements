@@ -1,0 +1,13 @@
+{
+  "id": "RF-0005",
+  "claim": "CockroachDB offers serializable as its only isolation level and documents its guarantee as no stale reads rather than strict serializability.",
+  "grade": "VERIFIED",
+  "sources": [
+    "https://www.cockroachlabs.com/blog/consistency-model/",
+    "https://docs.cockroachlabs.com/docs/stable/architecture/transaction-layer"
+  ],
+  "date": "2026-10-05",
+  "perishability": "fast",
+  "refresh_by": "2026-12-04",
+  "created": "2026-10-06T04:50:53+00:00"
+}

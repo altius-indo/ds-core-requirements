@@ -1,0 +1,32 @@
+{
+  "id": "REQ-0009",
+  "title": "Typed property values",
+  "statement": "The system shall store node and edge property values with explicit types, including int64, double, decimal128, timestamp, binary, list and record, without loss of precision on round trip.",
+  "type": "data",
+  "category": "model",
+  "priority": "must",
+  "status": "proposed",
+  "rationale": "Plain JSON loses integer precision beyond 2^53 and has no decimal type.",
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "text": "Writing and reading back int64 values ±(2^63−1) and decimal128 values returns identical values and types."
+    },
+    {
+      "id": "AC2",
+      "text": "Property values nested up to 100 levels round-trip unchanged."
+    }
+  ],
+  "tags": [
+    "data-model"
+  ],
+  "standards": [
+    "RF-0014",
+    "RF-0013"
+  ],
+  "stakeholders": [],
+  "source": "Research default",
+  "version": 1,
+  "created": "2026-10-06T04:50:53+00:00",
+  "updated": "2026-10-06T04:50:53+00:00"
+}
