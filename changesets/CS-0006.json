@@ -1,0 +1,2085 @@
+{
+  "id": "CS-0006",
+  "title": "DS-CORE: strengthen evals per traceability review 2026-10-06",
+  "summary": "Fixes the 15 weak requirement→eval links found by the semantic review: splits overloaded tests, adds missing negative/partition/load conditions, removes a duplicate eval, and closes a false-proof in the erasure eval.",
+  "rationale": "Traceability evaluation 2026-10-06 passed narrowly (semantic 0.81; REQ-0012 at 0.5). Fixing eval definitions now is cheaper than after code exists.",
+  "status": "pending",
+  "created": "2026-10-06T14:06:33+00:00",
+  "valid": true,
+  "ops": [
+    {
+      "op": "update",
+      "id": "STORY-0018",
+      "patch": {
+        "evals": [
+          {
+            "id": "E1",
+            "name": "raw decrypted scan after compaction",
+            "kind": "e2e",
+            "command": "cargo run -p dscore-harness --release -- erasure --simulate-days 30 --scan data,wal,analytics --reader decrypting --assert-absent",
+            "covers": [
+              "REQ-0012#AC1"
+            ]
+          },
+          {
+            "id": "E2",
+            "name": "backup key destruction proof",
+            "kind": "e2e",
+            "command": "cargo run -p dscore-harness --release -- erasure --simulate-days 30 --scan backups --assert-subject-key-destroyed --assert-decrypt-fails",
+            "covers": [
+              "REQ-0012#AC2"
+            ]
+          }
+        ]
+      },
+      "reason": "REQ-0012 (0.5): plaintext scan of encrypted files passed trivially; scan through a key-holding reader and prove key destruction."
+    },
+    {
+      "op": "update",
+      "id": "STORY-0001",
+      "patch": {
+        "evals": [
+          {
+            "id": "E1",
+            "name": "voter count and AZ placement",
+            "kind": "integration",
+            "command": "cargo test -p dscore-server --test raft -- placement",
+            "covers": [
+              "REQ-0001#AC1",
+              "REQ-0001#AC2"
+            ]
+          },
+          {
+            "id": "E2",
+            "name": "power-loss durability",
+            "kind": "e2e",
+            "command": "cargo run -p dscore-harness --release -- fault power-cut --trials 1000 --assert-zero-loss",
+            "covers": [
+              "REQ-0016#AC1"
+            ]
+          },
+          {
+            "id": "E3",
+            "name": "no ack with one voter plus learners",
+            "kind": "integration",
+            "command": "cargo test -p dscore-server --test raft -- partition_one_voter_plus_learners_no_ack",
+            "covers": [
+              "REQ-0016#AC2"
+            ]
+          }
+        ]
+      },
+      "reason": "REQ-0016 (0.6): AC2 needs a partition setup, not power-cut trials."
+    },
+    {
+      "op": "update",
+      "id": "STORY-0006",
+      "patch": {
+        "evals": [
+          {
+            "id": "E1",
+            "name": "forced conflict returns conflict code",
+            "kind": "integration",
+            "command": "cargo test -p dscore-server --test txn -- forced_write_write_conflict_code",
+            "covers": [
+              "REQ-0005#AC1"
+            ]
+          },
+          {
+            "id": "E2",
+            "name": "non-retryable failures never use conflict code",
+            "kind": "integration",
+            "command": "cargo test -p dscore-server --test txn -- syntax_permission_constraint_not_conflict",
+            "covers": [
+              "REQ-0005#AC2"
+            ]
+          },
+          {
+            "id": "E3",
+            "name": "interactive txn with changed read set not retried",
+            "kind": "integration",
+            "command": "cargo test -p dscore-server --test txn -- interactive_readset_changed_no_retry",
+            "covers": [
+              "REQ-0015#AC1"
+            ]
+          },
+          {
+            "id": "E4",
+            "name": "jepsen with internal retry",
+            "kind": "e2e",
+            "command": "cargo run -p dscore-harness --release -- jepsen --workload register --internal-retry on --duration 1h --check lost-update,serializable",
+            "covers": [
+              "REQ-0015#AC2"
+            ]
+          }
+        ]
+      },
+      "reason": "REQ-0005/REQ-0015 (0.7): one test for three setups; jepsen lacked serializability check."
+    },
+    {
+      "op": "update",
+      "id": "STORY-0007",
+      "patch": {
+        "evals": [
+          {
+            "id": "E1",
+            "name": "node and edge round-trip",
+            "kind": "integration",
+            "command": "cargo test -p dscore-server --test graph_model -- node_edge_roundtrip",
+            "covers": [
+              "REQ-0006#AC1",
+              "REQ-0007#AC1",
+              "REQ-0007#AC2",
+              "REQ-0010#AC1"
+            ]
+          },
+          {
+            "id": "E2",
+            "name": "jepsen one-sided edge check",
+            "kind": "e2e",
+            "command": "cargo run -p dscore-harness --release -- jepsen --workload edges --duration 1h --check bidirectional",
+            "covers": [
+              "REQ-0010#AC2"
+            ]
+          },
+          {
+            "id": "E3",
+            "name": "duplicate node id rejected",
+            "kind": "integration",
+            "command": "cargo test -p dscore-server --test graph_model -- duplicate_node_id_rejected",
+            "covers": [
+              "REQ-0006#AC2"
+            ]
+          }
+        ]
+      },
+      "reason": "REQ-0006 (0.7): round-trip test claimed the duplicate-id negative case."
+    },
+    {
+      "op": "update",
+      "id": "STORY-0008",
+      "patch": {
+        "evals": [
+          {
+            "id": "E1",
+            "name": "typed values, duplicates, schemaless",
+            "kind": "integration",
+            "command": "cargo test -p dscore-server --test graph_model -- typed_values duplicate_keys schemaless",
+            "covers": [
+              "REQ-0008#AC1",
+              "REQ-0009#AC1",
+              "REQ-0009#AC2",
+              "REQ-0011#AC1"
+            ]
+          },
+          {
+            "id": "E2",
+            "name": "size limit boundary and live reconfiguration",
+            "kind": "integration",
+            "command": "cargo test -p dscore-server --test limits -- size_16mib_accepted_16mib_plus_1_rejected live_reconfigure",
+            "covers": [
+              "REQ-0013#AC1",
+              "REQ-0013#AC2"
+            ]
+          },
+          {
+            "id": "E3",
+            "name": "max-size documents under write load",
+            "kind": "performance",
+            "command": "cargo run -p dscore-harness --release -- limits doc-size --size-mib 16 --workload write-heavy --assert-no-oom --assert-p99-write-ms 200",
+            "covers": [
+              "REQ-0013#AC1"
+            ]
+          }
+        ]
+      },
+      "reason": "REQ-0013 (0.7): boundary check moved to integration (acceptance stage); a performance eval is kept for the quality-eval gate."
+    },
+    {
+      "op": "update",
+      "id": "STORY-0010",
+      "patch": {
+        "evals": [
+          {
+            "id": "E1",
+            "name": "matrix completeness vs ISO/IEC 39075",
+            "kind": "static",
+            "command": "scripts/gql/check-matrix.py docs/gql-conformance.toml --against spec/iso39075-features.txt --require-status",
+            "covers": [
+              "REQ-0003#AC1"
+            ]
+          },
+          {
+            "id": "E2",
+            "name": "GQL conformance suite",
+            "kind": "contract",
+            "command": "cargo test -p dscore-server --test gql_conformance -- --matrix docs/gql-conformance.toml",
+            "covers": [
+              "REQ-0003#AC2"
+            ]
+          },
+          {
+            "id": "E3",
+            "name": "unsupported and non-GQL syntax rejected with feature-named error",
+            "kind": "contract",
+            "command": "cargo test -p dscore-server --test gql_negative -- unsupported_feature_named sql_input_rejected",
+            "covers": [
+              "REQ-0003#AC3"
+            ]
+          }
+        ]
+      },
+      "reason": "REQ-0003 (0.7): one suite claimed three ACs; matrix completeness and GQL-only were unchecked."
+    },
+    {
+      "op": "update",
+      "id": "STORY-0017",
+      "patch": {
+        "evals": [
+          {
+            "id": "E1",
+            "name": "destroy-and-restore RPO, recent and near window edge",
+            "kind": "e2e",
+            "command": "cargo run -p dscore-harness --release -- dr pitr --destroy-cluster --target-age 1h,6d23h --assert-rpo-mins 5",
+            "covers": [
+              "REQ-0020#AC1"
+            ]
+          },
+          {
+            "id": "E2",
+            "name": "restore throughput vs RTO formula",
+            "kind": "e2e",
+            "command": "cargo run -p dscore-harness --release -- dr restore-throughput --assert-rto-model-error 0.20",
+            "covers": [
+              "REQ-0020#AC2"
+            ]
+          }
+        ]
+      },
+      "reason": "REQ-0020 (0.7): no restore near the 7-day retention edge."
+    },
+    {
+      "op": "update",
+      "id": "STORY-0012",
+      "patch": {
+        "evals": [
+          {
+            "id": "E1",
+            "name": "YCSB A/B/C/F over GQL",
+            "kind": "performance",
+            "command": "cargo run -p dscore-harness --release -- ycsb --workloads A,B,C,F --target-util 0.7 --duration 30m --assert-p99-read-ms 10 --assert-p99-write-ms 20",
+            "covers": [
+              "REQ-0022#AC1",
+              "REQ-0022#AC2"
+            ]
+          },
+          {
+            "id": "E2",
+            "name": "one-hop single-shard locality (10,000 edges)",
+            "kind": "performance",
+            "command": "cargo run -p dscore-harness --release -- onehop --edges 10000 --trace --assert-single-shard",
+            "covers": [
+              "REQ-0023#AC1"
+            ]
+          },
+          {
+            "id": "E3",
+            "name": "one-hop p99 latency under load (<=1,000 edges)",
+            "kind": "performance",
+            "command": "cargo run -p dscore-harness --release -- onehop --max-edges 1000 --target-util 0.7 --duration 30m --assert-p99-ms 20",
+            "covers": [
+              "REQ-0023#AC2"
+            ]
+          }
+        ]
+      },
+      "reason": "REQ-0023 (0.7): locality and latency conflated; load conditions missing."
+    },
+    {
+      "op": "update",
+      "id": "STORY-0025",
+      "patch": {
+        "evals": [
+          {
+            "id": "E1",
+            "name": "audit coverage, latency and redaction",
+            "kind": "security",
+            "command": "cargo test -p dscore-server --test audit -- event_coverage_5s no_property_values",
+            "covers": [
+              "REQ-0040#AC1",
+              "REQ-0040#AC2"
+            ]
+          },
+          {
+            "id": "E2",
+            "name": "append-only tamper rejection and external sink export",
+            "kind": "security",
+            "command": "cargo test -p dscore-server --test audit -- tamper_rejected otlp_sink_export",
+            "covers": [
+              "REQ-0040#AC1"
+            ]
+          }
+        ]
+      },
+      "reason": "REQ-0040 (0.7): append-only and external export untested."
+    },
+    {
+      "op": "update",
+      "id": "STORY-0031",
+      "patch": {
+        "evals": [
+          {
+            "id": "E1",
+            "name": "registry publish dry-run",
+            "kind": "smoke",
+            "command": "make -C drivers publish-dry-run REGISTRIES=maven,pypi,gomod,npm,nuget,crates",
+            "covers": [
+              "REQ-0043#AC2"
+            ]
+          },
+          {
+            "id": "E2",
+            "name": "post-release registry version check",
+            "kind": "smoke",
+            "command": "make -C drivers verify-published VERSION=$RELEASE_VERSION REGISTRIES=maven,pypi,gomod,npm,nuget,crates",
+            "covers": [
+              "REQ-0043#AC2"
+            ]
+          }
+        ]
+      },
+      "reason": "REQ-0043 (0.7): dry-run alone doesn't prove publication; per-language conformance duplicated STORY-0030 E1 and is removed."
+    },
+    {
+      "op": "update",
+      "id": "STORY-0027",
+      "patch": {
+        "evals": [
+          {
+            "id": "E1",
+            "name": "analytics lag units",
+            "kind": "integration",
+            "command": "cargo test -p dscore-server --test telemetry -- analytics_lag_units",
+            "covers": [
+              "REQ-0034#AC2"
+            ]
+          },
+          {
+            "id": "E2",
+            "name": "metrics and spans from every node",
+            "kind": "e2e",
+            "command": "cargo run -p dscore-harness --release -- telemetry --nodes 3 --collector otel --assert-metrics-every 15s --assert-spans",
+            "covers": [
+              "REQ-0034#AC1"
+            ]
+          }
+        ]
+      },
+      "reason": "REQ-0034 (0.75): single-node test can't prove 'every node'; traces untested."
+    },
+    {
+      "op": "update",
+      "id": "STORY-0023",
+      "patch": {
+        "evals": [
+          {
+            "id": "E1",
+            "name": "RBAC deny matrix (operation x role x graph)",
+            "kind": "security",
+            "command": "cargo test -p dscore-server --test security -- rbac_full_matrix",
+            "covers": [
+              "REQ-0038#AC1"
+            ]
+          },
+          {
+            "id": "E2",
+            "name": "role privileges documented",
+            "kind": "static",
+            "command": "scripts/security/check-roles-doc.py docs/security/roles.md --against server/src/auth/roles.rs",
+            "covers": [
+              "REQ-0038#AC2"
+            ]
+          }
+        ]
+      },
+      "reason": "REQ-0038 (0.75): one grant case can't prove 100% deny."
+    },
+    {
+      "op": "update",
+      "id": "STORY-0029",
+      "patch": {
+        "evals": [
+          {
+            "id": "E1",
+            "name": "cluster lifecycle on 3 K8s versions with harness assertions",
+            "kind": "e2e",
+            "command": "make -C operator e2e K8S_VERSIONS=latest3 TESTS='TestCreateReady10m TestScale3to5 TestRollingUpgrade' HARNESS_ASSERT='zero-errors,upgrade-no-failed-interval,upgrade-p99-factor=1.5'",
+            "covers": [
+              "REQ-0042#AC1",
+              "REQ-0042#AC2",
+              "REQ-0042#AC3"
+            ]
+          }
+        ]
+      },
+      "reason": "REQ-0042 (0.75): scale and upgrade must assert zero failed requests and REQ-0021 thresholds."
+    },
+    {
+      "op": "update",
+      "id": "STORY-0032",
+      "patch": {
+        "evals": [
+          {
+            "id": "E1",
+            "name": "import throughput",
+            "kind": "performance",
+            "command": "cargo run -p dscore-harness --release -- import-bench --nodes 100000000 --edges 500000000 --cluster 3 --assert-rate 50000",
+            "covers": [
+              "REQ-0044#AC1"
+            ]
+          },
+          {
+            "id": "E2",
+            "name": "reject file",
+            "kind": "integration",
+            "command": "cargo test -p dscore-importer --test import -- reject_file",
+            "covers": [
+              "REQ-0044#AC2"
+            ]
+          },
+          {
+            "id": "E3",
+            "name": "resume after node failure on 3-node cluster",
+            "kind": "e2e",
+            "command": "cargo run -p dscore-harness --release -- import-resume --cluster 3 --kill-node mid-import --assert-no-duplicates",
+            "covers": [
+              "REQ-0044#AC3"
+            ]
+          }
+        ]
+      },
+      "reason": "REQ-0044 (0.75): resume test simulated a process kill, not a node failure."
+    },
+    {
+      "op": "update",
+      "id": "STORY-0036",
+      "patch": {
+        "evals": [
+          {
+            "id": "E1",
+            "name": "language and unsafe policy",
+            "kind": "static",
+            "command": "scripts/ci/rust-policy.sh --forbid-langs c,cpp,go --require-safety-comments --report-unsafe-count",
+            "covers": [
+              "REQ-0048#AC1",
+              "REQ-0048#AC2"
+            ]
+          },
+          {
+            "id": "E2",
+            "name": "native allow-list incl. build-script links",
+            "kind": "static",
+            "command": "cargo deny check && scripts/ci/ffi-allowlist.sh deny.native.toml --link-audit rustc-link-lib,readelf --negative-fixture tests/fixtures/unlisted-native --require owner,purpose,licence,version,reviewed",
+            "covers": [
+              "REQ-0049#AC1",
+              "REQ-0049#AC2"
+            ]
+          }
+        ]
+      },
+      "reason": "REQ-0049 (0.75): cargo deny misses natives linked via build scripts."
+    }
+  ],
+  "impact_notes": {
+    "stories": "Updates evals on 15 stories (STORY-0001, 0006, 0007, 0008, 0010, 0012, 0017, 0018, 0023, 0025, 0027, 0029, 0031, 0032, 0036). No story scope, requirement or task changes.",
+    "code": "No code exists yet. Test names the tasks must create change, e.g. server/tests/{raft,txn,graph_model,limits,gql_negative,audit,security,telemetry}.rs and harness subcommands (erasure --reader decrypting, import-resume, telemetry --nodes 3). Task done_when texts still read 'story evals pass'.",
+    "evals": "Net +13 evals (57 → 70): 1 duplicate driver conformance eval removed from STORY-0031, 14 added; the REQ-0013 boundary check moves to integration with a performance eval kept for the quality gate.",
+    "risks": [
+      "More evals lengthen the acceptance and performance stages; Jepsen and 30-minute performance runs should run nightly rather than per commit.",
+      "STORY-0031 E2 needs RELEASE_VERSION from the release pipeline (post-deploy stage)."
+    ]
+  },
+  "base_versions": {
+    "STORY-0018": 1,
+    "STORY-0001": 1,
+    "STORY-0006": 1,
+    "STORY-0007": 1,
+    "STORY-0008": 1,
+    "STORY-0010": 1,
+    "STORY-0017": 1,
+    "STORY-0012": 1,
+    "STORY-0025": 1,
+    "STORY-0031": 1,
+    "STORY-0027": 1,
+    "STORY-0023": 1,
+    "STORY-0029": 1,
+    "STORY-0032": 1,
+    "STORY-0036": 1
+  },
+  "analysis": {
+    "valid": true,
+    "errors": [],
+    "ops": [
+      {
+        "i": 0,
+        "op": "update",
+        "kind": "stories",
+        "id": "STORY-0018",
+        "title": "Bounded erasure with crypto-shredding",
+        "reason": "REQ-0012 (0.5): plaintext scan of encrypted files passed trivially; scan through a key-holding reader and prove key destruction.",
+        "changes": {
+          "evals": [
+            [
+              {
+                "id": "E1",
+                "name": "byte-scan after compaction and key destruction",
+                "kind": "e2e",
+                "command": "cargo run -p dscore-harness --release -- erasure --simulate-days 30 --scan data,wal,analytics,backups",
+                "covers": [
+                  "REQ-0012#AC1",
+                  "REQ-0012#AC2"
+                ]
+              }
+            ],
+            [
+              {
+                "id": "E1",
+                "name": "raw decrypted scan after compaction",
+                "kind": "e2e",
+                "command": "cargo run -p dscore-harness --release -- erasure --simulate-days 30 --scan data,wal,analytics --reader decrypting --assert-absent",
+                "covers": [
+                  "REQ-0012#AC1"
+                ]
+              },
+              {
+                "id": "E2",
+                "name": "backup key destruction proof",
+                "kind": "e2e",
+                "command": "cargo run -p dscore-harness --release -- erasure --simulate-days 30 --scan backups --assert-subject-key-destroyed --assert-decrypt-fails",
+                "covers": [
+                  "REQ-0012#AC2"
+                ]
+              }
+            ]
+          ]
+        },
+        "base_version": 1
+      },
+      {
+        "i": 1,
+        "op": "update",
+        "kind": "stories",
+        "id": "STORY-0001",
+        "title": "Raft group per range with AZ-aware placement and durable commit",
+        "reason": "REQ-0016 (0.6): AC2 needs a partition setup, not power-cut trials.",
+        "changes": {
+          "evals": [
+            [
+              {
+                "id": "E1",
+                "name": "voter count and AZ placement",
+                "kind": "integration",
+                "command": "cargo test -p dscore-server --test raft -- placement",
+                "covers": [
+                  "REQ-0001#AC1",
+                  "REQ-0001#AC2"
+                ]
+              },
+              {
+                "id": "E2",
+                "name": "power-loss durability and learner quorum exclusion",
+                "kind": "e2e",
+                "command": "cargo run -p dscore-harness --release -- fault power-cut --trials 1000 --assert-zero-loss",
+                "covers": [
+                  "REQ-0016#AC1",
+                  "REQ-0016#AC2"
+                ]
+              }
+            ],
+            [
+              {
+                "id": "E1",
+                "name": "voter count and AZ placement",
+                "kind": "integration",
+                "command": "cargo test -p dscore-server --test raft -- placement",
+                "covers": [
+                  "REQ-0001#AC1",
+                  "REQ-0001#AC2"
+                ]
+              },
+              {
+                "id": "E2",
+                "name": "power-loss durability",
+                "kind": "e2e",
+                "command": "cargo run -p dscore-harness --release -- fault power-cut --trials 1000 --assert-zero-loss",
+                "covers": [
+                  "REQ-0016#AC1"
+                ]
+              },
+              {
+                "id": "E3",
+                "name": "no ack with one voter plus learners",
+                "kind": "integration",
+                "command": "cargo test -p dscore-server --test raft -- partition_one_voter_plus_learners_no_ack",
+                "covers": [
+                  "REQ-0016#AC2"
+                ]
+              }
+            ]
+          ]
+        },
+        "base_version": 1
+      },
+      {
+        "i": 2,
+        "op": "update",
+        "kind": "stories",
+        "id": "STORY-0006",
+        "title": "Safe internal retry and retryable conflict error",
+        "reason": "REQ-0005/REQ-0015 (0.7): one test for three setups; jepsen lacked serializability check.",
+        "changes": {
+          "evals": [
+            [
+              {
+                "id": "E1",
+                "name": "conflict error contract",
+                "kind": "integration",
+                "command": "cargo test -p dscore-server --test txn -- serialization_conflict_code",
+                "covers": [
+                  "REQ-0005#AC1",
+                  "REQ-0005#AC2",
+                  "REQ-0015#AC1"
+                ]
+              },
+              {
+                "id": "E2",
+                "name": "jepsen with internal retry",
+                "kind": "e2e",
+                "command": "cargo run -p dscore-harness --release -- jepsen --workload register --internal-retry on --duration 1h --check lost-update",
+                "covers": [
+                  "REQ-0015#AC2"
+                ]
+              }
+            ],
+            [
+              {
+                "id": "E1",
+                "name": "forced conflict returns conflict code",
+                "kind": "integration",
+                "command": "cargo test -p dscore-server --test txn -- forced_write_write_conflict_code",
+                "covers": [
+                  "REQ-0005#AC1"
+                ]
+              },
+              {
+                "id": "E2",
+                "name": "non-retryable failures never use conflict code",
+                "kind": "integration",
+                "command": "cargo test -p dscore-server --test txn -- syntax_permission_constraint_not_conflict",
+                "covers": [
+                  "REQ-0005#AC2"
+                ]
+              },
+              {
+                "id": "E3",
+                "name": "interactive txn with changed read set not retried",
+                "kind": "integration",
+                "command": "cargo test -p dscore-server --test txn -- interactive_readset_changed_no_retry",
+                "covers": [
+                  "REQ-0015#AC1"
+                ]
+              },
+              {
+                "id": "E4",
+                "name": "jepsen with internal retry",
+                "kind": "e2e",
+                "command": "cargo run -p dscore-harness --release -- jepsen --workload register --internal-retry on --duration 1h --check lost-update,serializable",
+                "covers": [
+                  "REQ-0015#AC2"
+                ]
+              }
+            ]
+          ]
+        },
+        "base_version": 1
+      },
+      {
+        "i": 3,
+        "op": "update",
+        "kind": "stories",
+        "id": "STORY-0007",
+        "title": "Node and edge key layout with bidirectional adjacency",
+        "reason": "REQ-0006 (0.7): round-trip test claimed the duplicate-id negative case.",
+        "changes": {
+          "evals": [
+            [
+              {
+                "id": "E1",
+                "name": "node and edge round-trip",
+                "kind": "integration",
+                "command": "cargo test -p dscore-server --test graph_model -- node_edge_roundtrip",
+                "covers": [
+                  "REQ-0006#AC1",
+                  "REQ-0006#AC2",
+                  "REQ-0007#AC1",
+                  "REQ-0007#AC2",
+                  "REQ-0010#AC1"
+                ]
+              },
+              {
+                "id": "E2",
+                "name": "jepsen one-sided edge check",
+                "kind": "e2e",
+                "command": "cargo run -p dscore-harness --release -- jepsen --workload edges --duration 1h --check bidirectional",
+                "covers": [
+                  "REQ-0010#AC2"
+                ]
+              }
+            ],
+            [
+              {
+                "id": "E1",
+                "name": "node and edge round-trip",
+                "kind": "integration",
+                "command": "cargo test -p dscore-server --test graph_model -- node_edge_roundtrip",
+                "covers": [
+                  "REQ-0006#AC1",
+                  "REQ-0007#AC1",
+                  "REQ-0007#AC2",
+                  "REQ-0010#AC1"
+                ]
+              },
+              {
+                "id": "E2",
+                "name": "jepsen one-sided edge check",
+                "kind": "e2e",
+                "command": "cargo run -p dscore-harness --release -- jepsen --workload edges --duration 1h --check bidirectional",
+                "covers": [
+                  "REQ-0010#AC2"
+                ]
+              },
+              {
+                "id": "E3",
+                "name": "duplicate node id rejected",
+                "kind": "integration",
+                "command": "cargo test -p dscore-server --test graph_model -- duplicate_node_id_rejected",
+                "covers": [
+                  "REQ-0006#AC2"
+                ]
+              }
+            ]
+          ]
+        },
+        "base_version": 1
+      },
+      {
+        "i": 4,
+        "op": "update",
+        "kind": "stories",
+        "id": "STORY-0008",
+        "title": "Typed nested property values, validation and size limit",
+        "reason": "REQ-0013 (0.7): boundary check moved to integration (acceptance stage); a performance eval is kept for the quality-eval gate.",
+        "changes": {
+          "evals": [
+            [
+              {
+                "id": "E1",
+                "name": "typed values, duplicates, schemaless",
+                "kind": "integration",
+                "command": "cargo test -p dscore-server --test graph_model -- typed_values duplicate_keys schemaless",
+                "covers": [
+                  "REQ-0008#AC1",
+                  "REQ-0009#AC1",
+                  "REQ-0009#AC2",
+                  "REQ-0011#AC1"
+                ]
+              },
+              {
+                "id": "E2",
+                "name": "property size limit and live reconfiguration",
+                "kind": "performance",
+                "command": "cargo run -p dscore-harness --release -- limits doc-size --default-mib 16 --reconfigure-live",
+                "covers": [
+                  "REQ-0013#AC1",
+                  "REQ-0013#AC2"
+                ]
+              }
+            ],
+            [
+              {
+                "id": "E1",
+                "name": "typed values, duplicates, schemaless",
+                "kind": "integration",
+                "command": "cargo test -p dscore-server --test graph_model -- typed_values duplicate_keys schemaless",
+                "covers": [
+                  "REQ-0008#AC1",
+                  "REQ-0009#AC1",
+                  "REQ-0009#AC2",
+                  "REQ-0011#AC1"
+                ]
+              },
+              {
+                "id": "E2",
+                "name": "size limit boundary and live reconfiguration",
+                "kind": "integration",
+                "command": "cargo test -p dscore-server --test limits -- size_16mib_accepted_16mib_plus_1_rejected live_reconfigure",
+                "covers": [
+                  "REQ-0013#AC1",
+                  "REQ-0013#AC2"
+                ]
+              },
+              {
+                "id": "E3",
+                "name": "max-size documents under write load",
+                "kind": "performance",
+                "command": "cargo run -p dscore-harness --release -- limits doc-size --size-mib 16 --workload write-heavy --assert-no-oom --assert-p99-write-ms 200",
+                "covers": [
+                  "REQ-0013#AC1"
+                ]
+              }
+            ]
+          ]
+        },
+        "base_version": 1
+      },
+      {
+        "i": 5,
+        "op": "update",
+        "kind": "stories",
+        "id": "STORY-0010",
+        "title": "GQL parser, planner and conformance matrix",
+        "reason": "REQ-0003 (0.7): one suite claimed three ACs; matrix completeness and GQL-only were unchecked.",
+        "changes": {
+          "evals": [
+            [
+              {
+                "id": "E1",
+                "name": "GQL conformance suite",
+                "kind": "contract",
+                "command": "cargo test -p dscore-server --test gql_conformance -- --matrix docs/gql-conformance.toml",
+                "covers": [
+                  "REQ-0003#AC1",
+                  "REQ-0003#AC2",
+                  "REQ-0003#AC3"
+                ]
+              }
+            ],
+            [
+              {
+                "id": "E1",
+                "name": "matrix completeness vs ISO/IEC 39075",
+                "kind": "static",
+                "command": "scripts/gql/check-matrix.py docs/gql-conformance.toml --against spec/iso39075-features.txt --require-status",
+                "covers": [
+                  "REQ-0003#AC1"
+                ]
+              },
+              {
+                "id": "E2",
+                "name": "GQL conformance suite",
+                "kind": "contract",
+                "command": "cargo test -p dscore-server --test gql_conformance -- --matrix docs/gql-conformance.toml",
+                "covers": [
+                  "REQ-0003#AC2"
+                ]
+              },
+              {
+                "id": "E3",
+                "name": "unsupported and non-GQL syntax rejected with feature-named error",
+                "kind": "contract",
+                "command": "cargo test -p dscore-server --test gql_negative -- unsupported_feature_named sql_input_rejected",
+                "covers": [
+                  "REQ-0003#AC3"
+                ]
+              }
+            ]
+          ]
+        },
+        "base_version": 1
+      },
+      {
+        "i": 6,
+        "op": "update",
+        "kind": "stories",
+        "id": "STORY-0017",
+        "title": "Continuous log backup and point-in-time recovery",
+        "reason": "REQ-0020 (0.7): no restore near the 7-day retention edge.",
+        "changes": {
+          "evals": [
+            [
+              {
+                "id": "E1",
+                "name": "destroy-and-restore RPO",
+                "kind": "e2e",
+                "command": "cargo run -p dscore-harness --release -- dr pitr --destroy-cluster --assert-rpo-mins 5",
+                "covers": [
+                  "REQ-0020#AC1"
+                ]
+              },
+              {
+                "id": "E2",
+                "name": "restore throughput vs RTO formula",
+                "kind": "e2e",
+                "command": "cargo run -p dscore-harness --release -- dr restore-throughput --assert-rto-model-error 0.20",
+                "covers": [
+                  "REQ-0020#AC2"
+                ]
+              }
+            ],
+            [
+              {
+                "id": "E1",
+                "name": "destroy-and-restore RPO, recent and near window edge",
+                "kind": "e2e",
+                "command": "cargo run -p dscore-harness --release -- dr pitr --destroy-cluster --target-age 1h,6d23h --assert-rpo-mins 5",
+                "covers": [
+                  "REQ-0020#AC1"
+                ]
+              },
+              {
+                "id": "E2",
+                "name": "restore throughput vs RTO formula",
+                "kind": "e2e",
+                "command": "cargo run -p dscore-harness --release -- dr restore-throughput --assert-rto-model-error 0.20",
+                "covers": [
+                  "REQ-0020#AC2"
+                ]
+              }
+            ]
+          ]
+        },
+        "base_version": 1
+      },
+      {
+        "i": 7,
+        "op": "update",
+        "kind": "stories",
+        "id": "STORY-0012",
+        "title": "GQL executor: point lookups and shard-local one-hop traversal",
+        "reason": "REQ-0023 (0.7): locality and latency conflated; load conditions missing.",
+        "changes": {
+          "evals": [
+            [
+              {
+                "id": "E1",
+                "name": "YCSB A/B/C/F over GQL",
+                "kind": "performance",
+                "command": "cargo run -p dscore-harness --release -- ycsb --workloads A,B,C,F --target-util 0.7 --duration 30m --assert-p99-read-ms 10 --assert-p99-write-ms 20",
+                "covers": [
+                  "REQ-0022#AC1",
+                  "REQ-0022#AC2"
+                ]
+              },
+              {
+                "id": "E2",
+                "name": "one-hop locality and latency",
+                "kind": "performance",
+                "command": "cargo run -p dscore-harness --release -- onehop --max-edges 10000 --assert-single-shard --assert-p99-ms 20",
+                "covers": [
+                  "REQ-0023#AC1",
+                  "REQ-0023#AC2"
+                ]
+              }
+            ],
+            [
+              {
+                "id": "E1",
+                "name": "YCSB A/B/C/F over GQL",
+                "kind": "performance",
+                "command": "cargo run -p dscore-harness --release -- ycsb --workloads A,B,C,F --target-util 0.7 --duration 30m --assert-p99-read-ms 10 --assert-p99-write-ms 20",
+                "covers": [
+                  "REQ-0022#AC1",
+                  "REQ-0022#AC2"
+                ]
+              },
+              {
+                "id": "E2",
+                "name": "one-hop single-shard locality (10,000 edges)",
+                "kind": "performance",
+                "command": "cargo run -p dscore-harness --release -- onehop --edges 10000 --trace --assert-single-shard",
+                "covers": [
+                  "REQ-0023#AC1"
+                ]
+              },
+              {
+                "id": "E3",
+                "name": "one-hop p99 latency under load (<=1,000 edges)",
+                "kind": "performance",
+                "command": "cargo run -p dscore-harness --release -- onehop --max-edges 1000 --target-util 0.7 --duration 30m --assert-p99-ms 20",
+                "covers": [
+                  "REQ-0023#AC2"
+                ]
+              }
+            ]
+          ]
+        },
+        "base_version": 1
+      },
+      {
+        "i": 8,
+        "op": "update",
+        "kind": "stories",
+        "id": "STORY-0025",
+        "title": "Append-only redacted audit log with external export",
+        "reason": "REQ-0040 (0.7): append-only and external export untested.",
+        "changes": {
+          "evals": [
+            [
+              {
+                "id": "E1",
+                "name": "audit coverage, latency and redaction",
+                "kind": "security",
+                "command": "cargo test -p dscore-server --test audit -- event_coverage_5s no_property_values",
+                "covers": [
+                  "REQ-0040#AC1",
+                  "REQ-0040#AC2"
+                ]
+              }
+            ],
+            [
+              {
+                "id": "E1",
+                "name": "audit coverage, latency and redaction",
+                "kind": "security",
+                "command": "cargo test -p dscore-server --test audit -- event_coverage_5s no_property_values",
+                "covers": [
+                  "REQ-0040#AC1",
+                  "REQ-0040#AC2"
+                ]
+              },
+              {
+                "id": "E2",
+                "name": "append-only tamper rejection and external sink export",
+                "kind": "security",
+                "command": "cargo test -p dscore-server --test audit -- tamper_rejected otlp_sink_export",
+                "covers": [
+                  "REQ-0040#AC1"
+                ]
+              }
+            ]
+          ]
+        },
+        "base_version": 1
+      },
+      {
+        "i": 9,
+        "op": "update",
+        "kind": "stories",
+        "id": "STORY-0031",
+        "title": "Six official drivers: Java, Python, Go, JS/TS, Rust, C#/.NET",
+        "reason": "REQ-0043 (0.7): dry-run alone doesn't prove publication; per-language conformance duplicated STORY-0030 E1 and is removed.",
+        "changes": {
+          "evals": [
+            [
+              {
+                "id": "E1",
+                "name": "per-language conformance",
+                "kind": "contract",
+                "command": "make -C drivers conformance LANG=java,python,go,js,rust,dotnet",
+                "covers": [
+                  "REQ-0043#AC1"
+                ]
+              },
+              {
+                "id": "E2",
+                "name": "registry publish dry-run",
+                "kind": "smoke",
+                "command": "make -C drivers publish-dry-run REGISTRIES=maven,pypi,gomod,npm,nuget,crates",
+                "covers": [
+                  "REQ-0043#AC2"
+                ]
+              }
+            ],
+            [
+              {
+                "id": "E1",
+                "name": "registry publish dry-run",
+                "kind": "smoke",
+                "command": "make -C drivers publish-dry-run REGISTRIES=maven,pypi,gomod,npm,nuget,crates",
+                "covers": [
+                  "REQ-0043#AC2"
+                ]
+              },
+              {
+                "id": "E2",
+                "name": "post-release registry version check",
+                "kind": "smoke",
+                "command": "make -C drivers verify-published VERSION=$RELEASE_VERSION REGISTRIES=maven,pypi,gomod,npm,nuget,crates",
+                "covers": [
+                  "REQ-0043#AC2"
+                ]
+              }
+            ]
+          ]
+        },
+        "base_version": 1
+      },
+      {
+        "i": 10,
+        "op": "update",
+        "kind": "stories",
+        "id": "STORY-0027",
+        "title": "OpenTelemetry metrics and traces",
+        "reason": "REQ-0034 (0.75): single-node test can't prove 'every node'; traces untested.",
+        "changes": {
+          "evals": [
+            [
+              {
+                "id": "E1",
+                "name": "OTel collector receives all metrics",
+                "kind": "integration",
+                "command": "cargo test -p dscore-server --test telemetry -- otel_metrics_15s analytics_lag_units",
+                "covers": [
+                  "REQ-0034#AC1",
+                  "REQ-0034#AC2"
+                ]
+              }
+            ],
+            [
+              {
+                "id": "E1",
+                "name": "analytics lag units",
+                "kind": "integration",
+                "command": "cargo test -p dscore-server --test telemetry -- analytics_lag_units",
+                "covers": [
+                  "REQ-0034#AC2"
+                ]
+              },
+              {
+                "id": "E2",
+                "name": "metrics and spans from every node",
+                "kind": "e2e",
+                "command": "cargo run -p dscore-harness --release -- telemetry --nodes 3 --collector otel --assert-metrics-every 15s --assert-spans",
+                "covers": [
+                  "REQ-0034#AC1"
+                ]
+              }
+            ]
+          ]
+        },
+        "base_version": 1
+      },
+      {
+        "i": 11,
+        "op": "update",
+        "kind": "stories",
+        "id": "STORY-0023",
+        "title": "Graph-scoped role-based access control",
+        "reason": "REQ-0038 (0.75): one grant case can't prove 100% deny.",
+        "changes": {
+          "evals": [
+            [
+              {
+                "id": "E1",
+                "name": "RBAC enforcement and documented roles",
+                "kind": "security",
+                "command": "cargo test -p dscore-server --test security -- rbac_graph_scope builtin_roles_documented",
+                "covers": [
+                  "REQ-0038#AC1",
+                  "REQ-0038#AC2"
+                ]
+              }
+            ],
+            [
+              {
+                "id": "E1",
+                "name": "RBAC deny matrix (operation x role x graph)",
+                "kind": "security",
+                "command": "cargo test -p dscore-server --test security -- rbac_full_matrix",
+                "covers": [
+                  "REQ-0038#AC1"
+                ]
+              },
+              {
+                "id": "E2",
+                "name": "role privileges documented",
+                "kind": "static",
+                "command": "scripts/security/check-roles-doc.py docs/security/roles.md --against server/src/auth/roles.rs",
+                "covers": [
+                  "REQ-0038#AC2"
+                ]
+              }
+            ]
+          ]
+        },
+        "base_version": 1
+      },
+      {
+        "i": 12,
+        "op": "update",
+        "kind": "stories",
+        "id": "STORY-0029",
+        "title": "Kubernetes operator: create, scale, upgrade",
+        "reason": "REQ-0042 (0.75): scale and upgrade must assert zero failed requests and REQ-0021 thresholds.",
+        "changes": {
+          "evals": [
+            [
+              {
+                "id": "E1",
+                "name": "cluster lifecycle on 3 K8s versions",
+                "kind": "e2e",
+                "command": "make -C operator e2e K8S_VERSIONS=latest3 TESTS='TestCreateReady10m TestScale3to5 TestRollingUpgrade'",
+                "covers": [
+                  "REQ-0042#AC1",
+                  "REQ-0042#AC2",
+                  "REQ-0042#AC3"
+                ]
+              }
+            ],
+            [
+              {
+                "id": "E1",
+                "name": "cluster lifecycle on 3 K8s versions with harness assertions",
+                "kind": "e2e",
+                "command": "make -C operator e2e K8S_VERSIONS=latest3 TESTS='TestCreateReady10m TestScale3to5 TestRollingUpgrade' HARNESS_ASSERT='zero-errors,upgrade-no-failed-interval,upgrade-p99-factor=1.5'",
+                "covers": [
+                  "REQ-0042#AC1",
+                  "REQ-0042#AC2",
+                  "REQ-0042#AC3"
+                ]
+              }
+            ]
+          ]
+        },
+        "base_version": 1
+      },
+      {
+        "i": 13,
+        "op": "update",
+        "kind": "stories",
+        "id": "STORY-0032",
+        "title": "Importer core: parallel loader, reject file, resume",
+        "reason": "REQ-0044 (0.75): resume test simulated a process kill, not a node failure.",
+        "changes": {
+          "evals": [
+            [
+              {
+                "id": "E1",
+                "name": "import throughput",
+                "kind": "performance",
+                "command": "cargo run -p dscore-harness --release -- import-bench --nodes 100000000 --edges 500000000 --assert-rate 50000",
+                "covers": [
+                  "REQ-0044#AC1"
+                ]
+              },
+              {
+                "id": "E2",
+                "name": "reject file and resume",
+                "kind": "integration",
+                "command": "cargo test -p dscore-importer --test import -- reject_file resume_no_duplicates",
+                "covers": [
+                  "REQ-0044#AC2",
+                  "REQ-0044#AC3"
+                ]
+              }
+            ],
+            [
+              {
+                "id": "E1",
+                "name": "import throughput",
+                "kind": "performance",
+                "command": "cargo run -p dscore-harness --release -- import-bench --nodes 100000000 --edges 500000000 --cluster 3 --assert-rate 50000",
+                "covers": [
+                  "REQ-0044#AC1"
+                ]
+              },
+              {
+                "id": "E2",
+                "name": "reject file",
+                "kind": "integration",
+                "command": "cargo test -p dscore-importer --test import -- reject_file",
+                "covers": [
+                  "REQ-0044#AC2"
+                ]
+              },
+              {
+                "id": "E3",
+                "name": "resume after node failure on 3-node cluster",
+                "kind": "e2e",
+                "command": "cargo run -p dscore-harness --release -- import-resume --cluster 3 --kill-node mid-import --assert-no-duplicates",
+                "covers": [
+                  "REQ-0044#AC3"
+                ]
+              }
+            ]
+          ]
+        },
+        "base_version": 1
+      },
+      {
+        "i": 14,
+        "op": "update",
+        "kind": "stories",
+        "id": "STORY-0036",
+        "title": "Rust toolchain, unsafe policy and native allow-list gates",
+        "reason": "REQ-0049 (0.75): cargo deny misses natives linked via build scripts.",
+        "changes": {
+          "evals": [
+            [
+              {
+                "id": "E1",
+                "name": "language and unsafe policy",
+                "kind": "static",
+                "command": "scripts/ci/rust-policy.sh --forbid-langs c,cpp,go --require-safety-comments --report-unsafe-count",
+                "covers": [
+                  "REQ-0048#AC1",
+                  "REQ-0048#AC2"
+                ]
+              },
+              {
+                "id": "E2",
+                "name": "native allow-list",
+                "kind": "static",
+                "command": "cargo deny check && scripts/ci/ffi-allowlist.sh deny.native.toml --require owner,purpose,licence,version,reviewed",
+                "covers": [
+                  "REQ-0049#AC1",
+                  "REQ-0049#AC2"
+                ]
+              }
+            ],
+            [
+              {
+                "id": "E1",
+                "name": "language and unsafe policy",
+                "kind": "static",
+                "command": "scripts/ci/rust-policy.sh --forbid-langs c,cpp,go --require-safety-comments --report-unsafe-count",
+                "covers": [
+                  "REQ-0048#AC1",
+                  "REQ-0048#AC2"
+                ]
+              },
+              {
+                "id": "E2",
+                "name": "native allow-list incl. build-script links",
+                "kind": "static",
+                "command": "cargo deny check && scripts/ci/ffi-allowlist.sh deny.native.toml --link-audit rustc-link-lib,readelf --negative-fixture tests/fixtures/unlisted-native --require owner,purpose,licence,version,reviewed",
+                "covers": [
+                  "REQ-0049#AC1",
+                  "REQ-0049#AC2"
+                ]
+              }
+            ]
+          ]
+        },
+        "base_version": 1
+      }
+    ],
+    "refmap": {},
+    "lint": {
+      "before": {
+        "error": 0,
+        "warning": 6,
+        "info": 0
+      },
+      "after": {
+        "error": 0,
+        "warning": 6,
+        "info": 0
+      },
+      "new": [],
+      "resolved": [],
+      "gaps_before": 6,
+      "gaps_after": 6,
+      "mece_ok": true
+    },
+    "trace": {
+      "ok_before": true,
+      "ok_after": true,
+      "metrics_before": {
+        "requirements": 49,
+        "active": 49,
+        "epics": 11,
+        "stories": 36,
+        "tasks": 48,
+        "evals": 57,
+        "requirement_coverage": 1.0,
+        "criteria_coverage": 1.0
+      },
+      "metrics_after": {
+        "requirements": 49,
+        "active": 49,
+        "epics": 11,
+        "stories": 36,
+        "tasks": 48,
+        "evals": 70,
+        "requirement_coverage": 1.0,
+        "criteria_coverage": 1.0
+      },
+      "delta": []
+    },
+    "impact": {
+      "requirements": [],
+      "children": [],
+      "stories": [
+        {
+          "id": "STORY-0001",
+          "title": "Raft group per range with AZ-aware placement and durable commit",
+          "status": "todo",
+          "component": "server",
+          "via": []
+        },
+        {
+          "id": "STORY-0006",
+          "title": "Safe internal retry and retryable conflict error",
+          "status": "todo",
+          "component": "server",
+          "via": []
+        },
+        {
+          "id": "STORY-0007",
+          "title": "Node and edge key layout with bidirectional adjacency",
+          "status": "todo",
+          "component": "server",
+          "via": []
+        },
+        {
+          "id": "STORY-0008",
+          "title": "Typed nested property values, validation and size limit",
+          "status": "todo",
+          "component": "server",
+          "via": []
+        },
+        {
+          "id": "STORY-0010",
+          "title": "GQL parser, planner and conformance matrix",
+          "status": "todo",
+          "component": "server",
+          "via": []
+        },
+        {
+          "id": "STORY-0012",
+          "title": "GQL executor: point lookups and shard-local one-hop traversal",
+          "status": "todo",
+          "component": "server",
+          "via": []
+        },
+        {
+          "id": "STORY-0017",
+          "title": "Continuous log backup and point-in-time recovery",
+          "status": "todo",
+          "component": "server",
+          "via": []
+        },
+        {
+          "id": "STORY-0018",
+          "title": "Bounded erasure with crypto-shredding",
+          "status": "todo",
+          "component": "server",
+          "via": []
+        },
+        {
+          "id": "STORY-0023",
+          "title": "Graph-scoped role-based access control",
+          "status": "todo",
+          "component": "server",
+          "via": []
+        },
+        {
+          "id": "STORY-0025",
+          "title": "Append-only redacted audit log with external export",
+          "status": "todo",
+          "component": "server",
+          "via": []
+        },
+        {
+          "id": "STORY-0027",
+          "title": "OpenTelemetry metrics and traces",
+          "status": "todo",
+          "component": "server",
+          "via": []
+        },
+        {
+          "id": "STORY-0029",
+          "title": "Kubernetes operator: create, scale, upgrade",
+          "status": "todo",
+          "component": "operator",
+          "via": []
+        },
+        {
+          "id": "STORY-0031",
+          "title": "Six official drivers: Java, Python, Go, JS/TS, Rust, C#/.NET",
+          "status": "todo",
+          "component": "drivers",
+          "via": []
+        },
+        {
+          "id": "STORY-0032",
+          "title": "Importer core: parallel loader, reject file, resume",
+          "status": "todo",
+          "component": "importer",
+          "via": []
+        },
+        {
+          "id": "STORY-0036",
+          "title": "Rust toolchain, unsafe policy and native allow-list gates",
+          "status": "todo",
+          "component": "server",
+          "via": []
+        }
+      ],
+      "tasks": [
+        {
+          "id": "TASK-0001",
+          "title": "Set up Rust workspace and CI skeleton",
+          "kind": "code",
+          "status": "todo",
+          "story": "STORY-0036"
+        },
+        {
+          "id": "TASK-0002",
+          "title": "Add rust-policy and FFI allow-list CI gates",
+          "kind": "code",
+          "status": "todo",
+          "story": "STORY-0036"
+        },
+        {
+          "id": "TASK-0003",
+          "title": "Design range/Raft architecture and key layout",
+          "kind": "design",
+          "status": "todo",
+          "story": "STORY-0001"
+        },
+        {
+          "id": "TASK-0004",
+          "title": "Implement Raft group per range on RocksDB",
+          "kind": "code",
+          "status": "todo",
+          "story": "STORY-0001"
+        },
+        {
+          "id": "TASK-0005",
+          "title": "Build fault-injection and Jepsen-style harness",
+          "kind": "code",
+          "status": "todo",
+          "story": "STORY-0001"
+        },
+        {
+          "id": "TASK-0011",
+          "title": "Implement retry policy and conflict error code",
+          "kind": "code",
+          "status": "todo",
+          "story": "STORY-0006"
+        },
+        {
+          "id": "TASK-0012",
+          "title": "Implement node/edge encoding with in/out adjacency",
+          "kind": "code",
+          "status": "todo",
+          "story": "STORY-0007"
+        },
+        {
+          "id": "TASK-0013",
+          "title": "Implement typed value codec, duplicate-key check and size limit",
+          "kind": "code",
+          "status": "todo",
+          "story": "STORY-0008"
+        },
+        {
+          "id": "TASK-0015",
+          "title": "Scope GQL conformance and choose parser approach",
+          "kind": "design",
+          "status": "todo",
+          "story": "STORY-0010"
+        },
+        {
+          "id": "TASK-0016",
+          "title": "Implement GQL parser, binder and planner",
+          "kind": "code",
+          "status": "todo",
+          "story": "STORY-0010"
+        },
+        {
+          "id": "TASK-0018",
+          "title": "Implement executor fast paths for id lookup and one-hop",
+          "kind": "code",
+          "status": "todo",
+          "story": "STORY-0012"
+        },
+        {
+          "id": "TASK-0021",
+          "title": "Instrument server with OpenTelemetry",
+          "kind": "code",
+          "status": "todo",
+          "story": "STORY-0027"
+        },
+        {
+          "id": "TASK-0022",
+          "title": "Ship operational dashboards and alerts",
+          "kind": "monitoring",
+          "status": "todo",
+          "story": "STORY-0027"
+        },
+        {
+          "id": "TASK-0027",
+          "title": "Implement log backup and PITR restore",
+          "kind": "code",
+          "status": "todo",
+          "story": "STORY-0017"
+        },
+        {
+          "id": "TASK-0028",
+          "title": "Provision backup storage and retention",
+          "kind": "deployment",
+          "status": "todo",
+          "story": "STORY-0017"
+        },
+        {
+          "id": "TASK-0029",
+          "title": "Implement compaction-bounded erasure and per-subject keys",
+          "kind": "code",
+          "status": "todo",
+          "story": "STORY-0018"
+        },
+        {
+          "id": "TASK-0035",
+          "title": "Implement graph-scoped RBAC",
+          "kind": "code",
+          "status": "todo",
+          "story": "STORY-0023"
+        },
+        {
+          "id": "TASK-0036",
+          "title": "Implement audit log and exporter",
+          "kind": "code",
+          "status": "todo",
+          "story": "STORY-0025"
+        },
+        {
+          "id": "TASK-0039",
+          "title": "Design DSCoreCluster CRD and reconciliation",
+          "kind": "design",
+          "status": "todo",
+          "story": "STORY-0029"
+        },
+        {
+          "id": "TASK-0040",
+          "title": "Implement operator create/scale/upgrade",
+          "kind": "code",
+          "status": "todo",
+          "story": "STORY-0029"
+        },
+        {
+          "id": "TASK-0041",
+          "title": "Publish operator image and install manifests",
+          "kind": "deployment",
+          "status": "todo",
+          "story": "STORY-0029"
+        },
+        {
+          "id": "TASK-0043",
+          "title": "Implement the six drivers",
+          "kind": "code",
+          "status": "todo",
+          "story": "STORY-0031"
+        },
+        {
+          "id": "TASK-0044",
+          "title": "Automate driver publishing to registries",
+          "kind": "deployment",
+          "status": "todo",
+          "story": "STORY-0031"
+        },
+        {
+          "id": "TASK-0045",
+          "title": "Implement parallel loader with checkpoints and reject file",
+          "kind": "code",
+          "status": "todo",
+          "story": "STORY-0032"
+        }
+      ],
+      "evals": [
+        {
+          "story": "STORY-0001",
+          "id": "E1",
+          "name": "voter count and AZ placement",
+          "kind": "integration",
+          "command": "cargo test -p dscore-server --test raft -- placement",
+          "covers": [
+            "REQ-0001#AC1",
+            "REQ-0001#AC2"
+          ]
+        },
+        {
+          "story": "STORY-0001",
+          "id": "E2",
+          "name": "power-loss durability",
+          "kind": "e2e",
+          "command": "cargo run -p dscore-harness --release -- fault power-cut --trials 1000 --assert-zero-loss",
+          "covers": [
+            "REQ-0016#AC1"
+          ]
+        },
+        {
+          "story": "STORY-0001",
+          "id": "E3",
+          "name": "no ack with one voter plus learners",
+          "kind": "integration",
+          "command": "cargo test -p dscore-server --test raft -- partition_one_voter_plus_learners_no_ack",
+          "covers": [
+            "REQ-0016#AC2"
+          ]
+        },
+        {
+          "story": "STORY-0006",
+          "id": "E1",
+          "name": "forced conflict returns conflict code",
+          "kind": "integration",
+          "command": "cargo test -p dscore-server --test txn -- forced_write_write_conflict_code",
+          "covers": [
+            "REQ-0005#AC1"
+          ]
+        },
+        {
+          "story": "STORY-0006",
+          "id": "E2",
+          "name": "non-retryable failures never use conflict code",
+          "kind": "integration",
+          "command": "cargo test -p dscore-server --test txn -- syntax_permission_constraint_not_conflict",
+          "covers": [
+            "REQ-0005#AC2"
+          ]
+        },
+        {
+          "story": "STORY-0006",
+          "id": "E3",
+          "name": "interactive txn with changed read set not retried",
+          "kind": "integration",
+          "command": "cargo test -p dscore-server --test txn -- interactive_readset_changed_no_retry",
+          "covers": [
+            "REQ-0015#AC1"
+          ]
+        },
+        {
+          "story": "STORY-0006",
+          "id": "E4",
+          "name": "jepsen with internal retry",
+          "kind": "e2e",
+          "command": "cargo run -p dscore-harness --release -- jepsen --workload register --internal-retry on --duration 1h --check lost-update,serializable",
+          "covers": [
+            "REQ-0015#AC2"
+          ]
+        },
+        {
+          "story": "STORY-0007",
+          "id": "E1",
+          "name": "node and edge round-trip",
+          "kind": "integration",
+          "command": "cargo test -p dscore-server --test graph_model -- node_edge_roundtrip",
+          "covers": [
+            "REQ-0006#AC1",
+            "REQ-0007#AC1",
+            "REQ-0007#AC2",
+            "REQ-0010#AC1"
+          ]
+        },
+        {
+          "story": "STORY-0007",
+          "id": "E2",
+          "name": "jepsen one-sided edge check",
+          "kind": "e2e",
+          "command": "cargo run -p dscore-harness --release -- jepsen --workload edges --duration 1h --check bidirectional",
+          "covers": [
+            "REQ-0010#AC2"
+          ]
+        },
+        {
+          "story": "STORY-0007",
+          "id": "E3",
+          "name": "duplicate node id rejected",
+          "kind": "integration",
+          "command": "cargo test -p dscore-server --test graph_model -- duplicate_node_id_rejected",
+          "covers": [
+            "REQ-0006#AC2"
+          ]
+        },
+        {
+          "story": "STORY-0008",
+          "id": "E1",
+          "name": "typed values, duplicates, schemaless",
+          "kind": "integration",
+          "command": "cargo test -p dscore-server --test graph_model -- typed_values duplicate_keys schemaless",
+          "covers": [
+            "REQ-0008#AC1",
+            "REQ-0009#AC1",
+            "REQ-0009#AC2",
+            "REQ-0011#AC1"
+          ]
+        },
+        {
+          "story": "STORY-0008",
+          "id": "E2",
+          "name": "size limit boundary and live reconfiguration",
+          "kind": "integration",
+          "command": "cargo test -p dscore-server --test limits -- size_16mib_accepted_16mib_plus_1_rejected live_reconfigure",
+          "covers": [
+            "REQ-0013#AC1",
+            "REQ-0013#AC2"
+          ]
+        },
+        {
+          "story": "STORY-0008",
+          "id": "E3",
+          "name": "max-size documents under write load",
+          "kind": "performance",
+          "command": "cargo run -p dscore-harness --release -- limits doc-size --size-mib 16 --workload write-heavy --assert-no-oom --assert-p99-write-ms 200",
+          "covers": [
+            "REQ-0013#AC1"
+          ]
+        },
+        {
+          "story": "STORY-0010",
+          "id": "E1",
+          "name": "matrix completeness vs ISO/IEC 39075",
+          "kind": "static",
+          "command": "scripts/gql/check-matrix.py docs/gql-conformance.toml --against spec/iso39075-features.txt --require-status",
+          "covers": [
+            "REQ-0003#AC1"
+          ]
+        },
+        {
+          "story": "STORY-0010",
+          "id": "E2",
+          "name": "GQL conformance suite",
+          "kind": "contract",
+          "command": "cargo test -p dscore-server --test gql_conformance -- --matrix docs/gql-conformance.toml",
+          "covers": [
+            "REQ-0003#AC2"
+          ]
+        },
+        {
+          "story": "STORY-0010",
+          "id": "E3",
+          "name": "unsupported and non-GQL syntax rejected with feature-named error",
+          "kind": "contract",
+          "command": "cargo test -p dscore-server --test gql_negative -- unsupported_feature_named sql_input_rejected",
+          "covers": [
+            "REQ-0003#AC3"
+          ]
+        },
+        {
+          "story": "STORY-0012",
+          "id": "E1",
+          "name": "YCSB A/B/C/F over GQL",
+          "kind": "performance",
+          "command": "cargo run -p dscore-harness --release -- ycsb --workloads A,B,C,F --target-util 0.7 --duration 30m --assert-p99-read-ms 10 --assert-p99-write-ms 20",
+          "covers": [
+            "REQ-0022#AC1",
+            "REQ-0022#AC2"
+          ]
+        },
+        {
+          "story": "STORY-0012",
+          "id": "E2",
+          "name": "one-hop single-shard locality (10,000 edges)",
+          "kind": "performance",
+          "command": "cargo run -p dscore-harness --release -- onehop --edges 10000 --trace --assert-single-shard",
+          "covers": [
+            "REQ-0023#AC1"
+          ]
+        },
+        {
+          "story": "STORY-0012",
+          "id": "E3",
+          "name": "one-hop p99 latency under load (<=1,000 edges)",
+          "kind": "performance",
+          "command": "cargo run -p dscore-harness --release -- onehop --max-edges 1000 --target-util 0.7 --duration 30m --assert-p99-ms 20",
+          "covers": [
+            "REQ-0023#AC2"
+          ]
+        },
+        {
+          "story": "STORY-0017",
+          "id": "E1",
+          "name": "destroy-and-restore RPO, recent and near window edge",
+          "kind": "e2e",
+          "command": "cargo run -p dscore-harness --release -- dr pitr --destroy-cluster --target-age 1h,6d23h --assert-rpo-mins 5",
+          "covers": [
+            "REQ-0020#AC1"
+          ]
+        },
+        {
+          "story": "STORY-0017",
+          "id": "E2",
+          "name": "restore throughput vs RTO formula",
+          "kind": "e2e",
+          "command": "cargo run -p dscore-harness --release -- dr restore-throughput --assert-rto-model-error 0.20",
+          "covers": [
+            "REQ-0020#AC2"
+          ]
+        },
+        {
+          "story": "STORY-0018",
+          "id": "E1",
+          "name": "raw decrypted scan after compaction",
+          "kind": "e2e",
+          "command": "cargo run -p dscore-harness --release -- erasure --simulate-days 30 --scan data,wal,analytics --reader decrypting --assert-absent",
+          "covers": [
+            "REQ-0012#AC1"
+          ]
+        },
+        {
+          "story": "STORY-0018",
+          "id": "E2",
+          "name": "backup key destruction proof",
+          "kind": "e2e",
+          "command": "cargo run -p dscore-harness --release -- erasure --simulate-days 30 --scan backups --assert-subject-key-destroyed --assert-decrypt-fails",
+          "covers": [
+            "REQ-0012#AC2"
+          ]
+        },
+        {
+          "story": "STORY-0023",
+          "id": "E1",
+          "name": "RBAC deny matrix (operation x role x graph)",
+          "kind": "security",
+          "command": "cargo test -p dscore-server --test security -- rbac_full_matrix",
+          "covers": [
+            "REQ-0038#AC1"
+          ]
+        },
+        {
+          "story": "STORY-0023",
+          "id": "E2",
+          "name": "role privileges documented",
+          "kind": "static",
+          "command": "scripts/security/check-roles-doc.py docs/security/roles.md --against server/src/auth/roles.rs",
+          "covers": [
+            "REQ-0038#AC2"
+          ]
+        },
+        {
+          "story": "STORY-0025",
+          "id": "E1",
+          "name": "audit coverage, latency and redaction",
+          "kind": "security",
+          "command": "cargo test -p dscore-server --test audit -- event_coverage_5s no_property_values",
+          "covers": [
+            "REQ-0040#AC1",
+            "REQ-0040#AC2"
+          ]
+        },
+        {
+          "story": "STORY-0025",
+          "id": "E2",
+          "name": "append-only tamper rejection and external sink export",
+          "kind": "security",
+          "command": "cargo test -p dscore-server --test audit -- tamper_rejected otlp_sink_export",
+          "covers": [
+            "REQ-0040#AC1"
+          ]
+        },
+        {
+          "story": "STORY-0027",
+          "id": "E1",
+          "name": "analytics lag units",
+          "kind": "integration",
+          "command": "cargo test -p dscore-server --test telemetry -- analytics_lag_units",
+          "covers": [
+            "REQ-0034#AC2"
+          ]
+        },
+        {
+          "story": "STORY-0027",
+          "id": "E2",
+          "name": "metrics and spans from every node",
+          "kind": "e2e",
+          "command": "cargo run -p dscore-harness --release -- telemetry --nodes 3 --collector otel --assert-metrics-every 15s --assert-spans",
+          "covers": [
+            "REQ-0034#AC1"
+          ]
+        },
+        {
+          "story": "STORY-0029",
+          "id": "E1",
+          "name": "cluster lifecycle on 3 K8s versions with harness assertions",
+          "kind": "e2e",
+          "command": "make -C operator e2e K8S_VERSIONS=latest3 TESTS='TestCreateReady10m TestScale3to5 TestRollingUpgrade' HARNESS_ASSERT='zero-errors,upgrade-no-failed-interval,upgrade-p99-factor=1.5'",
+          "covers": [
+            "REQ-0042#AC1",
+            "REQ-0042#AC2",
+            "REQ-0042#AC3"
+          ]
+        },
+        {
+          "story": "STORY-0031",
+          "id": "E1",
+          "name": "registry publish dry-run",
+          "kind": "smoke",
+          "command": "make -C drivers publish-dry-run REGISTRIES=maven,pypi,gomod,npm,nuget,crates",
+          "covers": [
+            "REQ-0043#AC2"
+          ]
+        },
+        {
+          "story": "STORY-0031",
+          "id": "E2",
+          "name": "post-release registry version check",
+          "kind": "smoke",
+          "command": "make -C drivers verify-published VERSION=$RELEASE_VERSION REGISTRIES=maven,pypi,gomod,npm,nuget,crates",
+          "covers": [
+            "REQ-0043#AC2"
+          ]
+        },
+        {
+          "story": "STORY-0032",
+          "id": "E1",
+          "name": "import throughput",
+          "kind": "performance",
+          "command": "cargo run -p dscore-harness --release -- import-bench --nodes 100000000 --edges 500000000 --cluster 3 --assert-rate 50000",
+          "covers": [
+            "REQ-0044#AC1"
+          ]
+        },
+        {
+          "story": "STORY-0032",
+          "id": "E2",
+          "name": "reject file",
+          "kind": "integration",
+          "command": "cargo test -p dscore-importer --test import -- reject_file",
+          "covers": [
+            "REQ-0044#AC2"
+          ]
+        },
+        {
+          "story": "STORY-0032",
+          "id": "E3",
+          "name": "resume after node failure on 3-node cluster",
+          "kind": "e2e",
+          "command": "cargo run -p dscore-harness --release -- import-resume --cluster 3 --kill-node mid-import --assert-no-duplicates",
+          "covers": [
+            "REQ-0044#AC3"
+          ]
+        },
+        {
+          "story": "STORY-0036",
+          "id": "E1",
+          "name": "language and unsafe policy",
+          "kind": "static",
+          "command": "scripts/ci/rust-policy.sh --forbid-langs c,cpp,go --require-safety-comments --report-unsafe-count",
+          "covers": [
+            "REQ-0048#AC1",
+            "REQ-0048#AC2"
+          ]
+        },
+        {
+          "story": "STORY-0036",
+          "id": "E2",
+          "name": "native allow-list incl. build-script links",
+          "kind": "static",
+          "command": "cargo deny check && scripts/ci/ffi-allowlist.sh deny.native.toml --link-audit rustc-link-lib,readelf --negative-fixture tests/fixtures/unlisted-native --require owner,purpose,licence,version,reviewed",
+          "covers": [
+            "REQ-0049#AC1",
+            "REQ-0049#AC2"
+          ]
+        }
+      ],
+      "components": [
+        "drivers",
+        "importer",
+        "operator",
+        "server"
+      ],
+      "in_progress_work": []
+    }
+  }
+}
