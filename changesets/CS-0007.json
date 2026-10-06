@@ -1,0 +1,587 @@
+{
+  "id": "CS-0007",
+  "title": "DS-CORE: start first tasks and set project snapshot",
+  "summary": "Marks TASK-0001 (Rust workspace), TASK-0003 (Raft/range design), TASK-0009 (transaction protocol design) and TASK-0015 (GQL conformance scope) in progress with their stories, and writes the first state/HOT.md.",
+  "rationale": "PO asked to start tasks after the traceability review fixes (CS-0006) were applied. These four have no unmet dependencies and sit on the critical path.",
+  "status": "pending",
+  "created": "2026-10-06T14:08:20+00:00",
+  "valid": true,
+  "ops": [
+    {
+      "op": "update",
+      "id": "TASK-0001",
+      "patch": {
+        "status": "in-progress"
+      },
+      "reason": "Start: no dependencies; unblocks most code tasks."
+    },
+    {
+      "op": "update",
+      "id": "TASK-0003",
+      "patch": {
+        "status": "in-progress"
+      },
+      "reason": "Start: critical-path design (Raft library, placement, key layout)."
+    },
+    {
+      "op": "update",
+      "id": "TASK-0009",
+      "patch": {
+        "status": "in-progress"
+      },
+      "reason": "Start: decides timestamp source (TSO vs HLC)."
+    },
+    {
+      "op": "update",
+      "id": "TASK-0015",
+      "patch": {
+        "status": "in-progress"
+      },
+      "reason": "Start: GQL scope gates parser and protocol work."
+    },
+    {
+      "op": "update",
+      "id": "STORY-0036",
+      "patch": {
+        "status": "in-progress"
+      },
+      "reason": "Has an in-progress task (TASK-0001)."
+    },
+    {
+      "op": "update",
+      "id": "STORY-0001",
+      "patch": {
+        "status": "in-progress"
+      },
+      "reason": "Has an in-progress task (TASK-0003)."
+    },
+    {
+      "op": "update",
+      "id": "STORY-0005",
+      "patch": {
+        "status": "in-progress"
+      },
+      "reason": "Has an in-progress task (TASK-0009)."
+    },
+    {
+      "op": "update",
+      "id": "STORY-0010",
+      "patch": {
+        "status": "in-progress"
+      },
+      "reason": "Has an in-progress task (TASK-0015)."
+    },
+    {
+      "op": "snapshot",
+      "content": "# DS-CORE project state\n\n## Now\n- Baseline approved: 49 requirements (REQ-0001..0049), 11 decisions (DEC-0001..0011), 17 research findings (RF-0001..0017).\n- Plan in place: 5 components, 11 epics, 36 stories, 48 tasks, 70 evals; trace gate PASS (100% requirement and criteria coverage).\n- Semantic trace review 2026-10-06 scored 0.81; all 15 weak eval links fixed in CS-0006.\n- In progress: TASK-0001 Rust workspace and CI skeleton; TASK-0003 Raft/range design; TASK-0009 transaction protocol design; TASK-0015 GQL conformance scope.\n- No code repository exists yet; component paths (server/, importer/, harness/, operator/, drivers/) are placeholders and verification shows 0/94 criteria verified.\n\n## Next\n- Create the code repository and run TASK-0001: Cargo.toml workspace with server/, importer/, harness/ and rust-toolchain.toml; then point COMP-0001..0005 at the real paths.\n\n## Watch\n- Open decisions to record as DECs: transaction timestamp source TSO vs HLC (TASK-0009), client transport (TASK-0017), how a query is marked analytical (TASK-0024), operator language (assumed Go), minimum Linux kernel/glibc and Rust MSRV.\n- PO-unconfirmed thresholds: failover 10 s, 99.99% availability, RPO 5 min / 7-day PITR, 10% HTAP degradation, 30-day erasure, 16 MiB property limit, one-hop 20 ms, 10M-edge supernodes, import 50k elements/s, operator ready in 10 min.\n- Five findings graded THIN (RF-0009, RF-0010, RF-0015, RF-0016, RF-0017) need re-verification before external commitments.\n- Coverage waivers for 6 non-applicable taxonomy cells are not yet in reqforge.json.\n- Jepsen-style and 30-minute performance evals should run nightly, not per commit, when /reqforge:cicd generates the pipeline.\n\nLast reconciled: 2026-10-06\n",
+      "reason": "First project snapshot."
+    }
+  ],
+  "impact_notes": {
+    "stories": "STORY-0001, 0005, 0010 and 0036 move to in-progress; scope unchanged.",
+    "code": "No code exists yet; TASK-0001 creates the Rust workspace.",
+    "evals": "No eval changes.",
+    "risks": [
+      "Design tasks TASK-0003/0009/0015 should each end with a DEC record so later code traces to the decisions."
+    ]
+  },
+  "base_versions": {
+    "TASK-0001": 1,
+    "TASK-0003": 1,
+    "TASK-0009": 1,
+    "TASK-0015": 1,
+    "STORY-0036": 2,
+    "STORY-0001": 2,
+    "STORY-0005": 1,
+    "STORY-0010": 2,
+    "state/HOT.md": "absent"
+  },
+  "analysis": {
+    "valid": true,
+    "errors": [],
+    "ops": [
+      {
+        "i": 0,
+        "op": "update",
+        "kind": "tasks",
+        "id": "TASK-0001",
+        "title": "Set up Rust workspace and CI skeleton",
+        "reason": "Start: no dependencies; unblocks most code tasks.",
+        "changes": {
+          "status": [
+            "todo",
+            "in-progress"
+          ]
+        },
+        "base_version": 1
+      },
+      {
+        "i": 1,
+        "op": "update",
+        "kind": "tasks",
+        "id": "TASK-0003",
+        "title": "Design range/Raft architecture and key layout",
+        "reason": "Start: critical-path design (Raft library, placement, key layout).",
+        "changes": {
+          "status": [
+            "todo",
+            "in-progress"
+          ]
+        },
+        "base_version": 1
+      },
+      {
+        "i": 2,
+        "op": "update",
+        "kind": "tasks",
+        "id": "TASK-0009",
+        "title": "Design serializable transaction protocol",
+        "reason": "Start: decides timestamp source (TSO vs HLC).",
+        "changes": {
+          "status": [
+            "todo",
+            "in-progress"
+          ]
+        },
+        "base_version": 1
+      },
+      {
+        "i": 3,
+        "op": "update",
+        "kind": "tasks",
+        "id": "TASK-0015",
+        "title": "Scope GQL conformance and choose parser approach",
+        "reason": "Start: GQL scope gates parser and protocol work.",
+        "changes": {
+          "status": [
+            "todo",
+            "in-progress"
+          ]
+        },
+        "base_version": 1
+      },
+      {
+        "i": 4,
+        "op": "update",
+        "kind": "stories",
+        "id": "STORY-0036",
+        "title": "Rust toolchain, unsafe policy and native allow-list gates",
+        "reason": "Has an in-progress task (TASK-0001).",
+        "changes": {
+          "status": [
+            "todo",
+            "in-progress"
+          ]
+        },
+        "base_version": 2
+      },
+      {
+        "i": 5,
+        "op": "update",
+        "kind": "stories",
+        "id": "STORY-0001",
+        "title": "Raft group per range with AZ-aware placement and durable commit",
+        "reason": "Has an in-progress task (TASK-0003).",
+        "changes": {
+          "status": [
+            "todo",
+            "in-progress"
+          ]
+        },
+        "base_version": 2
+      },
+      {
+        "i": 6,
+        "op": "update",
+        "kind": "stories",
+        "id": "STORY-0005",
+        "title": "Serializable cross-shard transaction protocol",
+        "reason": "Has an in-progress task (TASK-0009).",
+        "changes": {
+          "status": [
+            "todo",
+            "in-progress"
+          ]
+        },
+        "base_version": 1
+      },
+      {
+        "i": 7,
+        "op": "update",
+        "kind": "stories",
+        "id": "STORY-0010",
+        "title": "GQL parser, planner and conformance matrix",
+        "reason": "Has an in-progress task (TASK-0015).",
+        "changes": {
+          "status": [
+            "todo",
+            "in-progress"
+          ]
+        },
+        "base_version": 2
+      },
+      {
+        "i": 8,
+        "op": "snapshot",
+        "kind": "snapshot",
+        "id": "state/HOT.md",
+        "reason": "First project snapshot.",
+        "bytes": 1731,
+        "last_reconciled": "2026-10-06",
+        "diff": [
+          {
+            "t": "+",
+            "line": "# DS-CORE project state"
+          },
+          {
+            "t": "+",
+            "line": ""
+          },
+          {
+            "t": "+",
+            "line": "## Now"
+          },
+          {
+            "t": "+",
+            "line": "- Baseline approved: 49 requirements (REQ-0001..0049), 11 decisions (DEC-0001..0011), 17 research findings (RF-0001..0017)."
+          },
+          {
+            "t": "+",
+            "line": "- Plan in place: 5 components, 11 epics, 36 stories, 48 tasks, 70 evals; trace gate PASS (100% requirement and criteria coverage)."
+          },
+          {
+            "t": "+",
+            "line": "- Semantic trace review 2026-10-06 scored 0.81; all 15 weak eval links fixed in CS-0006."
+          },
+          {
+            "t": "+",
+            "line": "- In progress: TASK-0001 Rust workspace and CI skeleton; TASK-0003 Raft/range design; TASK-0009 transaction protocol design; TASK-0015 GQL conformance scope."
+          },
+          {
+            "t": "+",
+            "line": "- No code repository exists yet; component paths (server/, importer/, harness/, operator/, drivers/) are placeholders and verification shows 0/94 criteria verified."
+          },
+          {
+            "t": "+",
+            "line": ""
+          },
+          {
+            "t": "+",
+            "line": "## Next"
+          },
+          {
+            "t": "+",
+            "line": "- Create the code repository and run TASK-0001: Cargo.toml workspace with server/, importer/, harness/ and rust-toolchain.toml; then point COMP-0001..0005 at the real paths."
+          },
+          {
+            "t": "+",
+            "line": ""
+          },
+          {
+            "t": "+",
+            "line": "## Watch"
+          },
+          {
+            "t": "+",
+            "line": "- Open decisions to record as DECs: transaction timestamp source TSO vs HLC (TASK-0009), client transport (TASK-0017), how a query is marked analytical (TASK-0024), operator language (assumed Go), minimum Linux kernel/glibc and Rust MSRV."
+          },
+          {
+            "t": "+",
+            "line": "- PO-unconfirmed thresholds: failover 10 s, 99.99% availability, RPO 5 min / 7-day PITR, 10% HTAP degradation, 30-day erasure, 16 MiB property limit, one-hop 20 ms, 10M-edge supernodes, import 50k elements/s, operator ready in 10 min."
+          },
+          {
+            "t": "+",
+            "line": "- Five findings graded THIN (RF-0009, RF-0010, RF-0015, RF-0016, RF-0017) need re-verification before external commitments."
+          },
+          {
+            "t": "+",
+            "line": "- Coverage waivers for 6 non-applicable taxonomy cells are not yet in reqforge.json."
+          },
+          {
+            "t": "+",
+            "line": "- Jepsen-style and 30-minute performance evals should run nightly, not per commit, when /reqforge:cicd generates the pipeline."
+          },
+          {
+            "t": "+",
+            "line": ""
+          },
+          {
+            "t": "+",
+            "line": "Last reconciled: 2026-10-06"
+          }
+        ],
+        "base_version": "absent"
+      }
+    ],
+    "refmap": {},
+    "lint": {
+      "before": {
+        "error": 0,
+        "warning": 6,
+        "info": 0
+      },
+      "after": {
+        "error": 0,
+        "warning": 6,
+        "info": 0
+      },
+      "new": [],
+      "resolved": [],
+      "gaps_before": 6,
+      "gaps_after": 6,
+      "mece_ok": true
+    },
+    "trace": {
+      "ok_before": true,
+      "ok_after": true,
+      "metrics_before": {
+        "requirements": 49,
+        "active": 49,
+        "epics": 11,
+        "stories": 36,
+        "tasks": 48,
+        "evals": 70,
+        "requirement_coverage": 1.0,
+        "criteria_coverage": 1.0
+      },
+      "metrics_after": {
+        "requirements": 49,
+        "active": 49,
+        "epics": 11,
+        "stories": 36,
+        "tasks": 48,
+        "evals": 70,
+        "requirement_coverage": 1.0,
+        "criteria_coverage": 1.0
+      },
+      "delta": []
+    },
+    "impact": {
+      "requirements": [],
+      "children": [],
+      "stories": [
+        {
+          "id": "STORY-0001",
+          "title": "Raft group per range with AZ-aware placement and durable commit",
+          "status": "in-progress",
+          "component": "server",
+          "via": []
+        },
+        {
+          "id": "STORY-0005",
+          "title": "Serializable cross-shard transaction protocol",
+          "status": "in-progress",
+          "component": "server",
+          "via": []
+        },
+        {
+          "id": "STORY-0010",
+          "title": "GQL parser, planner and conformance matrix",
+          "status": "in-progress",
+          "component": "server",
+          "via": []
+        },
+        {
+          "id": "STORY-0036",
+          "title": "Rust toolchain, unsafe policy and native allow-list gates",
+          "status": "in-progress",
+          "component": "server",
+          "via": []
+        }
+      ],
+      "tasks": [
+        {
+          "id": "TASK-0001",
+          "title": "Set up Rust workspace and CI skeleton",
+          "kind": "code",
+          "status": "in-progress",
+          "story": "STORY-0036"
+        },
+        {
+          "id": "TASK-0002",
+          "title": "Add rust-policy and FFI allow-list CI gates",
+          "kind": "code",
+          "status": "todo",
+          "story": "STORY-0036"
+        },
+        {
+          "id": "TASK-0003",
+          "title": "Design range/Raft architecture and key layout",
+          "kind": "design",
+          "status": "in-progress",
+          "story": "STORY-0001"
+        },
+        {
+          "id": "TASK-0004",
+          "title": "Implement Raft group per range on RocksDB",
+          "kind": "code",
+          "status": "todo",
+          "story": "STORY-0001"
+        },
+        {
+          "id": "TASK-0005",
+          "title": "Build fault-injection and Jepsen-style harness",
+          "kind": "code",
+          "status": "todo",
+          "story": "STORY-0001"
+        },
+        {
+          "id": "TASK-0009",
+          "title": "Design serializable transaction protocol",
+          "kind": "design",
+          "status": "in-progress",
+          "story": "STORY-0005"
+        },
+        {
+          "id": "TASK-0010",
+          "title": "Implement transaction coordinator and conflict detection",
+          "kind": "code",
+          "status": "todo",
+          "story": "STORY-0005"
+        },
+        {
+          "id": "TASK-0015",
+          "title": "Scope GQL conformance and choose parser approach",
+          "kind": "design",
+          "status": "in-progress",
+          "story": "STORY-0010"
+        },
+        {
+          "id": "TASK-0016",
+          "title": "Implement GQL parser, binder and planner",
+          "kind": "code",
+          "status": "todo",
+          "story": "STORY-0010"
+        }
+      ],
+      "evals": [
+        {
+          "story": "STORY-0001",
+          "id": "E1",
+          "name": "voter count and AZ placement",
+          "kind": "integration",
+          "command": "cargo test -p dscore-server --test raft -- placement",
+          "covers": [
+            "REQ-0001#AC1",
+            "REQ-0001#AC2"
+          ]
+        },
+        {
+          "story": "STORY-0001",
+          "id": "E2",
+          "name": "power-loss durability",
+          "kind": "e2e",
+          "command": "cargo run -p dscore-harness --release -- fault power-cut --trials 1000 --assert-zero-loss",
+          "covers": [
+            "REQ-0016#AC1"
+          ]
+        },
+        {
+          "story": "STORY-0001",
+          "id": "E3",
+          "name": "no ack with one voter plus learners",
+          "kind": "integration",
+          "command": "cargo test -p dscore-server --test raft -- partition_one_voter_plus_learners_no_ack",
+          "covers": [
+            "REQ-0016#AC2"
+          ]
+        },
+        {
+          "story": "STORY-0005",
+          "id": "E1",
+          "name": "isolation cannot be lowered",
+          "kind": "integration",
+          "command": "cargo test -p dscore-server --test txn -- isolation_locked",
+          "covers": [
+            "REQ-0014#AC1"
+          ]
+        },
+        {
+          "story": "STORY-0005",
+          "id": "E2",
+          "name": "jepsen serializability (Elle)",
+          "kind": "e2e",
+          "command": "cargo run -p dscore-harness --release -- jepsen --workload list-append --nemesis partition,crash,clock,membership,split --duration 1h --check serializable",
+          "covers": [
+            "REQ-0014#AC2"
+          ]
+        },
+        {
+          "story": "STORY-0005",
+          "id": "E3",
+          "name": "coordinator crash atomicity",
+          "kind": "integration",
+          "command": "cargo test -p dscore-server --test txn -- coordinator_crash_atomic",
+          "covers": [
+            "REQ-0028#AC1"
+          ]
+        },
+        {
+          "story": "STORY-0010",
+          "id": "E1",
+          "name": "matrix completeness vs ISO/IEC 39075",
+          "kind": "static",
+          "command": "scripts/gql/check-matrix.py docs/gql-conformance.toml --against spec/iso39075-features.txt --require-status",
+          "covers": [
+            "REQ-0003#AC1"
+          ]
+        },
+        {
+          "story": "STORY-0010",
+          "id": "E2",
+          "name": "GQL conformance suite",
+          "kind": "contract",
+          "command": "cargo test -p dscore-server --test gql_conformance -- --matrix docs/gql-conformance.toml",
+          "covers": [
+            "REQ-0003#AC2"
+          ]
+        },
+        {
+          "story": "STORY-0010",
+          "id": "E3",
+          "name": "unsupported and non-GQL syntax rejected with feature-named error",
+          "kind": "contract",
+          "command": "cargo test -p dscore-server --test gql_negative -- unsupported_feature_named sql_input_rejected",
+          "covers": [
+            "REQ-0003#AC3"
+          ]
+        },
+        {
+          "story": "STORY-0036",
+          "id": "E1",
+          "name": "language and unsafe policy",
+          "kind": "static",
+          "command": "scripts/ci/rust-policy.sh --forbid-langs c,cpp,go --require-safety-comments --report-unsafe-count",
+          "covers": [
+            "REQ-0048#AC1",
+            "REQ-0048#AC2"
+          ]
+        },
+        {
+          "story": "STORY-0036",
+          "id": "E2",
+          "name": "native allow-list incl. build-script links",
+          "kind": "static",
+          "command": "cargo deny check && scripts/ci/ffi-allowlist.sh deny.native.toml --link-audit rustc-link-lib,readelf --negative-fixture tests/fixtures/unlisted-native --require owner,purpose,licence,version,reviewed",
+          "covers": [
+            "REQ-0049#AC1",
+            "REQ-0049#AC2"
+          ]
+        }
+      ],
+      "components": [
+        "server"
+      ],
+      "in_progress_work": [
+        "TASK-0001",
+        "TASK-0003",
+        "TASK-0009",
+        "TASK-0015",
+        "STORY-0001",
+        "STORY-0005",
+        "STORY-0010",
+        "STORY-0036"
+      ]
+    }
+  }
+}
