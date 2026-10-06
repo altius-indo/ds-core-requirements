@@ -1,0 +1,16 @@
+{
+  "id": "DEC-0011",
+  "title": "Rust implementation with reviewed native allow-list",
+  "context": "Implementation language for DS-CORE; scope options were server only, server plus tools, or everything; FFI options were allow-list, pure Rust, or crypto-only.",
+  "decision": "Server engine and server-side tools (storage, Raft, GQL engine, CLI, bulk importer) are written in Rust. The Kubernetes operator and non-Rust drivers are excluded. Native C/C++ libraries may be linked only from a version-pinned, reviewed allow-list (candidates: RocksDB, aws-lc).",
+  "status": "accepted",
+  "requirements": [
+    "REQ-0048",
+    "REQ-0049"
+  ],
+  "accepted_at": "2026-10-05",
+  "tags": [],
+  "version": 1,
+  "created": "2026-10-06T04:59:32+00:00",
+  "updated": "2026-10-06T04:59:32+00:00"
+}

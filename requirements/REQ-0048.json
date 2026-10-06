@@ -1,0 +1,31 @@
+{
+  "id": "REQ-0048",
+  "title": "Rust for server and server-side tools",
+  "statement": "The system shall implement its server engine (storage, Raft replication, GQL engine) and server-side tools (CLI, bulk importer) in Rust.",
+  "type": "constraint",
+  "category": "technology",
+  "priority": "must",
+  "status": "proposed",
+  "rationale": "PO decision: Rust for memory safety and performance. The Kubernetes operator and the non-Rust client drivers are out of scope of this constraint.",
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "text": "All first-party source in the server, CLI and importer repositories is Rust, built with a pinned stable Rust toolchain and cargo; CI fails if first-party C, C++ or Go source is added there."
+    },
+    {
+      "id": "AC2",
+      "text": "Each first-party `unsafe` block carries a SAFETY comment, and CI reports the count of unsafe blocks per release."
+    }
+  ],
+  "tags": [
+    "rust",
+    "platform"
+  ],
+  "standards": [],
+  "stakeholders": [],
+  "source": "PO elicitation 2026-10-05",
+  "notes": "Open: minimum supported Rust version (MSRV) policy.",
+  "version": 1,
+  "created": "2026-10-06T04:59:32+00:00",
+  "updated": "2026-10-06T04:59:32+00:00"
+}

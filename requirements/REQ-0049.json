@@ -1,0 +1,32 @@
+{
+  "id": "REQ-0049",
+  "title": "Native-library allow-list",
+  "statement": "The system shall link native C/C++ libraries into Rust server components only if each library is on an approved, version-pinned allow-list.",
+  "type": "constraint",
+  "category": "technology",
+  "priority": "must",
+  "status": "proposed",
+  "rationale": "PO decision: FFI is permitted for proven dependencies (e.g. RocksDB for storage, aws-lc for FIPS-ready crypto), reviewed per dependency.",
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "text": "A CI check (e.g. cargo-deny plus a build-script/linker audit) fails the build when a native library not on the allow-list, or at an unpinned version, is linked."
+    },
+    {
+      "id": "AC2",
+      "text": "Each allow-list entry records owner, purpose, licence, pinned version and review date."
+    }
+  ],
+  "parent": "REQ-0048",
+  "tags": [
+    "rust",
+    "dependencies",
+    "supply-chain"
+  ],
+  "standards": [],
+  "stakeholders": [],
+  "source": "PO elicitation 2026-10-05",
+  "version": 1,
+  "created": "2026-10-06T04:59:32+00:00",
+  "updated": "2026-10-06T04:59:32+00:00"
+}

@@ -3,7 +3,7 @@
   "title": "DS-CORE: Rust implementation language and native-library allow-list",
   "summary": "Adds two technology constraints: server engine and server-side tools are written in Rust; native C/C++ libraries may be linked only from an approved allow-list.",
   "rationale": "PO decisions 2026-10-05: Rust for storage, Raft, GQL engine, CLI and bulk importer (operator and non-Rust drivers excluded); FFI allowed for reviewed dependencies such as RocksDB and aws-lc.",
-  "status": "pending",
+  "status": "applied",
   "created": "2026-10-06T04:59:16+00:00",
   "valid": true,
   "ops": [
@@ -280,5 +280,12 @@
       "components": [],
       "in_progress_work": []
     }
+  },
+  "applied_at": "2026-10-06T04:59:32+00:00",
+  "excluded_ops": [],
+  "assigned_ids": {
+    "r_rust": "REQ-0048",
+    "r_ffi": "REQ-0049",
+    "d_rust": "DEC-0011"
   }
 }
