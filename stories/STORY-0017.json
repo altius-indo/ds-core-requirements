@@ -12,9 +12,9 @@
   "evals": [
     {
       "id": "E1",
-      "name": "destroy-and-restore RPO",
+      "name": "destroy-and-restore RPO, recent and near window edge",
       "kind": "e2e",
-      "command": "cargo run -p dscore-harness --release -- dr pitr --destroy-cluster --assert-rpo-mins 5",
+      "command": "cargo run -p dscore-harness --release -- dr pitr --destroy-cluster --target-age 1h,6d23h --assert-rpo-mins 5",
       "covers": [
         "REQ-0020#AC1"
       ]
@@ -32,7 +32,7 @@
   "status": "todo",
   "points": 13,
   "tags": [],
-  "version": 1,
+  "version": 2,
   "created": "2026-10-06T13:58:30+00:00",
-  "updated": "2026-10-06T13:58:30+00:00"
+  "updated": "2026-10-06T14:06:38+00:00"
 }

@@ -12,11 +12,19 @@
   "evals": [
     {
       "id": "E1",
-      "name": "byte-scan after compaction and key destruction",
+      "name": "raw decrypted scan after compaction",
       "kind": "e2e",
-      "command": "cargo run -p dscore-harness --release -- erasure --simulate-days 30 --scan data,wal,analytics,backups",
+      "command": "cargo run -p dscore-harness --release -- erasure --simulate-days 30 --scan data,wal,analytics --reader decrypting --assert-absent",
       "covers": [
-        "REQ-0012#AC1",
+        "REQ-0012#AC1"
+      ]
+    },
+    {
+      "id": "E2",
+      "name": "backup key destruction proof",
+      "kind": "e2e",
+      "command": "cargo run -p dscore-harness --release -- erasure --simulate-days 30 --scan backups --assert-subject-key-destroyed --assert-decrypt-fails",
+      "covers": [
         "REQ-0012#AC2"
       ]
     }
@@ -24,7 +32,7 @@
   "status": "todo",
   "points": 8,
   "tags": [],
-  "version": 1,
+  "version": 2,
   "created": "2026-10-06T13:58:30+00:00",
-  "updated": "2026-10-06T13:58:30+00:00"
+  "updated": "2026-10-06T14:06:38+00:00"
 }

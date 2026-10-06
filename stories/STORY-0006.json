@@ -13,20 +13,36 @@
   "evals": [
     {
       "id": "E1",
-      "name": "conflict error contract",
+      "name": "forced conflict returns conflict code",
       "kind": "integration",
-      "command": "cargo test -p dscore-server --test txn -- serialization_conflict_code",
+      "command": "cargo test -p dscore-server --test txn -- forced_write_write_conflict_code",
       "covers": [
-        "REQ-0005#AC1",
-        "REQ-0005#AC2",
-        "REQ-0015#AC1"
+        "REQ-0005#AC1"
       ]
     },
     {
       "id": "E2",
+      "name": "non-retryable failures never use conflict code",
+      "kind": "integration",
+      "command": "cargo test -p dscore-server --test txn -- syntax_permission_constraint_not_conflict",
+      "covers": [
+        "REQ-0005#AC2"
+      ]
+    },
+    {
+      "id": "E3",
+      "name": "interactive txn with changed read set not retried",
+      "kind": "integration",
+      "command": "cargo test -p dscore-server --test txn -- interactive_readset_changed_no_retry",
+      "covers": [
+        "REQ-0015#AC1"
+      ]
+    },
+    {
+      "id": "E4",
       "name": "jepsen with internal retry",
       "kind": "e2e",
-      "command": "cargo run -p dscore-harness --release -- jepsen --workload register --internal-retry on --duration 1h --check lost-update",
+      "command": "cargo run -p dscore-harness --release -- jepsen --workload register --internal-retry on --duration 1h --check lost-update,serializable",
       "covers": [
         "REQ-0015#AC2"
       ]
@@ -35,7 +51,7 @@
   "status": "todo",
   "points": 5,
   "tags": [],
-  "version": 1,
+  "version": 2,
   "created": "2026-10-06T13:58:30+00:00",
-  "updated": "2026-10-06T13:58:30+00:00"
+  "updated": "2026-10-06T14:06:38+00:00"
 }

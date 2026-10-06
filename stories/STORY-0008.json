@@ -27,19 +27,28 @@
     },
     {
       "id": "E2",
-      "name": "property size limit and live reconfiguration",
-      "kind": "performance",
-      "command": "cargo run -p dscore-harness --release -- limits doc-size --default-mib 16 --reconfigure-live",
+      "name": "size limit boundary and live reconfiguration",
+      "kind": "integration",
+      "command": "cargo test -p dscore-server --test limits -- size_16mib_accepted_16mib_plus_1_rejected live_reconfigure",
       "covers": [
         "REQ-0013#AC1",
         "REQ-0013#AC2"
+      ]
+    },
+    {
+      "id": "E3",
+      "name": "max-size documents under write load",
+      "kind": "performance",
+      "command": "cargo run -p dscore-harness --release -- limits doc-size --size-mib 16 --workload write-heavy --assert-no-oom --assert-p99-write-ms 200",
+      "covers": [
+        "REQ-0013#AC1"
       ]
     }
   ],
   "status": "todo",
   "points": 8,
   "tags": [],
-  "version": 1,
+  "version": 2,
   "created": "2026-10-06T13:58:30+00:00",
-  "updated": "2026-10-06T13:58:30+00:00"
+  "updated": "2026-10-06T14:06:38+00:00"
 }

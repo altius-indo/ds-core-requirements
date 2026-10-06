@@ -12,9 +12,9 @@
   "evals": [
     {
       "id": "E1",
-      "name": "cluster lifecycle on 3 K8s versions",
+      "name": "cluster lifecycle on 3 K8s versions with harness assertions",
       "kind": "e2e",
-      "command": "make -C operator e2e K8S_VERSIONS=latest3 TESTS='TestCreateReady10m TestScale3to5 TestRollingUpgrade'",
+      "command": "make -C operator e2e K8S_VERSIONS=latest3 TESTS='TestCreateReady10m TestScale3to5 TestRollingUpgrade' HARNESS_ASSERT='zero-errors,upgrade-no-failed-interval,upgrade-p99-factor=1.5'",
       "covers": [
         "REQ-0042#AC1",
         "REQ-0042#AC2",
@@ -25,7 +25,7 @@
   "status": "todo",
   "points": 13,
   "tags": [],
-  "version": 1,
+  "version": 2,
   "created": "2026-10-06T13:58:30+00:00",
-  "updated": "2026-10-06T13:58:30+00:00"
+  "updated": "2026-10-06T14:06:38+00:00"
 }

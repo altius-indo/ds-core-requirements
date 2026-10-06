@@ -23,11 +23,19 @@
     },
     {
       "id": "E2",
-      "name": "one-hop locality and latency",
+      "name": "one-hop single-shard locality (10,000 edges)",
       "kind": "performance",
-      "command": "cargo run -p dscore-harness --release -- onehop --max-edges 10000 --assert-single-shard --assert-p99-ms 20",
+      "command": "cargo run -p dscore-harness --release -- onehop --edges 10000 --trace --assert-single-shard",
       "covers": [
-        "REQ-0023#AC1",
+        "REQ-0023#AC1"
+      ]
+    },
+    {
+      "id": "E3",
+      "name": "one-hop p99 latency under load (<=1,000 edges)",
+      "kind": "performance",
+      "command": "cargo run -p dscore-harness --release -- onehop --max-edges 1000 --target-util 0.7 --duration 30m --assert-p99-ms 20",
+      "covers": [
         "REQ-0023#AC2"
       ]
     }
@@ -35,7 +43,7 @@
   "status": "todo",
   "points": 13,
   "tags": [],
-  "version": 1,
+  "version": 2,
   "created": "2026-10-06T13:58:30+00:00",
-  "updated": "2026-10-06T13:58:30+00:00"
+  "updated": "2026-10-06T14:06:38+00:00"
 }

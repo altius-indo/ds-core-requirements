@@ -19,12 +19,21 @@
         "REQ-0040#AC1",
         "REQ-0040#AC2"
       ]
+    },
+    {
+      "id": "E2",
+      "name": "append-only tamper rejection and external sink export",
+      "kind": "security",
+      "command": "cargo test -p dscore-server --test audit -- tamper_rejected otlp_sink_export",
+      "covers": [
+        "REQ-0040#AC1"
+      ]
     }
   ],
   "status": "todo",
   "points": 5,
   "tags": [],
-  "version": 1,
+  "version": 2,
   "created": "2026-10-06T13:58:30+00:00",
-  "updated": "2026-10-06T13:58:30+00:00"
+  "updated": "2026-10-06T14:06:38+00:00"
 }

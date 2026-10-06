@@ -12,12 +12,28 @@
   "evals": [
     {
       "id": "E1",
+      "name": "matrix completeness vs ISO/IEC 39075",
+      "kind": "static",
+      "command": "scripts/gql/check-matrix.py docs/gql-conformance.toml --against spec/iso39075-features.txt --require-status",
+      "covers": [
+        "REQ-0003#AC1"
+      ]
+    },
+    {
+      "id": "E2",
       "name": "GQL conformance suite",
       "kind": "contract",
       "command": "cargo test -p dscore-server --test gql_conformance -- --matrix docs/gql-conformance.toml",
       "covers": [
-        "REQ-0003#AC1",
-        "REQ-0003#AC2",
+        "REQ-0003#AC2"
+      ]
+    },
+    {
+      "id": "E3",
+      "name": "unsupported and non-GQL syntax rejected with feature-named error",
+      "kind": "contract",
+      "command": "cargo test -p dscore-server --test gql_negative -- unsupported_feature_named sql_input_rejected",
+      "covers": [
         "REQ-0003#AC3"
       ]
     }
@@ -25,7 +41,7 @@
   "status": "todo",
   "points": 21,
   "tags": [],
-  "version": 1,
+  "version": 2,
   "created": "2026-10-06T13:58:30+00:00",
-  "updated": "2026-10-06T13:58:30+00:00"
+  "updated": "2026-10-06T14:06:38+00:00"
 }

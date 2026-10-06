@@ -14,18 +14,26 @@
       "id": "E1",
       "name": "import throughput",
       "kind": "performance",
-      "command": "cargo run -p dscore-harness --release -- import-bench --nodes 100000000 --edges 500000000 --assert-rate 50000",
+      "command": "cargo run -p dscore-harness --release -- import-bench --nodes 100000000 --edges 500000000 --cluster 3 --assert-rate 50000",
       "covers": [
         "REQ-0044#AC1"
       ]
     },
     {
       "id": "E2",
-      "name": "reject file and resume",
+      "name": "reject file",
       "kind": "integration",
-      "command": "cargo test -p dscore-importer --test import -- reject_file resume_no_duplicates",
+      "command": "cargo test -p dscore-importer --test import -- reject_file",
       "covers": [
-        "REQ-0044#AC2",
+        "REQ-0044#AC2"
+      ]
+    },
+    {
+      "id": "E3",
+      "name": "resume after node failure on 3-node cluster",
+      "kind": "e2e",
+      "command": "cargo run -p dscore-harness --release -- import-resume --cluster 3 --kill-node mid-import --assert-no-duplicates",
+      "covers": [
         "REQ-0044#AC3"
       ]
     }
@@ -33,7 +41,7 @@
   "status": "todo",
   "points": 13,
   "tags": [],
-  "version": 1,
+  "version": 2,
   "created": "2026-10-06T13:58:30+00:00",
-  "updated": "2026-10-06T13:58:30+00:00"
+  "updated": "2026-10-06T14:06:38+00:00"
 }

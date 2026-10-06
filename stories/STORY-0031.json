@@ -12,18 +12,18 @@
   "evals": [
     {
       "id": "E1",
-      "name": "per-language conformance",
-      "kind": "contract",
-      "command": "make -C drivers conformance LANG=java,python,go,js,rust,dotnet",
+      "name": "registry publish dry-run",
+      "kind": "smoke",
+      "command": "make -C drivers publish-dry-run REGISTRIES=maven,pypi,gomod,npm,nuget,crates",
       "covers": [
-        "REQ-0043#AC1"
+        "REQ-0043#AC2"
       ]
     },
     {
       "id": "E2",
-      "name": "registry publish dry-run",
+      "name": "post-release registry version check",
       "kind": "smoke",
-      "command": "make -C drivers publish-dry-run REGISTRIES=maven,pypi,gomod,npm,nuget,crates",
+      "command": "make -C drivers verify-published VERSION=$RELEASE_VERSION REGISTRIES=maven,pypi,gomod,npm,nuget,crates",
       "covers": [
         "REQ-0043#AC2"
       ]
@@ -32,7 +32,7 @@
   "status": "todo",
   "points": 21,
   "tags": [],
-  "version": 1,
+  "version": 2,
   "created": "2026-10-06T13:58:30+00:00",
-  "updated": "2026-10-06T13:58:30+00:00"
+  "updated": "2026-10-06T14:06:38+00:00"
 }

@@ -12,19 +12,27 @@
   "evals": [
     {
       "id": "E1",
-      "name": "OTel collector receives all metrics",
+      "name": "analytics lag units",
       "kind": "integration",
-      "command": "cargo test -p dscore-server --test telemetry -- otel_metrics_15s analytics_lag_units",
+      "command": "cargo test -p dscore-server --test telemetry -- analytics_lag_units",
       "covers": [
-        "REQ-0034#AC1",
         "REQ-0034#AC2"
+      ]
+    },
+    {
+      "id": "E2",
+      "name": "metrics and spans from every node",
+      "kind": "e2e",
+      "command": "cargo run -p dscore-harness --release -- telemetry --nodes 3 --collector otel --assert-metrics-every 15s --assert-spans",
+      "covers": [
+        "REQ-0034#AC1"
       ]
     }
   ],
   "status": "todo",
   "points": 5,
   "tags": [],
-  "version": 1,
+  "version": 2,
   "created": "2026-10-06T13:58:30+00:00",
-  "updated": "2026-10-06T13:58:30+00:00"
+  "updated": "2026-10-06T14:06:38+00:00"
 }

@@ -23,11 +23,19 @@
     },
     {
       "id": "E2",
-      "name": "power-loss durability and learner quorum exclusion",
+      "name": "power-loss durability",
       "kind": "e2e",
       "command": "cargo run -p dscore-harness --release -- fault power-cut --trials 1000 --assert-zero-loss",
       "covers": [
-        "REQ-0016#AC1",
+        "REQ-0016#AC1"
+      ]
+    },
+    {
+      "id": "E3",
+      "name": "no ack with one voter plus learners",
+      "kind": "integration",
+      "command": "cargo test -p dscore-server --test raft -- partition_one_voter_plus_learners_no_ack",
+      "covers": [
         "REQ-0016#AC2"
       ]
     }
@@ -35,7 +43,7 @@
   "status": "todo",
   "points": 13,
   "tags": [],
-  "version": 1,
+  "version": 2,
   "created": "2026-10-06T13:58:30+00:00",
-  "updated": "2026-10-06T13:58:30+00:00"
+  "updated": "2026-10-06T14:06:38+00:00"
 }

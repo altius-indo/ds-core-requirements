@@ -3,7 +3,7 @@
   "title": "DS-CORE: strengthen evals per traceability review 2026-10-06",
   "summary": "Fixes the 15 weak requirement→eval links found by the semantic review: splits overloaded tests, adds missing negative/partition/load conditions, removes a duplicate eval, and closes a false-proof in the erasure eval.",
   "rationale": "Traceability evaluation 2026-10-06 passed narrowly (semantic 0.81; REQ-0012 at 0.5). Fixing eval definitions now is cheaper than after code exists.",
-  "status": "pending",
+  "status": "applied",
   "created": "2026-10-06T14:06:33+00:00",
   "valid": true,
   "ops": [
@@ -2081,5 +2081,8 @@
       ],
       "in_progress_work": []
     }
-  }
+  },
+  "applied_at": "2026-10-06T14:06:38+00:00",
+  "excluded_ops": [],
+  "assigned_ids": {}
 }

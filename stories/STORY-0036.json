@@ -23,9 +23,9 @@
     },
     {
       "id": "E2",
-      "name": "native allow-list",
+      "name": "native allow-list incl. build-script links",
       "kind": "static",
-      "command": "cargo deny check && scripts/ci/ffi-allowlist.sh deny.native.toml --require owner,purpose,licence,version,reviewed",
+      "command": "cargo deny check && scripts/ci/ffi-allowlist.sh deny.native.toml --link-audit rustc-link-lib,readelf --negative-fixture tests/fixtures/unlisted-native --require owner,purpose,licence,version,reviewed",
       "covers": [
         "REQ-0049#AC1",
         "REQ-0049#AC2"
@@ -35,7 +35,7 @@
   "status": "todo",
   "points": 5,
   "tags": [],
-  "version": 1,
+  "version": 2,
   "created": "2026-10-06T13:58:30+00:00",
-  "updated": "2026-10-06T13:58:30+00:00"
+  "updated": "2026-10-06T14:06:38+00:00"
 }

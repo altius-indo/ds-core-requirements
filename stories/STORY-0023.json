@@ -12,11 +12,19 @@
   "evals": [
     {
       "id": "E1",
-      "name": "RBAC enforcement and documented roles",
+      "name": "RBAC deny matrix (operation x role x graph)",
       "kind": "security",
-      "command": "cargo test -p dscore-server --test security -- rbac_graph_scope builtin_roles_documented",
+      "command": "cargo test -p dscore-server --test security -- rbac_full_matrix",
       "covers": [
-        "REQ-0038#AC1",
+        "REQ-0038#AC1"
+      ]
+    },
+    {
+      "id": "E2",
+      "name": "role privileges documented",
+      "kind": "static",
+      "command": "scripts/security/check-roles-doc.py docs/security/roles.md --against server/src/auth/roles.rs",
+      "covers": [
         "REQ-0038#AC2"
       ]
     }
@@ -24,7 +32,7 @@
   "status": "todo",
   "points": 8,
   "tags": [],
-  "version": 1,
+  "version": 2,
   "created": "2026-10-06T13:58:30+00:00",
-  "updated": "2026-10-06T13:58:30+00:00"
+  "updated": "2026-10-06T14:06:38+00:00"
 }
