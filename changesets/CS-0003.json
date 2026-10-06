@@ -3,7 +3,7 @@
   "title": "DS-CORE: runtime environment, client drivers and bulk import",
   "summary": "Closes three taxonomy gaps: supported runtime platforms and Kubernetes operator (constraint/environment, flexibility), official drivers in six languages (compatibility), and bulk import from CSV/JSON Lines, Neo4j and MongoDB exports (data/migration).",
   "rationale": "PO decisions 2026-10-05: Linux x86-64 + ARM64 on bare metal/VMs plus a Kubernetes operator; drivers for Java, Python, Go, JavaScript/TypeScript, Rust and C#/.NET; import from generic CSV/JSON Lines, Neo4j (Cypher/GraphML) and MongoDB (BSON/Extended JSON).",
-  "status": "pending",
+  "status": "applied",
   "created": "2026-10-06T04:56:15+00:00",
   "valid": true,
   "ops": [
@@ -760,5 +760,19 @@
       "components": [],
       "in_progress_work": []
     }
+  },
+  "applied_at": "2026-10-06T04:56:45+00:00",
+  "excluded_ops": [],
+  "assigned_ids": {
+    "r_env": "REQ-0041",
+    "r_k8s": "REQ-0042",
+    "r_drivers": "REQ-0043",
+    "r_import": "REQ-0044",
+    "r_import_csv": "REQ-0045",
+    "r_import_neo4j": "REQ-0046",
+    "r_import_mongo": "REQ-0047",
+    "d_platform": "DEC-0008",
+    "d_drivers": "DEC-0009",
+    "d_import": "DEC-0010"
   }
 }

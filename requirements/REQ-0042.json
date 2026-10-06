@@ -1,0 +1,35 @@
+{
+  "id": "REQ-0042",
+  "title": "Kubernetes operator",
+  "statement": "The system shall provide a Kubernetes operator that brings a declared 3-node cluster to a ready, serving state within 10 minutes of the cluster resource being applied.",
+  "type": "quality",
+  "category": "flexibility",
+  "priority": "must",
+  "status": "proposed",
+  "rationale": "PO decision: Kubernetes operator in addition to bare metal/VMs.",
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "text": "On each of the 3 most recent Kubernetes minor releases, applying a 3-node cluster resource yields a cluster that accepts authenticated GQL reads and writes within 10 minutes."
+    },
+    {
+      "id": "AC2",
+      "text": "Changing the declared node count from 3 to 5 adds nodes and rebalances replicas with zero failed client requests."
+    },
+    {
+      "id": "AC3",
+      "text": "Changing the declared version performs a rolling upgrade that meets REQ-0021 acceptance criteria."
+    }
+  ],
+  "tags": [
+    "platform",
+    "kubernetes",
+    "operations"
+  ],
+  "standards": [],
+  "stakeholders": [],
+  "source": "PO elicitation 2026-10-05",
+  "version": 1,
+  "created": "2026-10-06T04:56:45+00:00",
+  "updated": "2026-10-06T04:56:45+00:00"
+}

@@ -1,0 +1,32 @@
+{
+  "id": "REQ-0046",
+  "title": "Import from Neo4j exports",
+  "statement": "The system shall import Neo4j exports in Cypher-script and GraphML formats, preserving node labels, relationship types, direction and properties.",
+  "type": "data",
+  "category": "migration",
+  "priority": "must",
+  "status": "proposed",
+  "rationale": "PO decision: Neo4j is a likely migration source for graph users.",
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "text": "A reference Neo4j database exported as Cypher script and as GraphML imports with identical node, relationship, label, type and property counts."
+    },
+    {
+      "id": "AC2",
+      "text": "Neo4j property types without a DS-CORE equivalent are converted per a documented mapping table or reported in the reject file."
+    }
+  ],
+  "parent": "REQ-0044",
+  "tags": [
+    "migration",
+    "import",
+    "neo4j"
+  ],
+  "standards": [],
+  "stakeholders": [],
+  "source": "PO elicitation 2026-10-05",
+  "version": 1,
+  "created": "2026-10-06T04:56:45+00:00",
+  "updated": "2026-10-06T04:56:45+00:00"
+}

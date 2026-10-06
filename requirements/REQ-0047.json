@@ -1,0 +1,32 @@
+{
+  "id": "REQ-0047",
+  "title": "Import from MongoDB exports",
+  "statement": "The system shall import MongoDB exports in BSON and Extended JSON as nodes, converting user-configured reference fields into edges.",
+  "type": "data",
+  "category": "migration",
+  "priority": "must",
+  "status": "proposed",
+  "rationale": "PO decision: MongoDB documents carry no edges; references must be mapped explicitly.",
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "text": "A mongodump BSON export and a mongoexport Extended JSON export each import as one node per document, labelled by collection, with int64, decimal128, date and binary values preserved."
+    },
+    {
+      "id": "AC2",
+      "text": "With a mapping declaring field orders.customer_id as an edge of type PLACED_BY to customers, every order node has exactly one PLACED_BY edge to its customer node; unresolved references are listed in the reject file."
+    }
+  ],
+  "parent": "REQ-0044",
+  "tags": [
+    "migration",
+    "import",
+    "mongodb"
+  ],
+  "standards": [],
+  "stakeholders": [],
+  "source": "PO elicitation 2026-10-05",
+  "version": 1,
+  "created": "2026-10-06T04:56:45+00:00",
+  "updated": "2026-10-06T04:56:45+00:00"
+}

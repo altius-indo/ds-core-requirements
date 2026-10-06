@@ -1,0 +1,15 @@
+{
+  "id": "DEC-0009",
+  "title": "Six official driver languages",
+  "context": "Driver scope options ranged from Go only to six languages.",
+  "decision": "Official drivers for Java, Python, Go, JavaScript/TypeScript, Rust and C#/.NET, held to one shared conformance suite.",
+  "status": "accepted",
+  "requirements": [
+    "REQ-0043"
+  ],
+  "accepted_at": "2026-10-05",
+  "tags": [],
+  "version": 1,
+  "created": "2026-10-06T04:56:45+00:00",
+  "updated": "2026-10-06T04:56:45+00:00"
+}

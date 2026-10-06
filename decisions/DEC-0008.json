@@ -1,0 +1,16 @@
+{
+  "id": "DEC-0008",
+  "title": "Linux x86-64/ARM64 plus Kubernetes operator",
+  "context": "Runtime environments for v1: options included VM-only, Helm-only, or operator-only.",
+  "decision": "Support Linux on x86-64 and ARM64 on bare metal and VMs, plus a Kubernetes operator.",
+  "status": "accepted",
+  "requirements": [
+    "REQ-0041",
+    "REQ-0042"
+  ],
+  "accepted_at": "2026-10-05",
+  "tags": [],
+  "version": 1,
+  "created": "2026-10-06T04:56:45+00:00",
+  "updated": "2026-10-06T04:56:45+00:00"
+}

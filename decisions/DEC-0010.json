@@ -1,0 +1,18 @@
+{
+  "id": "DEC-0010",
+  "title": "Bulk import sources for v1",
+  "context": "Candidate sources: generic CSV/JSON Lines, Neo4j, MongoDB, relational CSV with FK mapping.",
+  "decision": "Support CSV/JSON Lines node and edge files, Neo4j Cypher/GraphML exports and MongoDB BSON/Extended JSON exports; relational FK mapping deferred.",
+  "status": "accepted",
+  "requirements": [
+    "REQ-0044",
+    "REQ-0045",
+    "REQ-0046",
+    "REQ-0047"
+  ],
+  "accepted_at": "2026-10-05",
+  "tags": [],
+  "version": 1,
+  "created": "2026-10-06T04:56:45+00:00",
+  "updated": "2026-10-06T04:56:45+00:00"
+}
