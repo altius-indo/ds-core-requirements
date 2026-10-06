@@ -15,5 +15,11 @@
     "setup_steps": [],
     "deploy_command": "",
     "monitor_cron": "*/30 * * * *"
+  },
+  "agent_queue": {
+    "enabled": true,
+    "limit": 2,
+    "changed_by": "jyoti.sanyal",
+    "changed_at": "2026-10-06T04:55:44+00:00"
   }
 }
