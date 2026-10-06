@@ -6,12 +6,12 @@
   "depends_on": [],
   "evals": [],
   "done_when": "Design doc reviewed covering range descriptor, Raft library choice, placement, WAL fsync path and node/edge key encoding.",
-  "status": "todo",
+  "status": "in-progress",
   "estimate": "5d",
   "tags": [],
   "next_action": "Draft docs/design/raft-ranges.md: compare openraft vs raft-rs, AZ placement, fsync-before-ack path; link REQ-0001, REQ-0016, REQ-0010.",
   "next_action_set": "2026-10-06",
-  "version": 1,
+  "version": 2,
   "created": "2026-10-06T13:58:30+00:00",
-  "updated": "2026-10-06T13:58:30+00:00"
+  "updated": "2026-10-06T14:08:32+00:00"
 }

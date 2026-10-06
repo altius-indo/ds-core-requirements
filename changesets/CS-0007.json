@@ -3,7 +3,7 @@
   "title": "DS-CORE: start first tasks and set project snapshot",
   "summary": "Marks TASK-0001 (Rust workspace), TASK-0003 (Raft/range design), TASK-0009 (transaction protocol design) and TASK-0015 (GQL conformance scope) in progress with their stories, and writes the first state/HOT.md.",
   "rationale": "PO asked to start tasks after the traceability review fixes (CS-0006) were applied. These four have no unmet dependencies and sit on the critical path.",
-  "status": "pending",
+  "status": "applied",
   "created": "2026-10-06T14:08:20+00:00",
   "valid": true,
   "ops": [
@@ -583,5 +583,8 @@
         "STORY-0036"
       ]
     }
-  }
+  },
+  "applied_at": "2026-10-06T14:08:32+00:00",
+  "excluded_ops": [],
+  "assigned_ids": {}
 }

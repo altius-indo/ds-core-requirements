@@ -6,12 +6,12 @@
   "depends_on": [],
   "evals": [],
   "done_when": "Design doc reviewed: timestamp source (TSO vs HLC), commit protocol, conflict detection, coordinator recovery.",
-  "status": "todo",
+  "status": "in-progress",
   "estimate": "5d",
   "tags": [],
   "next_action": "Draft docs/design/transactions.md choosing TSO vs HLC with REQ-0014 Jepsen implications; record the choice as a new DEC.",
   "next_action_set": "2026-10-06",
-  "version": 1,
+  "version": 2,
   "created": "2026-10-06T13:58:30+00:00",
-  "updated": "2026-10-06T13:58:30+00:00"
+  "updated": "2026-10-06T14:08:32+00:00"
 }

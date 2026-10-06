@@ -6,12 +6,12 @@
   "depends_on": [],
   "evals": [],
   "done_when": "docs/gql-conformance.toml lists every ISO/IEC 39075 feature with v1 status; parser approach decided.",
-  "status": "todo",
+  "status": "in-progress",
   "estimate": "4d",
   "tags": [],
   "next_action": "Create docs/gql-conformance.toml from the ISO/IEC 39075 feature list and mark v1 scope; evaluate a hand-written vs generated parser.",
   "next_action_set": "2026-10-06",
-  "version": 1,
+  "version": 2,
   "created": "2026-10-06T13:58:30+00:00",
-  "updated": "2026-10-06T13:58:30+00:00"
+  "updated": "2026-10-06T14:08:32+00:00"
 }
