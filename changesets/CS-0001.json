@@ -3,7 +3,7 @@
   "title": "DS-CORE baseline requirements: distributed HTAP document store",
   "summary": "Initial requirement set for DS-CORE: Raft-replicated sharded key-value/document store, serializable transactions, PartiQL API, eventually consistent row-format analytics replicas, plus durability, availability, performance, security and operability baselines. Records 18 research findings and 5 accepted decisions.",
   "rationale": "Elicited from the product owner on 2026-10-05 (engine type, HTAP workload, Raft, serializable, p99 targets, analytics freshness, PartiQL) and grounded in standards research (Raft paper, Jepsen analyses, etcd/TiDB/MongoDB/Spanner docs, RFC 8259, BSON, NIST SP 800-52r2). Items not explicitly chosen by the PO use research defaults and are flagged in notes.",
-  "status": "pending",
+  "status": "rejected",
   "created": "2026-10-06T01:24:08+00:00",
   "valid": true,
   "ops": [
@@ -3409,5 +3409,7 @@
       "components": [],
       "in_progress_work": []
     }
-  }
+  },
+  "rejected_reason": "rejected in UI",
+  "rejected_at": "2026-10-06T04:51:47+00:00"
 }
