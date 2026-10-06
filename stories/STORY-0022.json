@@ -1,0 +1,30 @@
+{
+  "id": "STORY-0022",
+  "title": "Authentication: SCRAM-SHA-256, x.509, OIDC; secure defaults",
+  "epic": "EPIC-0007",
+  "narrative": "As a security officer, I want authentication on by default with three mechanisms so that no anonymous access is possible.",
+  "requirements": [
+    "REQ-0037"
+  ],
+  "deliverable": "code",
+  "component": "server",
+  "acceptance_criteria": [],
+  "evals": [
+    {
+      "id": "E1",
+      "name": "secure defaults and auth mechanisms",
+      "kind": "security",
+      "command": "cargo test -p dscore-server --test security -- default_deny_loopback scram x509 oidc",
+      "covers": [
+        "REQ-0037#AC1",
+        "REQ-0037#AC2"
+      ]
+    }
+  ],
+  "status": "todo",
+  "points": 8,
+  "tags": [],
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

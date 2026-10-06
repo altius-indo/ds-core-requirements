@@ -1,0 +1,41 @@
+{
+  "id": "STORY-0012",
+  "title": "GQL executor: point lookups and shard-local one-hop traversal",
+  "epic": "EPIC-0004",
+  "narrative": "As an application owner, I want identifier lookups and one-hop traversals to hit one key or one range so that OLTP latency targets are met.",
+  "requirements": [
+    "REQ-0022",
+    "REQ-0023"
+  ],
+  "deliverable": "code",
+  "component": "server",
+  "acceptance_criteria": [],
+  "evals": [
+    {
+      "id": "E1",
+      "name": "YCSB A/B/C/F over GQL",
+      "kind": "performance",
+      "command": "cargo run -p dscore-harness --release -- ycsb --workloads A,B,C,F --target-util 0.7 --duration 30m --assert-p99-read-ms 10 --assert-p99-write-ms 20",
+      "covers": [
+        "REQ-0022#AC1",
+        "REQ-0022#AC2"
+      ]
+    },
+    {
+      "id": "E2",
+      "name": "one-hop locality and latency",
+      "kind": "performance",
+      "command": "cargo run -p dscore-harness --release -- onehop --max-edges 10000 --assert-single-shard --assert-p99-ms 20",
+      "covers": [
+        "REQ-0023#AC1",
+        "REQ-0023#AC2"
+      ]
+    }
+  ],
+  "status": "todo",
+  "points": 13,
+  "tags": [],
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

@@ -1,0 +1,38 @@
+{
+  "id": "STORY-0031",
+  "title": "Six official drivers: Java, Python, Go, JS/TS, Rust, C#/.NET",
+  "epic": "EPIC-0009",
+  "narrative": "As a developer, I want an official driver in my language published with every server release.",
+  "requirements": [
+    "REQ-0043"
+  ],
+  "deliverable": "code",
+  "component": "drivers",
+  "acceptance_criteria": [],
+  "evals": [
+    {
+      "id": "E1",
+      "name": "per-language conformance",
+      "kind": "contract",
+      "command": "make -C drivers conformance LANG=java,python,go,js,rust,dotnet",
+      "covers": [
+        "REQ-0043#AC1"
+      ]
+    },
+    {
+      "id": "E2",
+      "name": "registry publish dry-run",
+      "kind": "smoke",
+      "command": "make -C drivers publish-dry-run REGISTRIES=maven,pypi,gomod,npm,nuget,crates",
+      "covers": [
+        "REQ-0043#AC2"
+      ]
+    }
+  ],
+  "status": "todo",
+  "points": 21,
+  "tags": [],
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

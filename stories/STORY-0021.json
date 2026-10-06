@@ -1,0 +1,40 @@
+{
+  "id": "STORY-0021",
+  "title": "TLS for clients and mTLS between nodes",
+  "epic": "EPIC-0007",
+  "narrative": "As a security officer, I want all traffic encrypted and peers mutually authenticated.",
+  "requirements": [
+    "REQ-0035",
+    "REQ-0036"
+  ],
+  "deliverable": "code",
+  "component": "server",
+  "acceptance_criteria": [],
+  "evals": [
+    {
+      "id": "E1",
+      "name": "TLS scan and plaintext refusal",
+      "kind": "security",
+      "command": "scripts/security/tls-scan.sh --ports client,peer --forbid sslv3,tls1.0,tls1.1,non-aead --expect-plaintext-refused",
+      "covers": [
+        "REQ-0035#AC1",
+        "REQ-0035#AC2"
+      ]
+    },
+    {
+      "id": "E2",
+      "name": "peer certificate rejection",
+      "kind": "security",
+      "command": "cargo test -p dscore-server --test security -- mtls_reject_invalid_peer",
+      "covers": [
+        "REQ-0036#AC1"
+      ]
+    }
+  ],
+  "status": "todo",
+  "points": 5,
+  "tags": [],
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

@@ -1,0 +1,30 @@
+{
+  "id": "STORY-0027",
+  "title": "OpenTelemetry metrics and traces",
+  "epic": "EPIC-0008",
+  "narrative": "As an SRE, I want latency, commit, fsync, abort, leader-change and analytics-lag metrics exported every 15 s.",
+  "requirements": [
+    "REQ-0034"
+  ],
+  "deliverable": "code",
+  "component": "server",
+  "acceptance_criteria": [],
+  "evals": [
+    {
+      "id": "E1",
+      "name": "OTel collector receives all metrics",
+      "kind": "integration",
+      "command": "cargo test -p dscore-server --test telemetry -- otel_metrics_15s analytics_lag_units",
+      "covers": [
+        "REQ-0034#AC1",
+        "REQ-0034#AC2"
+      ]
+    }
+  ],
+  "status": "todo",
+  "points": 5,
+  "tags": [],
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

@@ -1,0 +1,15 @@
+{
+  "id": "COMP-0002",
+  "title": "Bulk importer",
+  "key": "importer",
+  "path": "importer/",
+  "globs": [],
+  "language": "rust",
+  "tag_mode": "auto",
+  "owners": [],
+  "description": "Rust bulk import CLI for CSV/JSONL, Neo4j and MongoDB exports.",
+  "tags": [],
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

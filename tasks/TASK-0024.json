@@ -1,0 +1,20 @@
+{
+  "id": "TASK-0024",
+  "title": "Implement analytics learners and query routing",
+  "story": "STORY-0015",
+  "kind": "code",
+  "depends_on": [
+    "TASK-0006",
+    "TASK-0016"
+  ],
+  "evals": [],
+  "done_when": "Story evals E1-E3 pass.",
+  "status": "todo",
+  "estimate": "10d",
+  "tags": [],
+  "next_action": "Decide how a query is marked analytical (hint, session or endpoint) as a DEC, then implement server/src/htap/router.rs.",
+  "next_action_set": "2026-10-06",
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

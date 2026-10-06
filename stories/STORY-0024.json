@@ -1,0 +1,30 @@
+{
+  "id": "STORY-0024",
+  "title": "Encryption at rest with KMS-wrapped data keys",
+  "epic": "EPIC-0007",
+  "narrative": "As a security officer, I want data files, WAL, backups and analytics replicas encrypted with rotatable KMS keys.",
+  "requirements": [
+    "REQ-0039"
+  ],
+  "deliverable": "code",
+  "component": "server",
+  "acceptance_criteria": [],
+  "evals": [
+    {
+      "id": "E1",
+      "name": "plaintext marker scan and key rotation",
+      "kind": "security",
+      "command": "cargo run -p dscore-harness --release -- security at-rest --marker-scan --rotate-kms-key --assert-no-downtime",
+      "covers": [
+        "REQ-0039#AC1",
+        "REQ-0039#AC2"
+      ]
+    }
+  ],
+  "status": "todo",
+  "points": 8,
+  "tags": [],
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

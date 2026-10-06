@@ -1,0 +1,38 @@
+{
+  "id": "STORY-0004",
+  "title": "Automatic range split and replica rebalancing",
+  "epic": "EPIC-0001",
+  "narrative": "As an operator, I want ranges to split and rebalance automatically so that the cluster scales out without client errors.",
+  "requirements": [
+    "REQ-0033"
+  ],
+  "deliverable": "code",
+  "component": "server",
+  "acceptance_criteria": [],
+  "evals": [
+    {
+      "id": "E1",
+      "name": "add-node rebalance under YCSB A",
+      "kind": "e2e",
+      "command": "cargo run -p dscore-harness --release -- scenario add-node --workload ycsb-a --assert-balance 0.10 --within 1h --assert-zero-errors",
+      "covers": [
+        "REQ-0033#AC1"
+      ]
+    },
+    {
+      "id": "E2",
+      "name": "jepsen continuous splits",
+      "kind": "e2e",
+      "command": "cargo run -p dscore-harness --release -- jepsen --workload splits --duration 1h --check serializable",
+      "covers": [
+        "REQ-0033#AC2"
+      ]
+    }
+  ],
+  "status": "todo",
+  "points": 13,
+  "tags": [],
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

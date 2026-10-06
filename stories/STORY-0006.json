@@ -1,0 +1,41 @@
+{
+  "id": "STORY-0006",
+  "title": "Safe internal retry and retryable conflict error",
+  "epic": "EPIC-0002",
+  "narrative": "As a developer, I want conflicts surfaced as a distinct retryable error and never silently retried unsafely so that I can retry correctly.",
+  "requirements": [
+    "REQ-0005",
+    "REQ-0015"
+  ],
+  "deliverable": "code",
+  "component": "server",
+  "acceptance_criteria": [],
+  "evals": [
+    {
+      "id": "E1",
+      "name": "conflict error contract",
+      "kind": "integration",
+      "command": "cargo test -p dscore-server --test txn -- serialization_conflict_code",
+      "covers": [
+        "REQ-0005#AC1",
+        "REQ-0005#AC2",
+        "REQ-0015#AC1"
+      ]
+    },
+    {
+      "id": "E2",
+      "name": "jepsen with internal retry",
+      "kind": "e2e",
+      "command": "cargo run -p dscore-harness --release -- jepsen --workload register --internal-retry on --duration 1h --check lost-update",
+      "covers": [
+        "REQ-0015#AC2"
+      ]
+    }
+  ],
+  "status": "todo",
+  "points": 5,
+  "tags": [],
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

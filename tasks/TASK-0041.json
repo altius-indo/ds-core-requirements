@@ -1,0 +1,19 @@
+{
+  "id": "TASK-0041",
+  "title": "Publish operator image and install manifests",
+  "story": "STORY-0029",
+  "kind": "deployment",
+  "depends_on": [
+    "TASK-0040"
+  ],
+  "evals": [],
+  "done_when": "Operator image published for amd64/arm64 with an install bundle per release.",
+  "status": "todo",
+  "estimate": "2d",
+  "tags": [],
+  "next_action": "Add operator/Makefile targets docker-buildx (amd64, arm64) and bundle; wire them into the release workflow.",
+  "next_action_set": "2026-10-06",
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

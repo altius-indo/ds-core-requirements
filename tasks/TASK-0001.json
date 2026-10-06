@@ -1,0 +1,17 @@
+{
+  "id": "TASK-0001",
+  "title": "Set up Rust workspace and CI skeleton",
+  "story": "STORY-0036",
+  "kind": "code",
+  "depends_on": [],
+  "evals": [],
+  "done_when": "cargo build --workspace passes in CI with pinned toolchain; dscore-server, dscore-importer, dscore-harness crates exist.",
+  "status": "todo",
+  "estimate": "2d",
+  "tags": [],
+  "next_action": "Create Cargo.toml workspace with crates server/, importer/, harness/ and rust-toolchain.toml pinning stable.",
+  "next_action_set": "2026-10-06",
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

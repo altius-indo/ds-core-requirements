@@ -1,0 +1,29 @@
+{
+  "id": "STORY-0016",
+  "title": "HTAP isolation benchmark",
+  "epic": "EPIC-0005",
+  "narrative": "As an application owner, I want proof that analytics load doesn't degrade OLTP p99 by more than 10%.",
+  "requirements": [
+    "REQ-0025"
+  ],
+  "deliverable": "code",
+  "component": "harness",
+  "acceptance_criteria": [],
+  "evals": [
+    {
+      "id": "E1",
+      "name": "OLTP p99 under analytics saturation",
+      "kind": "performance",
+      "command": "cargo run -p dscore-harness --release -- htap --oltp ycsb-a --analytics multihop --analytics-cpu 1.0 --assert-p99-degradation 0.10",
+      "covers": [
+        "REQ-0025#AC1"
+      ]
+    }
+  ],
+  "status": "todo",
+  "points": 5,
+  "tags": [],
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

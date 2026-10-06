@@ -1,0 +1,30 @@
+{
+  "id": "STORY-0023",
+  "title": "Graph-scoped role-based access control",
+  "epic": "EPIC-0007",
+  "narrative": "As an administrator, I want least-privilege roles scoped per graph.",
+  "requirements": [
+    "REQ-0038"
+  ],
+  "deliverable": "code",
+  "component": "server",
+  "acceptance_criteria": [],
+  "evals": [
+    {
+      "id": "E1",
+      "name": "RBAC enforcement and documented roles",
+      "kind": "security",
+      "command": "cargo test -p dscore-server --test security -- rbac_graph_scope builtin_roles_documented",
+      "covers": [
+        "REQ-0038#AC1",
+        "REQ-0038#AC2"
+      ]
+    }
+  ],
+  "status": "todo",
+  "points": 8,
+  "tags": [],
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

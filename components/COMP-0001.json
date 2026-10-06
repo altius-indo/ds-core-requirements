@@ -1,0 +1,15 @@
+{
+  "id": "COMP-0001",
+  "title": "DS-CORE server",
+  "key": "server",
+  "path": "server/",
+  "globs": [],
+  "language": "rust",
+  "tag_mode": "auto",
+  "owners": [],
+  "description": "Rust server: RocksDB storage, Raft, transactions, GQL engine, security, telemetry.",
+  "tags": [],
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

@@ -1,0 +1,31 @@
+{
+  "id": "STORY-0013",
+  "title": "DELETE and DETACH DELETE semantics",
+  "epic": "EPIC-0004",
+  "narrative": "As a developer, I want deletes of connected nodes rejected unless detached atomically so that no edge ever dangles.",
+  "requirements": [
+    "REQ-0029",
+    "REQ-0030"
+  ],
+  "deliverable": "code",
+  "component": "server",
+  "acceptance_criteria": [],
+  "evals": [
+    {
+      "id": "E1",
+      "name": "delete semantics across shards",
+      "kind": "integration",
+      "command": "cargo test -p dscore-server --test gql_delete -- reject_connected detach_atomic",
+      "covers": [
+        "REQ-0029#AC1",
+        "REQ-0030#AC1"
+      ]
+    }
+  ],
+  "status": "todo",
+  "points": 5,
+  "tags": [],
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

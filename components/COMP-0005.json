@@ -1,0 +1,15 @@
+{
+  "id": "COMP-0005",
+  "title": "Test harness",
+  "key": "harness",
+  "path": "harness/",
+  "globs": [],
+  "language": "rust",
+  "tag_mode": "auto",
+  "owners": [],
+  "description": "Jepsen-style fault injection, YCSB/CH-style performance and synthetic probe harness.",
+  "tags": [],
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

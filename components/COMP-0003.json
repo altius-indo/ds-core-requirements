@@ -1,0 +1,15 @@
+{
+  "id": "COMP-0003",
+  "title": "Kubernetes operator",
+  "key": "operator",
+  "path": "operator/",
+  "globs": [],
+  "language": "go",
+  "tag_mode": "auto",
+  "owners": [],
+  "description": "Kubernetes operator managing DS-CORE clusters (language assumed Go; outside REQ-0048).",
+  "tags": [],
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

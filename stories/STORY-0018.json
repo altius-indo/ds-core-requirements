@@ -1,0 +1,30 @@
+{
+  "id": "STORY-0018",
+  "title": "Bounded erasure with crypto-shredding",
+  "epic": "EPIC-0006",
+  "narrative": "As a data protection officer, I want deleted data unrecoverable everywhere within 30 days so that erasure requests are honoured.",
+  "requirements": [
+    "REQ-0012"
+  ],
+  "deliverable": "code",
+  "component": "server",
+  "acceptance_criteria": [],
+  "evals": [
+    {
+      "id": "E1",
+      "name": "byte-scan after compaction and key destruction",
+      "kind": "e2e",
+      "command": "cargo run -p dscore-harness --release -- erasure --simulate-days 30 --scan data,wal,analytics,backups",
+      "covers": [
+        "REQ-0012#AC1",
+        "REQ-0012#AC2"
+      ]
+    }
+  ],
+  "status": "todo",
+  "points": 8,
+  "tags": [],
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

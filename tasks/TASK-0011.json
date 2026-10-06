@@ -1,0 +1,19 @@
+{
+  "id": "TASK-0011",
+  "title": "Implement retry policy and conflict error code",
+  "story": "STORY-0006",
+  "kind": "code",
+  "depends_on": [
+    "TASK-0010"
+  ],
+  "evals": [],
+  "done_when": "Story evals E1 and E2 pass.",
+  "status": "todo",
+  "estimate": "3d",
+  "tags": [],
+  "next_action": "Define SERIALIZATION_CONFLICT in server/src/error.rs and restrict internal retry to read-set-unchanged cases in server/src/txn/retry.rs.",
+  "next_action_set": "2026-10-06",
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

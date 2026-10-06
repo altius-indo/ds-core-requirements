@@ -1,0 +1,30 @@
+{
+  "id": "STORY-0011",
+  "title": "Versioned client protocol with transaction control",
+  "epic": "EPIC-0004",
+  "narrative": "As a driver author, I want a documented, versioned protocol so that drivers can submit GQL and control transactions.",
+  "requirements": [
+    "REQ-0004"
+  ],
+  "deliverable": "code",
+  "component": "server",
+  "acceptance_criteria": [],
+  "evals": [
+    {
+      "id": "E1",
+      "name": "protocol contract tests",
+      "kind": "contract",
+      "command": "cargo test -p dscore-server --test protocol -- version_negotiation txn_control",
+      "covers": [
+        "REQ-0004#AC1",
+        "REQ-0004#AC2"
+      ]
+    }
+  ],
+  "status": "todo",
+  "points": 8,
+  "tags": [],
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

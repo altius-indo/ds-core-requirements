@@ -1,0 +1,19 @@
+{
+  "id": "TASK-0048",
+  "title": "Implement Mongo BSON/Extended JSON readers and reference mapping",
+  "story": "STORY-0035",
+  "kind": "code",
+  "depends_on": [
+    "TASK-0045"
+  ],
+  "evals": [],
+  "done_when": "Story eval E1 passes.",
+  "status": "todo",
+  "estimate": "5d",
+  "tags": [],
+  "next_action": "Implement importer/src/sources/mongo/{bson.rs,extjson.rs} and reference-to-edge mapping in importer/src/mapping.rs.",
+  "next_action_set": "2026-10-06",
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

@@ -1,0 +1,19 @@
+{
+  "id": "TASK-0002",
+  "title": "Add rust-policy and FFI allow-list CI gates",
+  "story": "STORY-0036",
+  "kind": "code",
+  "depends_on": [
+    "TASK-0001"
+  ],
+  "evals": [],
+  "done_when": "Both static evals of the story fail on a seeded violation and pass on main.",
+  "status": "todo",
+  "estimate": "2d",
+  "tags": [],
+  "next_action": "Write scripts/ci/rust-policy.sh and deny.native.toml listing rocksdb and aws-lc with owner, purpose, licence, version, review date.",
+  "next_action_set": "2026-10-06",
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

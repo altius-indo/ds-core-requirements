@@ -1,0 +1,20 @@
+{
+  "id": "TASK-0018",
+  "title": "Implement executor fast paths for id lookup and one-hop",
+  "story": "STORY-0012",
+  "kind": "code",
+  "depends_on": [
+    "TASK-0016",
+    "TASK-0012"
+  ],
+  "evals": [],
+  "done_when": "Story evals E1 and E2 pass.",
+  "status": "todo",
+  "estimate": "10d",
+  "tags": [],
+  "next_action": "Implement server/src/gql/exec/point.rs (single-key get) and onehop.rs (single prefix scan); add the harness YCSB-to-GQL mapping.",
+  "next_action_set": "2026-10-06",
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

@@ -1,0 +1,19 @@
+{
+  "id": "TASK-0036",
+  "title": "Implement audit log and exporter",
+  "story": "STORY-0025",
+  "kind": "code",
+  "depends_on": [
+    "TASK-0034"
+  ],
+  "evals": [],
+  "done_when": "Story eval E1 passes.",
+  "status": "todo",
+  "estimate": "3d",
+  "tags": [],
+  "next_action": "Implement server/src/audit/ with an append-only file sink, OTLP log export and value redaction.",
+  "next_action_set": "2026-10-06",
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

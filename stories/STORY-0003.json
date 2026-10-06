@@ -1,0 +1,38 @@
+{
+  "id": "STORY-0003",
+  "title": "Leader failover within 10 s",
+  "epic": "EPIC-0001",
+  "narrative": "As an application owner, I want a failed leader replaced quickly so that writes resume within 10 seconds.",
+  "requirements": [
+    "REQ-0018"
+  ],
+  "deliverable": "code",
+  "component": "server",
+  "acceptance_criteria": [],
+  "evals": [
+    {
+      "id": "E1",
+      "name": "leader kill failover p99",
+      "kind": "e2e",
+      "command": "cargo run -p dscore-harness --release -- fault leader-kill --trials 100 --assert-p99-secs 10",
+      "covers": [
+        "REQ-0018#AC1"
+      ]
+    },
+    {
+      "id": "E2",
+      "name": "election timeout config validation",
+      "kind": "unit",
+      "command": "cargo test -p dscore-server raft::config::election_timeout",
+      "covers": [
+        "REQ-0018#AC2"
+      ]
+    }
+  ],
+  "status": "todo",
+  "points": 5,
+  "tags": [],
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

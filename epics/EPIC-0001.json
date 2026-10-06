@@ -1,0 +1,17 @@
+{
+  "id": "EPIC-0001",
+  "title": "Storage, sharding and Raft replication",
+  "description": "Range-partitioned ordered keyspace on RocksDB, replicated per range with Raft.",
+  "requirements": [
+    "REQ-0001",
+    "REQ-0016",
+    "REQ-0017",
+    "REQ-0018",
+    "REQ-0033"
+  ],
+  "status": "todo",
+  "tags": [],
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

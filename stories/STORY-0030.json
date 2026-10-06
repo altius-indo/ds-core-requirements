@@ -1,0 +1,30 @@
+{
+  "id": "STORY-0030",
+  "title": "Shared driver conformance suite",
+  "epic": "EPIC-0009",
+  "narrative": "As a driver maintainer, I want one language-neutral conformance suite run against current and previous server versions.",
+  "requirements": [
+    "REQ-0043"
+  ],
+  "deliverable": "code",
+  "component": "drivers",
+  "acceptance_criteria": [],
+  "evals": [
+    {
+      "id": "E1",
+      "name": "conformance across server versions",
+      "kind": "contract",
+      "command": "make -C drivers conformance LANG=all SERVER=current,previous",
+      "covers": [
+        "REQ-0043#AC1",
+        "REQ-0043#AC3"
+      ]
+    }
+  ],
+  "status": "todo",
+  "points": 8,
+  "tags": [],
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

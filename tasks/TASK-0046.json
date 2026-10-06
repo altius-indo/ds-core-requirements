@@ -1,0 +1,19 @@
+{
+  "id": "TASK-0046",
+  "title": "Implement CSV/JSONL readers and mapping spec",
+  "story": "STORY-0033",
+  "kind": "code",
+  "depends_on": [
+    "TASK-0045"
+  ],
+  "evals": [],
+  "done_when": "Story eval E1 passes; docs/import/mapping.md published.",
+  "status": "todo",
+  "estimate": "3d",
+  "tags": [],
+  "next_action": "Implement importer/src/sources/{csv.rs,jsonl.rs} and document the mapping format in docs/import/mapping.md.",
+  "next_action_set": "2026-10-06",
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

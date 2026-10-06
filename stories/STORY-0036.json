@@ -1,0 +1,41 @@
+{
+  "id": "STORY-0036",
+  "title": "Rust toolchain, unsafe policy and native allow-list gates",
+  "epic": "EPIC-0011",
+  "narrative": "As a tech lead, I want CI to enforce Rust-only first-party code, documented unsafe and an approved native-library list.",
+  "requirements": [
+    "REQ-0048",
+    "REQ-0049"
+  ],
+  "deliverable": "infrastructure",
+  "component": "server",
+  "acceptance_criteria": [],
+  "evals": [
+    {
+      "id": "E1",
+      "name": "language and unsafe policy",
+      "kind": "static",
+      "command": "scripts/ci/rust-policy.sh --forbid-langs c,cpp,go --require-safety-comments --report-unsafe-count",
+      "covers": [
+        "REQ-0048#AC1",
+        "REQ-0048#AC2"
+      ]
+    },
+    {
+      "id": "E2",
+      "name": "native allow-list",
+      "kind": "static",
+      "command": "cargo deny check && scripts/ci/ffi-allowlist.sh deny.native.toml --require owner,purpose,licence,version,reviewed",
+      "covers": [
+        "REQ-0049#AC1",
+        "REQ-0049#AC2"
+      ]
+    }
+  ],
+  "status": "todo",
+  "points": 5,
+  "tags": [],
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

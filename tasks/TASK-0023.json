@@ -1,0 +1,19 @@
+{
+  "id": "TASK-0023",
+  "title": "Implement envelope encryption at rest",
+  "story": "STORY-0024",
+  "kind": "code",
+  "depends_on": [
+    "TASK-0004"
+  ],
+  "evals": [],
+  "done_when": "Story eval E1 passes.",
+  "status": "todo",
+  "estimate": "6d",
+  "tags": [],
+  "next_action": "Enable the RocksDB encrypted env with AES-256 data keys wrapped by KMS in server/src/storage/encryption.rs; cover WAL and backups.",
+  "next_action_set": "2026-10-06",
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

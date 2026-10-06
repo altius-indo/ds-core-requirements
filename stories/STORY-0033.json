@@ -1,0 +1,29 @@
+{
+  "id": "STORY-0033",
+  "title": "CSV and JSON Lines import mapping",
+  "epic": "EPIC-0010",
+  "narrative": "As a migrating customer, I want to import generic node and edge files with a documented mapping.",
+  "requirements": [
+    "REQ-0045"
+  ],
+  "deliverable": "code",
+  "component": "importer",
+  "acceptance_criteria": [],
+  "evals": [
+    {
+      "id": "E1",
+      "name": "CSV/JSONL fidelity",
+      "kind": "integration",
+      "command": "cargo test -p dscore-importer --test import -- csv_jsonl_fidelity",
+      "covers": [
+        "REQ-0045#AC1"
+      ]
+    }
+  ],
+  "status": "todo",
+  "points": 5,
+  "tags": [],
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

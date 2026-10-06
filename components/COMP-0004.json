@@ -1,0 +1,15 @@
+{
+  "id": "COMP-0004",
+  "title": "Client drivers",
+  "key": "drivers",
+  "path": "drivers/",
+  "globs": [],
+  "language": "multi",
+  "tag_mode": "auto",
+  "owners": [],
+  "description": "Official drivers: Java, Python, Go, JS/TS, Rust, C#/.NET, plus shared conformance suite.",
+  "tags": [],
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

@@ -1,0 +1,19 @@
+{
+  "id": "TASK-0033",
+  "title": "Implement TLS and mTLS with aws-lc",
+  "story": "STORY-0021",
+  "kind": "code",
+  "depends_on": [
+    "TASK-0001"
+  ],
+  "evals": [],
+  "done_when": "Story evals E1 and E2 pass.",
+  "status": "todo",
+  "estimate": "4d",
+  "tags": [],
+  "next_action": "Wire rustls with the aws-lc-rs provider in server/src/net/tls.rs; AEAD-only suites; peer cert verification against the cluster CA.",
+  "next_action_set": "2026-10-06",
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

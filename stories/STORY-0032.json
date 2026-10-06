@@ -1,0 +1,39 @@
+{
+  "id": "STORY-0032",
+  "title": "Importer core: parallel loader, reject file, resume",
+  "epic": "EPIC-0010",
+  "narrative": "As a migrating customer, I want to load hundreds of millions of elements quickly, see rejects and resume after failure.",
+  "requirements": [
+    "REQ-0044"
+  ],
+  "deliverable": "code",
+  "component": "importer",
+  "acceptance_criteria": [],
+  "evals": [
+    {
+      "id": "E1",
+      "name": "import throughput",
+      "kind": "performance",
+      "command": "cargo run -p dscore-harness --release -- import-bench --nodes 100000000 --edges 500000000 --assert-rate 50000",
+      "covers": [
+        "REQ-0044#AC1"
+      ]
+    },
+    {
+      "id": "E2",
+      "name": "reject file and resume",
+      "kind": "integration",
+      "command": "cargo test -p dscore-importer --test import -- reject_file resume_no_duplicates",
+      "covers": [
+        "REQ-0044#AC2",
+        "REQ-0044#AC3"
+      ]
+    }
+  ],
+  "status": "todo",
+  "points": 13,
+  "tags": [],
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

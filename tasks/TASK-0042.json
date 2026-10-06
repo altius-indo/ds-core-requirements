@@ -1,0 +1,19 @@
+{
+  "id": "TASK-0042",
+  "title": "Write language-neutral driver conformance suite",
+  "story": "STORY-0030",
+  "kind": "code",
+  "depends_on": [
+    "TASK-0017"
+  ],
+  "evals": [],
+  "done_when": "Story eval E1 runs for the Rust driver against current and previous server.",
+  "status": "todo",
+  "estimate": "6d",
+  "tags": [],
+  "next_action": "Create drivers/conformance/cases/*.yaml (connect, auth, gql, txn, conflict error, typed round-trip) and a runner per language.",
+  "next_action_set": "2026-10-06",
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

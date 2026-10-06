@@ -1,0 +1,19 @@
+{
+  "id": "TASK-0035",
+  "title": "Implement graph-scoped RBAC",
+  "story": "STORY-0023",
+  "kind": "code",
+  "depends_on": [
+    "TASK-0034"
+  ],
+  "evals": [],
+  "done_when": "Story eval E1 passes; docs/security/roles.md lists privileges.",
+  "status": "todo",
+  "estimate": "5d",
+  "tags": [],
+  "next_action": "Implement server/src/auth/rbac.rs with reader, writer, admin and clusterAdmin roles scoped per graph.",
+  "next_action_set": "2026-10-06",
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

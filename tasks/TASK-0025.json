@@ -1,0 +1,20 @@
+{
+  "id": "TASK-0025",
+  "title": "Build HTAP isolation benchmark",
+  "story": "STORY-0016",
+  "kind": "code",
+  "depends_on": [
+    "TASK-0024",
+    "TASK-0005"
+  ],
+  "evals": [],
+  "done_when": "Story eval E1 passes.",
+  "status": "todo",
+  "estimate": "4d",
+  "tags": [],
+  "next_action": "Add harness/src/bench/htap.rs running ycsb-a alongside multi-hop analytical traversals.",
+  "next_action_set": "2026-10-06",
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

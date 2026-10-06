@@ -1,0 +1,19 @@
+{
+  "id": "TASK-0026",
+  "title": "Alert on analytics lag and OLTP p99 regression",
+  "story": "STORY-0016",
+  "kind": "monitoring",
+  "depends_on": [
+    "TASK-0021"
+  ],
+  "evals": [],
+  "done_when": "Dashboards and alerts exist for analytics lag and OLTP p99 vs baseline.",
+  "status": "todo",
+  "estimate": "1d",
+  "tags": [],
+  "next_action": "Add ops/dashboards/htap.json and ops/alerts/htap.yaml using analytics_replication_lag_seconds and request latency p99.",
+  "next_action_set": "2026-10-06",
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

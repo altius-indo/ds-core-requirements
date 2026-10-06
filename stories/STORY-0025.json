@@ -1,0 +1,30 @@
+{
+  "id": "STORY-0025",
+  "title": "Append-only redacted audit log with external export",
+  "epic": "EPIC-0007",
+  "narrative": "As an auditor, I want authentication, authorization, index and admin events logged without property values.",
+  "requirements": [
+    "REQ-0040"
+  ],
+  "deliverable": "code",
+  "component": "server",
+  "acceptance_criteria": [],
+  "evals": [
+    {
+      "id": "E1",
+      "name": "audit coverage, latency and redaction",
+      "kind": "security",
+      "command": "cargo test -p dscore-server --test audit -- event_coverage_5s no_property_values",
+      "covers": [
+        "REQ-0040#AC1",
+        "REQ-0040#AC2"
+      ]
+    }
+  ],
+  "status": "todo",
+  "points": 5,
+  "tags": [],
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

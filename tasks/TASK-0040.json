@@ -1,0 +1,20 @@
+{
+  "id": "TASK-0040",
+  "title": "Implement operator create/scale/upgrade",
+  "story": "STORY-0029",
+  "kind": "code",
+  "depends_on": [
+    "TASK-0039",
+    "TASK-0030"
+  ],
+  "evals": [],
+  "done_when": "Story eval E1 passes on 3 Kubernetes versions.",
+  "status": "todo",
+  "estimate": "12d",
+  "tags": [],
+  "next_action": "Scaffold operator/ with kubebuilder; implement reconcile for create, scale (drain/add) and rolling upgrade.",
+  "next_action_set": "2026-10-06",
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

@@ -1,0 +1,17 @@
+{
+  "id": "TASK-0037",
+  "title": "Write SOC 2 / ISO 27001 control matrix",
+  "story": "STORY-0026",
+  "kind": "design",
+  "depends_on": [],
+  "evals": [],
+  "done_when": "Story eval E1 passes.",
+  "status": "todo",
+  "estimate": "3d",
+  "tags": [],
+  "next_action": "Create docs/compliance/control-matrix.csv mapping SOC 2 TSC and ISO 27001 Annex A controls to REQ ids or exclusions.",
+  "next_action_set": "2026-10-06",
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

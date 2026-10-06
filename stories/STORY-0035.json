@@ -1,0 +1,30 @@
+{
+  "id": "STORY-0035",
+  "title": "MongoDB BSON/Extended JSON import with reference-to-edge mapping",
+  "epic": "EPIC-0010",
+  "narrative": "As a MongoDB user, I want documents imported as nodes and chosen reference fields turned into edges.",
+  "requirements": [
+    "REQ-0047"
+  ],
+  "deliverable": "code",
+  "component": "importer",
+  "acceptance_criteria": [],
+  "evals": [
+    {
+      "id": "E1",
+      "name": "Mongo export fidelity and edge mapping",
+      "kind": "integration",
+      "command": "cargo test -p dscore-importer --test mongo -- bson_extjson_types reference_edges",
+      "covers": [
+        "REQ-0047#AC1",
+        "REQ-0047#AC2"
+      ]
+    }
+  ],
+  "status": "todo",
+  "points": 8,
+  "tags": [],
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

@@ -1,0 +1,30 @@
+{
+  "id": "STORY-0002",
+  "title": "Joint-consensus membership change and learner promotion",
+  "epic": "EPIC-0001",
+  "narrative": "As an operator, I want to add and remove replicas safely so that a range never has two leaders in one term.",
+  "requirements": [
+    "REQ-0017"
+  ],
+  "deliverable": "code",
+  "component": "server",
+  "acceptance_criteria": [],
+  "evals": [
+    {
+      "id": "E1",
+      "name": "jepsen membership churn",
+      "kind": "e2e",
+      "command": "cargo run -p dscore-harness --release -- jepsen --workload membership --duration 1h --check single-leader,learner-promotion",
+      "covers": [
+        "REQ-0017#AC1",
+        "REQ-0017#AC2"
+      ]
+    }
+  ],
+  "status": "todo",
+  "points": 8,
+  "tags": [],
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

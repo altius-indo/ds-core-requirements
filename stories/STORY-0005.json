@@ -1,0 +1,48 @@
+{
+  "id": "STORY-0005",
+  "title": "Serializable cross-shard transaction protocol",
+  "epic": "EPIC-0002",
+  "narrative": "As a developer, I want multi-node, multi-shard transactions that are atomic and serializable so that graph updates are never partially applied.",
+  "requirements": [
+    "REQ-0014",
+    "REQ-0028"
+  ],
+  "deliverable": "code",
+  "component": "server",
+  "acceptance_criteria": [],
+  "evals": [
+    {
+      "id": "E1",
+      "name": "isolation cannot be lowered",
+      "kind": "integration",
+      "command": "cargo test -p dscore-server --test txn -- isolation_locked",
+      "covers": [
+        "REQ-0014#AC1"
+      ]
+    },
+    {
+      "id": "E2",
+      "name": "jepsen serializability (Elle)",
+      "kind": "e2e",
+      "command": "cargo run -p dscore-harness --release -- jepsen --workload list-append --nemesis partition,crash,clock,membership,split --duration 1h --check serializable",
+      "covers": [
+        "REQ-0014#AC2"
+      ]
+    },
+    {
+      "id": "E3",
+      "name": "coordinator crash atomicity",
+      "kind": "integration",
+      "command": "cargo test -p dscore-server --test txn -- coordinator_crash_atomic",
+      "covers": [
+        "REQ-0028#AC1"
+      ]
+    }
+  ],
+  "status": "todo",
+  "points": 21,
+  "tags": [],
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

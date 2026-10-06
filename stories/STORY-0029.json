@@ -1,0 +1,31 @@
+{
+  "id": "STORY-0029",
+  "title": "Kubernetes operator: create, scale, upgrade",
+  "epic": "EPIC-0008",
+  "narrative": "As a platform engineer, I want to declare a DS-CORE cluster in Kubernetes and have it ready, scaled and upgraded automatically.",
+  "requirements": [
+    "REQ-0042"
+  ],
+  "deliverable": "code",
+  "component": "operator",
+  "acceptance_criteria": [],
+  "evals": [
+    {
+      "id": "E1",
+      "name": "cluster lifecycle on 3 K8s versions",
+      "kind": "e2e",
+      "command": "make -C operator e2e K8S_VERSIONS=latest3 TESTS='TestCreateReady10m TestScale3to5 TestRollingUpgrade'",
+      "covers": [
+        "REQ-0042#AC1",
+        "REQ-0042#AC2",
+        "REQ-0042#AC3"
+      ]
+    }
+  ],
+  "status": "todo",
+  "points": 13,
+  "tags": [],
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

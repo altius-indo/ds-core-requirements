@@ -1,0 +1,20 @@
+{
+  "id": "TASK-0045",
+  "title": "Implement parallel loader with checkpoints and reject file",
+  "story": "STORY-0032",
+  "kind": "code",
+  "depends_on": [
+    "TASK-0010",
+    "TASK-0012"
+  ],
+  "evals": [],
+  "done_when": "Story evals E1 and E2 pass.",
+  "status": "todo",
+  "estimate": "10d",
+  "tags": [],
+  "next_action": "Implement importer/src/loader.rs (batched, idempotent by element id, checkpointed) and importer/src/rejects.rs.",
+  "next_action_set": "2026-10-06",
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

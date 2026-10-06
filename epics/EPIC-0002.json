@@ -1,0 +1,16 @@
+{
+  "id": "EPIC-0002",
+  "title": "Transactions and isolation",
+  "description": "Serializable cross-shard transactions with a safe retry and error contract.",
+  "requirements": [
+    "REQ-0005",
+    "REQ-0014",
+    "REQ-0015",
+    "REQ-0028"
+  ],
+  "status": "todo",
+  "tags": [],
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

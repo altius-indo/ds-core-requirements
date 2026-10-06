@@ -1,0 +1,19 @@
+{
+  "id": "TASK-0031",
+  "title": "Build synthetic availability probe",
+  "story": "STORY-0020",
+  "kind": "code",
+  "depends_on": [
+    "TASK-0005"
+  ],
+  "evals": [],
+  "done_when": "Story evals E1 and E2 run in staging.",
+  "status": "todo",
+  "estimate": "3d",
+  "tags": [],
+  "next_action": "Implement harness/src/probe.rs doing a read and write per minute with monthly availability reporting.",
+  "next_action_set": "2026-10-06",
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

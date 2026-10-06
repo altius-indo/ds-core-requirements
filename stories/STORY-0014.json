@@ -1,0 +1,41 @@
+{
+  "id": "STORY-0014",
+  "title": "Transactional property indexes with online build",
+  "epic": "EPIC-0004",
+  "narrative": "As a developer, I want label/property indexes maintained in-transaction and built online so that indexed reads are correct and builds don't block traffic.",
+  "requirements": [
+    "REQ-0031",
+    "REQ-0032"
+  ],
+  "deliverable": "code",
+  "component": "server",
+  "acceptance_criteria": [],
+  "evals": [
+    {
+      "id": "E1",
+      "name": "index consistency and uniqueness",
+      "kind": "integration",
+      "command": "cargo test -p dscore-server --test index -- read_your_commit unique_cross_shard cancel_build",
+      "covers": [
+        "REQ-0031#AC1",
+        "REQ-0031#AC2",
+        "REQ-0032#AC2"
+      ]
+    },
+    {
+      "id": "E2",
+      "name": "online index build under load",
+      "kind": "performance",
+      "command": "cargo run -p dscore-harness --release -- index-build --size-gib 100 --workload ycsb-a --assert-zero-errors --assert-p99-factor 1.5",
+      "covers": [
+        "REQ-0032#AC1"
+      ]
+    }
+  ],
+  "status": "todo",
+  "points": 13,
+  "tags": [],
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

@@ -1,0 +1,19 @@
+{
+  "id": "TASK-0044",
+  "title": "Automate driver publishing to registries",
+  "story": "STORY-0031",
+  "kind": "deployment",
+  "depends_on": [
+    "TASK-0043"
+  ],
+  "evals": [],
+  "done_when": "Story eval E2 passes; the release workflow publishes all six.",
+  "status": "todo",
+  "estimate": "3d",
+  "tags": [],
+  "next_action": "Add drivers/Makefile publish targets for Maven Central, PyPI, Go modules, npm, NuGet and crates.io plus release workflow secrets.",
+  "next_action_set": "2026-10-06",
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

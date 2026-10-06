@@ -1,0 +1,19 @@
+{
+  "id": "TASK-0043",
+  "title": "Implement the six drivers",
+  "story": "STORY-0031",
+  "kind": "code",
+  "depends_on": [
+    "TASK-0042"
+  ],
+  "evals": [],
+  "done_when": "Story eval E1 passes for all six languages.",
+  "status": "todo",
+  "estimate": "40d",
+  "tags": [],
+  "next_action": "Start with drivers/rust (shares the protocol crate), then go, python, java, js, dotnet; each must pass drivers/conformance.",
+  "next_action_set": "2026-10-06",
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

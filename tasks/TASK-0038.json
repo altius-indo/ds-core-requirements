@@ -1,0 +1,19 @@
+{
+  "id": "TASK-0038",
+  "title": "Cross-compile and CI matrix for amd64/arm64",
+  "story": "STORY-0028",
+  "kind": "deployment",
+  "depends_on": [
+    "TASK-0001"
+  ],
+  "evals": [],
+  "done_when": "Story evals E1-E3 pass in CI.",
+  "status": "todo",
+  "estimate": "3d",
+  "tags": [],
+  "next_action": "Add .github/workflows/release.yml building x86_64 and aarch64 linux targets, plus scripts/ci/run-matrix.sh.",
+  "next_action_set": "2026-10-06",
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

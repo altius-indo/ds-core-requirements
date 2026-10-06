@@ -1,0 +1,19 @@
+{
+  "id": "TASK-0028",
+  "title": "Provision backup storage and retention",
+  "story": "STORY-0017",
+  "kind": "deployment",
+  "depends_on": [
+    "TASK-0027"
+  ],
+  "evals": [],
+  "done_when": "Object-storage bucket with 7-day retention and KMS encryption configured in deploy manifests.",
+  "status": "todo",
+  "estimate": "1d",
+  "tags": [],
+  "next_action": "Add deploy/backup/ bucket config (7-day retention, KMS) and operator CRD fields for the backup target.",
+  "next_action_set": "2026-10-06",
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

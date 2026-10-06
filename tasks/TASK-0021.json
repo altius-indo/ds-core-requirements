@@ -1,0 +1,19 @@
+{
+  "id": "TASK-0021",
+  "title": "Instrument server with OpenTelemetry",
+  "story": "STORY-0027",
+  "kind": "code",
+  "depends_on": [
+    "TASK-0001"
+  ],
+  "evals": [],
+  "done_when": "Story eval E1 passes.",
+  "status": "todo",
+  "estimate": "4d",
+  "tags": [],
+  "next_action": "Add an opentelemetry-otlp exporter in server/src/telemetry.rs with the six REQ-0034 metrics at a 15 s interval.",
+  "next_action_set": "2026-10-06",
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

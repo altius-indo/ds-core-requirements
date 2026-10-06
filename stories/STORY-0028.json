@@ -1,0 +1,47 @@
+{
+  "id": "STORY-0028",
+  "title": "linux/amd64 and linux/arm64 builds and CI matrix",
+  "epic": "EPIC-0008",
+  "narrative": "As a release manager, I want binaries and the full suite on both architectures, including mixed clusters.",
+  "requirements": [
+    "REQ-0041"
+  ],
+  "deliverable": "infrastructure",
+  "component": "server",
+  "acceptance_criteria": [],
+  "evals": [
+    {
+      "id": "E1",
+      "name": "release artifacts for both arches",
+      "kind": "smoke",
+      "command": "scripts/release/check-artifacts.sh --targets x86_64-unknown-linux-gnu,aarch64-unknown-linux-gnu",
+      "covers": [
+        "REQ-0041#AC1"
+      ]
+    },
+    {
+      "id": "E2",
+      "name": "full suite on amd64 and arm64",
+      "kind": "integration",
+      "command": "scripts/ci/run-matrix.sh --arch amd64,arm64 --suite release",
+      "covers": [
+        "REQ-0041#AC2"
+      ]
+    },
+    {
+      "id": "E3",
+      "name": "mixed-arch cluster transactions",
+      "kind": "e2e",
+      "command": "cargo run -p dscore-harness --release -- cluster --mixed-arch --suite txn",
+      "covers": [
+        "REQ-0041#AC3"
+      ]
+    }
+  ],
+  "status": "todo",
+  "points": 5,
+  "tags": [],
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

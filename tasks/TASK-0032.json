@@ -1,0 +1,20 @@
+{
+  "id": "TASK-0032",
+  "title": "Deploy probe and SLO dashboard with error-budget alerts",
+  "story": "STORY-0020",
+  "kind": "monitoring",
+  "depends_on": [
+    "TASK-0031",
+    "TASK-0021"
+  ],
+  "evals": [],
+  "done_when": "Probe runs every minute against staging and prod; 99.99% SLO burn-rate alerts configured.",
+  "status": "todo",
+  "estimate": "2d",
+  "tags": [],
+  "next_action": "Add ops/slo/availability.yaml (99.99% monthly) and ops/alerts/burn-rate.yaml; schedule the probe in deploy/probe/.",
+  "next_action_set": "2026-10-06",
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

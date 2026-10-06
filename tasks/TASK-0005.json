@@ -1,0 +1,19 @@
+{
+  "id": "TASK-0005",
+  "title": "Build fault-injection and Jepsen-style harness",
+  "story": "STORY-0001",
+  "kind": "code",
+  "depends_on": [
+    "TASK-0001"
+  ],
+  "evals": [],
+  "done_when": "Harness supports power-cut, leader-kill, partition, clock-skew nemeses and an Elle-style checker.",
+  "status": "todo",
+  "estimate": "10d",
+  "tags": [],
+  "next_action": "Create harness/src/nemesis.rs with partition, crash, power-cut and clock-skew; integrate the Elle checker via elle-cli.",
+  "next_action_set": "2026-10-06",
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

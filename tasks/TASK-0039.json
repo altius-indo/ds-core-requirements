@@ -1,0 +1,17 @@
+{
+  "id": "TASK-0039",
+  "title": "Design DSCoreCluster CRD and reconciliation",
+  "story": "STORY-0029",
+  "kind": "design",
+  "depends_on": [],
+  "evals": [],
+  "done_when": "CRD schema and reconcile state machine reviewed.",
+  "status": "todo",
+  "estimate": "3d",
+  "tags": [],
+  "next_action": "Draft operator/docs/crd.md defining the DSCoreCluster spec (nodes, version, backup, tls) and reconcile states.",
+  "next_action_set": "2026-10-06",
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

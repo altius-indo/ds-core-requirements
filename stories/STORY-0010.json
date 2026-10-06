@@ -1,0 +1,31 @@
+{
+  "id": "STORY-0010",
+  "title": "GQL parser, planner and conformance matrix",
+  "epic": "EPIC-0004",
+  "narrative": "As a developer, I want a GQL front end with a published conformance matrix so that I know exactly which GQL features work.",
+  "requirements": [
+    "REQ-0003"
+  ],
+  "deliverable": "code",
+  "component": "server",
+  "acceptance_criteria": [],
+  "evals": [
+    {
+      "id": "E1",
+      "name": "GQL conformance suite",
+      "kind": "contract",
+      "command": "cargo test -p dscore-server --test gql_conformance -- --matrix docs/gql-conformance.toml",
+      "covers": [
+        "REQ-0003#AC1",
+        "REQ-0003#AC2",
+        "REQ-0003#AC3"
+      ]
+    }
+  ],
+  "status": "todo",
+  "points": 21,
+  "tags": [],
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

@@ -1,0 +1,38 @@
+{
+  "id": "STORY-0020",
+  "title": "Availability probe, SLO dashboard and AZ-loss drill",
+  "epic": "EPIC-0006",
+  "narrative": "As an SRE, I want availability measured continuously and AZ loss rehearsed so that the 99.99% SLO is evidenced.",
+  "requirements": [
+    "REQ-0019"
+  ],
+  "deliverable": "infrastructure",
+  "component": "harness",
+  "acceptance_criteria": [],
+  "evals": [
+    {
+      "id": "E1",
+      "name": "1-minute read/write synthetic probe",
+      "kind": "synthetic-monitor",
+      "command": "cargo run -p dscore-harness --release -- probe --interval 60s --report monthly-availability --assert-min 0.9999",
+      "covers": [
+        "REQ-0019#AC1"
+      ]
+    },
+    {
+      "id": "E2",
+      "name": "AZ-loss drill",
+      "kind": "e2e",
+      "command": "cargo run -p dscore-harness --release -- fault az-loss --assert-max-unavailable-secs 10",
+      "covers": [
+        "REQ-0019#AC2"
+      ]
+    }
+  ],
+  "status": "todo",
+  "points": 5,
+  "tags": [],
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

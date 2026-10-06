@@ -1,0 +1,38 @@
+{
+  "id": "STORY-0019",
+  "title": "Rolling upgrade with leader eviction",
+  "epic": "EPIC-0006",
+  "narrative": "As an operator, I want to upgrade node by node without downtime.",
+  "requirements": [
+    "REQ-0021"
+  ],
+  "deliverable": "code",
+  "component": "server",
+  "acceptance_criteria": [],
+  "evals": [
+    {
+      "id": "E1",
+      "name": "rolling upgrade under load",
+      "kind": "e2e",
+      "command": "cargo run -p dscore-harness --release -- upgrade rolling --from prev-minor --workload ycsb-a --assert-no-failed-interval --assert-p99-factor 1.5",
+      "covers": [
+        "REQ-0021#AC1"
+      ]
+    },
+    {
+      "id": "E2",
+      "name": "mixed-version transaction suite",
+      "kind": "integration",
+      "command": "cargo run -p dscore-harness --release -- upgrade mixed-version --suite txn",
+      "covers": [
+        "REQ-0021#AC2"
+      ]
+    }
+  ],
+  "status": "todo",
+  "points": 8,
+  "tags": [],
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

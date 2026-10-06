@@ -1,0 +1,45 @@
+{
+  "id": "STORY-0008",
+  "title": "Typed nested property values, validation and size limit",
+  "epic": "EPIC-0003",
+  "narrative": "As a developer, I want typed nested properties with precise numbers, duplicate-key rejection, schemaless labels and a size limit so that data round-trips safely.",
+  "requirements": [
+    "REQ-0008",
+    "REQ-0009",
+    "REQ-0011",
+    "REQ-0013"
+  ],
+  "deliverable": "code",
+  "component": "server",
+  "acceptance_criteria": [],
+  "evals": [
+    {
+      "id": "E1",
+      "name": "typed values, duplicates, schemaless",
+      "kind": "integration",
+      "command": "cargo test -p dscore-server --test graph_model -- typed_values duplicate_keys schemaless",
+      "covers": [
+        "REQ-0008#AC1",
+        "REQ-0009#AC1",
+        "REQ-0009#AC2",
+        "REQ-0011#AC1"
+      ]
+    },
+    {
+      "id": "E2",
+      "name": "property size limit and live reconfiguration",
+      "kind": "performance",
+      "command": "cargo run -p dscore-harness --release -- limits doc-size --default-mib 16 --reconfigure-live",
+      "covers": [
+        "REQ-0013#AC1",
+        "REQ-0013#AC2"
+      ]
+    }
+  ],
+  "status": "todo",
+  "points": 8,
+  "tags": [],
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}

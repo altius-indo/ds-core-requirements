@@ -1,0 +1,19 @@
+{
+  "id": "TASK-0030",
+  "title": "Implement leader eviction and version compatibility",
+  "story": "STORY-0019",
+  "kind": "code",
+  "depends_on": [
+    "TASK-0004"
+  ],
+  "evals": [],
+  "done_when": "Story evals E1 and E2 pass.",
+  "status": "todo",
+  "estimate": "5d",
+  "tags": [],
+  "next_action": "Add a drain command (leader transfer before stop) in server/src/admin/drain.rs and an N/N+1 version gate in server/src/version.rs.",
+  "next_action_set": "2026-10-06",
+  "version": 1,
+  "created": "2026-10-06T13:58:30+00:00",
+  "updated": "2026-10-06T13:58:30+00:00"
+}
