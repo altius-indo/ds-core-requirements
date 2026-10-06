@@ -1,0 +1,3413 @@
+{
+  "id": "CS-0001",
+  "title": "DS-CORE baseline requirements: distributed HTAP document store",
+  "summary": "Initial requirement set for DS-CORE: Raft-replicated sharded key-value/document store, serializable transactions, PartiQL API, eventually consistent row-format analytics replicas, plus durability, availability, performance, security and operability baselines. Records 18 research findings and 5 accepted decisions.",
+  "rationale": "Elicited from the product owner on 2026-10-05 (engine type, HTAP workload, Raft, serializable, p99 targets, analytics freshness, PartiQL) and grounded in standards research (Raft paper, Jepsen analyses, etcd/TiDB/MongoDB/Spanner docs, RFC 8259, BSON, NIST SP 800-52r2). Items not explicitly chosen by the PO use research defaults and are flagged in notes.",
+  "status": "pending",
+  "created": "2026-10-06T01:24:08+00:00",
+  "valid": true,
+  "ops": [
+    {
+      "op": "finding",
+      "ref": "f_raft_timing",
+      "data": {
+        "claim": "The Raft paper recommends a 150-300 ms election timeout and requires broadcastTime << electionTimeout << MTBF.",
+        "grade": "VERIFIED",
+        "sources": [
+          "https://raft.github.io/raft.pdf"
+        ],
+        "date": "2026-10-05",
+        "perishability": "slow"
+      },
+      "reason": "Research: consistency slice"
+    },
+    {
+      "op": "finding",
+      "ref": "f_raft_joint",
+      "data": {
+        "claim": "Raft handles membership changes with two-phase joint consensus in which both old and new configurations apply until the joint configuration commits.",
+        "grade": "VERIFIED",
+        "sources": [
+          "https://raft.github.io/raft.pdf"
+        ],
+        "date": "2026-10-05",
+        "perishability": "slow"
+      },
+      "reason": "Research: consistency slice"
+    },
+    {
+      "op": "finding",
+      "ref": "f_tidb_retry",
+      "data": {
+        "claim": "Jepsen found TiDB 2.1.7 to 3.0.0-beta.1 exhibited read skew and lost updates due to transaction auto-retry, fixed by disabling retry by default in 3.0.0-rc.2.",
+        "grade": "VERIFIED",
+        "sources": [
+          "https://jepsen.io/analyses/tidb-2.1.7"
+        ],
+        "date": "2026-10-05",
+        "perishability": "slow"
+      },
+      "reason": "Research: consistency slice"
+    },
+    {
+      "op": "finding",
+      "ref": "f_mongo_defaults",
+      "data": {
+        "claim": "Jepsen found MongoDB 4.2.6 transactions defaulted to read concern local and w:1 and showed snapshot isolation violations including read skew.",
+        "grade": "VERIFIED",
+        "sources": [
+          "https://jepsen.io/analyses/mongodb-4.2.6"
+        ],
+        "date": "2026-10-05",
+        "perishability": "fast"
+      },
+      "reason": "Research: consistency slice"
+    },
+    {
+      "op": "finding",
+      "ref": "f_crdb_serial",
+      "data": {
+        "claim": "CockroachDB offers serializable as its only isolation level and documents its guarantee as no stale reads rather than strict serializability.",
+        "grade": "VERIFIED",
+        "sources": [
+          "https://www.cockroachlabs.com/blog/consistency-model/",
+          "https://docs.cockroachlabs.com/docs/stable/architecture/transaction-layer"
+        ],
+        "date": "2026-10-05",
+        "perishability": "fast"
+      },
+      "reason": "Research: consistency slice"
+    },
+    {
+      "op": "finding",
+      "ref": "f_tiflash",
+      "data": {
+        "claim": "TiFlash replicas are Raft learners that replicate asynchronously and do not participate in commit quorum.",
+        "grade": "VERIFIED",
+        "sources": [
+          "https://docs.pingcap.com/tidb/stable/tiflash-overview/"
+        ],
+        "date": "2026-10-05",
+        "perishability": "fast"
+      },
+      "reason": "Research: consistency slice"
+    },
+    {
+      "op": "finding",
+      "ref": "f_ycsb",
+      "data": {
+        "claim": "YCSB core workloads are A update-heavy 50/50, B read-mostly 95/5, C read-only, D read-latest, E short ranges and F read-modify-write.",
+        "grade": "VERIFIED",
+        "sources": [
+          "https://github.com/brianfrankcooper/YCSB/wiki/Core-Workloads"
+        ],
+        "date": "2026-10-05",
+        "perishability": "slow"
+      },
+      "reason": "Research: durability/performance slice"
+    },
+    {
+      "op": "finding",
+      "ref": "f_fsync",
+      "data": {
+        "claim": "etcd documents typical fdatasync latency of about 10 ms on spinning disks and under 1 ms on SSDs, and that cluster performance is bounded by network RTT and disk I/O.",
+        "grade": "VERIFIED",
+        "sources": [
+          "https://etcd.io/docs/v3.5/op-guide/performance/"
+        ],
+        "date": "2026-10-05",
+        "perishability": "slow"
+      },
+      "reason": "Research: durability/performance slice"
+    },
+    {
+      "op": "finding",
+      "ref": "f_pitr",
+      "data": {
+        "claim": "TiDB log backup for PITR can reach an RPO as short as five minutes, with about 5% overhead and restore at about 30 GiB per hour per TiKV node.",
+        "grade": "THIN",
+        "sources": [
+          "https://docs.pingcap.com/tidb/stable/backup-and-restore-overview/"
+        ],
+        "date": "2026-10-05",
+        "perishability": "fast"
+      },
+      "reason": "Research: durability/performance slice"
+    },
+    {
+      "op": "finding",
+      "ref": "f_sla",
+      "data": {
+        "claim": "Cloud Spanner commits 99.999% monthly uptime for multi-region and dual-region instances and 99.99% for regional instances, computed per month per project per region.",
+        "grade": "THIN",
+        "sources": [
+          "https://cloud.google.com/spanner/sla"
+        ],
+        "date": "2026-10-05",
+        "perishability": "fast"
+      },
+      "reason": "Research: durability/performance slice"
+    },
+    {
+      "op": "finding",
+      "ref": "f_upgrade",
+      "data": {
+        "claim": "TiDB supports online rolling upgrades with leader eviction before node stop and a 5-minute default leader-transfer timeout.",
+        "grade": "VERIFIED",
+        "sources": [
+          "https://docs.pingcap.com/tidb/stable/upgrade-tidb-using-tiup/"
+        ],
+        "date": "2026-10-05",
+        "perishability": "fast"
+      },
+      "reason": "Research: durability/performance slice"
+    },
+    {
+      "op": "finding",
+      "ref": "f_limits",
+      "data": {
+        "claim": "MongoDB limits BSON documents to 16 MiB, nesting to 100 levels and indexes to 64 per collection.",
+        "grade": "VERIFIED",
+        "sources": [
+          "https://www.mongodb.com/docs/manual/reference/limits/"
+        ],
+        "date": "2026-10-05",
+        "perishability": "fast"
+      },
+      "reason": "Research: durability/performance slice"
+    },
+    {
+      "op": "finding",
+      "ref": "f_json",
+      "data": {
+        "claim": "RFC 8259 says JSON object names SHOULD be unique, parser behaviour on duplicates is unpredictable, and exact integer interoperability is only guaranteed within ±(2^53−1).",
+        "grade": "VERIFIED",
+        "sources": [
+          "https://www.rfc-editor.org/rfc/rfc8259"
+        ],
+        "date": "2026-10-05",
+        "perishability": "slow"
+      },
+      "reason": "Research: data/API/security slice"
+    },
+    {
+      "op": "finding",
+      "ref": "f_bson",
+      "data": {
+        "claim": "BSON 1.1 defines int32, int64, double and decimal128 types and does not specify a maximum document size.",
+        "grade": "VERIFIED",
+        "sources": [
+          "https://bsonspec.org/spec.html"
+        ],
+        "date": "2026-10-05",
+        "perishability": "slow"
+      },
+      "reason": "Research: data/API/security slice"
+    },
+    {
+      "op": "finding",
+      "ref": "f_jsonschema",
+      "data": {
+        "claim": "JSON Schema 2020-12 is the current stable version and treats the format keyword as annotation-only unless the format-assertion vocabulary is used.",
+        "grade": "THIN",
+        "sources": [
+          "https://json-schema.org/specification"
+        ],
+        "date": "2026-10-05",
+        "perishability": "fast"
+      },
+      "reason": "Research: data/API/security slice"
+    },
+    {
+      "op": "finding",
+      "ref": "f_tls",
+      "data": {
+        "claim": "NIST SP 800-52r2 requires TLS servers to support TLS 1.3 by 2024-01-01.",
+        "grade": "THIN",
+        "sources": [
+          "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-52r2.pdf"
+        ],
+        "date": "2026-10-05",
+        "perishability": "slow"
+      },
+      "reason": "Research: data/API/security slice"
+    },
+    {
+      "op": "finding",
+      "ref": "f_gdpr",
+      "data": {
+        "claim": "GDPR Article 17 erasure applies to personal data held in storage files, backups, replicas and logs; SOC 2 and ISO/IEC 27001:2022 expect evidence of access control, encryption and logging.",
+        "grade": "THIN",
+        "sources": [
+          "https://gdpr-info.eu/art-17-gdpr/"
+        ],
+        "date": "2026-10-05",
+        "perishability": "slow"
+      },
+      "reason": "Research: data/API/security slice"
+    },
+    {
+      "op": "finding",
+      "ref": "f_partiql",
+      "data": {
+        "claim": "PartiQL (SQL++ family) is a SQL-compatible query language for nested and semi-structured data; not verified against a primary specification.",
+        "grade": "THIN",
+        "sources": [
+          "https://partiql.org/"
+        ],
+        "date": "2026-10-05",
+        "perishability": "slow"
+      },
+      "reason": "Research: data/API/security slice"
+    },
+    {
+      "op": "create",
+      "kind": "requirements",
+      "ref": "r_raft",
+      "data": {
+        "title": "Raft replication per shard",
+        "statement": "The system shall replicate every shard using the Raft consensus protocol with an odd number of voting replicas (default 3) placed in distinct availability zones.",
+        "type": "constraint",
+        "category": "technology",
+        "priority": "must",
+        "status": "proposed",
+        "rationale": "PO decision: distributed, sharded, strong consistency via Raft.",
+        "acceptance_criteria": [
+          {
+            "id": "AC1",
+            "text": "Every shard has 3 or 5 voting replicas; even voter counts are rejected by configuration validation."
+          },
+          {
+            "id": "AC2",
+            "text": "With 3 AZs available, no two voters of the same shard are placed in the same AZ."
+          }
+        ],
+        "tags": [
+          "raft",
+          "replication"
+        ],
+        "standards": [
+          "$f_raft_timing"
+        ],
+        "source": "PO elicitation 2026-10-05"
+      },
+      "reason": "Core architecture constraint"
+    },
+    {
+      "op": "create",
+      "kind": "requirements",
+      "ref": "r_compliance",
+      "data": {
+        "title": "SOC 2 Type II and ISO 27001 readiness",
+        "statement": "The system shall provide the security controls and audit evidence required for SOC 2 Type II and ISO/IEC 27001:2022 certification.",
+        "type": "constraint",
+        "category": "regulatory",
+        "priority": "should",
+        "status": "proposed",
+        "rationale": "Research default: common enterprise buyer requirement; FIPS 140-3 deferred until a market requires it.",
+        "acceptance_criteria": [
+          {
+            "id": "AC1",
+            "text": "A control matrix maps each SOC 2 Trust Services Criterion and ISO 27001 Annex A control in scope to a DS-CORE requirement or documented exclusion."
+          }
+        ],
+        "tags": [
+          "compliance"
+        ],
+        "standards": [
+          "$f_gdpr"
+        ],
+        "source": "Research default — PO to confirm",
+        "notes": "Not explicitly chosen by the PO; FIPS 140-3 out of scope for v1."
+      },
+      "reason": "Compliance baseline"
+    },
+    {
+      "op": "create",
+      "kind": "requirements",
+      "ref": "r_partiql",
+      "data": {
+        "title": "PartiQL query language",
+        "statement": "The system shall accept queries and data manipulation statements (SELECT, INSERT, UPDATE, DELETE) expressed in PartiQL over documents and nested values.",
+        "type": "interface",
+        "category": "api",
+        "priority": "must",
+        "status": "proposed",
+        "rationale": "PO decision: SQL++/PartiQL as the primary query API.",
+        "acceptance_criteria": [
+          {
+            "id": "AC1",
+            "text": "A published conformance matrix lists every PartiQL feature as supported, partially supported or unsupported."
+          },
+          {
+            "id": "AC2",
+            "text": "All statements marked supported in the conformance matrix pass the project's PartiQL conformance test suite."
+          },
+          {
+            "id": "AC3",
+            "text": "Unsupported syntax returns a parse error naming the unsupported feature, not a generic failure."
+          }
+        ],
+        "tags": [
+          "api",
+          "partiql"
+        ],
+        "standards": [
+          "$f_partiql"
+        ],
+        "source": "PO elicitation 2026-10-05"
+      },
+      "reason": "Primary query interface"
+    },
+    {
+      "op": "create",
+      "kind": "requirements",
+      "ref": "r_protocol",
+      "data": {
+        "title": "Versioned client protocol",
+        "statement": "The system shall expose a documented, versioned client protocol for submitting PartiQL statements and controlling transactions (begin, commit, rollback).",
+        "type": "interface",
+        "category": "api",
+        "priority": "must",
+        "status": "proposed",
+        "rationale": "PartiQL is a language, not a transport; clients need a stable protocol.",
+        "acceptance_criteria": [
+          {
+            "id": "AC1",
+            "text": "The protocol specification is published with a version number, and the server rejects unsupported client protocol versions with a version-mismatch error."
+          },
+          {
+            "id": "AC2",
+            "text": "A client can begin, commit and roll back a multi-statement transaction through the protocol."
+          }
+        ],
+        "tags": [
+          "api",
+          "protocol"
+        ],
+        "source": "Derived from PO decision",
+        "notes": "Open: transport choice (gRPC vs. HTTP/2 vs. custom binary) not yet decided."
+      },
+      "reason": "Transport for the PartiQL API"
+    },
+    {
+      "op": "create",
+      "kind": "requirements",
+      "ref": "r_retry_err",
+      "data": {
+        "title": "Retryable serialization-conflict error",
+        "statement": "The system shall return a distinct, documented retryable error code when a transaction aborts because of a serialization conflict.",
+        "type": "interface",
+        "category": "api",
+        "priority": "must",
+        "status": "proposed",
+        "rationale": "Serializable isolation raises abort rates; clients need to distinguish retryable conflicts from permanent failures.",
+        "acceptance_criteria": [
+          {
+            "id": "AC1",
+            "text": "A forced write-write conflict between two concurrent transactions returns the documented serialization-conflict code to the aborted client."
+          },
+          {
+            "id": "AC2",
+            "text": "Non-retryable failures (syntax, permission, constraint violation) never return the serialization-conflict code."
+          }
+        ],
+        "tags": [
+          "api",
+          "transactions"
+        ],
+        "source": "Derived from PO decision"
+      },
+      "reason": "Client contract for serializable aborts"
+    },
+    {
+      "op": "create",
+      "kind": "requirements",
+      "ref": "r_types",
+      "data": {
+        "title": "Typed document values",
+        "statement": "The system shall store document values with explicit types, including int64, double, decimal128, timestamp, binary, array and nested document, without loss of precision on round trip.",
+        "type": "data",
+        "category": "model",
+        "priority": "must",
+        "status": "proposed",
+        "rationale": "Plain JSON loses integer precision beyond 2^53 and has no decimal type.",
+        "acceptance_criteria": [
+          {
+            "id": "AC1",
+            "text": "Writing and reading back int64 values ±(2^63−1) and decimal128 values returns identical values and types."
+          },
+          {
+            "id": "AC2",
+            "text": "Documents nested up to 100 levels round-trip unchanged."
+          }
+        ],
+        "tags": [
+          "data-model"
+        ],
+        "standards": [
+          "$f_bson",
+          "$f_json"
+        ],
+        "source": "Research default"
+      },
+      "reason": "Document data model"
+    },
+    {
+      "op": "create",
+      "kind": "requirements",
+      "ref": "r_dupkeys",
+      "data": {
+        "title": "Reject duplicate field names",
+        "statement": "The system shall reject at ingest any document that contains duplicate field names within the same object.",
+        "type": "data",
+        "category": "quality",
+        "priority": "must",
+        "status": "proposed",
+        "rationale": "RFC 8259 leaves duplicate-key behaviour undefined; parsers disagree, creating consistency and injection risk.",
+        "acceptance_criteria": [
+          {
+            "id": "AC1",
+            "text": "An insert or update containing an object with a repeated field name fails with a validation error and stores nothing."
+          }
+        ],
+        "tags": [
+          "data-model",
+          "validation"
+        ],
+        "standards": [
+          "$f_json"
+        ],
+        "source": "Research default"
+      },
+      "reason": "Data quality"
+    },
+    {
+      "op": "create",
+      "kind": "requirements",
+      "ref": "r_schema",
+      "data": {
+        "title": "Optional per-collection schema validation",
+        "statement": "The system shall reject writes that do not conform to the JSON Schema 2020-12 document attached to their collection.",
+        "type": "data",
+        "category": "quality",
+        "priority": "should",
+        "status": "proposed",
+        "rationale": "Lets teams enforce structure where needed while keeping document flexibility; collections without a schema are unvalidated.",
+        "acceptance_criteria": [
+          {
+            "id": "AC1",
+            "text": "With a schema attached, a non-conforming insert is rejected with an error naming the failing schema path."
+          },
+          {
+            "id": "AC2",
+            "text": "A schema containing a remote (http/https) $ref is rejected when attached."
+          }
+        ],
+        "tags": [
+          "data-model",
+          "validation"
+        ],
+        "standards": [
+          "$f_jsonschema"
+        ],
+        "source": "Research default — PO to confirm"
+      },
+      "reason": "Schema enforcement"
+    },
+    {
+      "op": "create",
+      "kind": "requirements",
+      "ref": "r_erasure",
+      "data": {
+        "title": "Bounded physical erasure",
+        "statement": "The system shall make deleted documents unrecoverable from data files, WAL, replicas and backups within 30 days of deletion.",
+        "type": "data",
+        "category": "lifecycle",
+        "priority": "should",
+        "status": "proposed",
+        "rationale": "GDPR Art. 17: deletes in log-structured/replicated engines leave copies in tombstones, WAL, replicas and backups.",
+        "acceptance_criteria": [
+          {
+            "id": "AC1",
+            "text": "30 days after a delete, a byte-level scan of data files, WAL segments and analytics replicas finds no plaintext of the deleted document."
+          },
+          {
+            "id": "AC2",
+            "text": "Backups older than the delete become unreadable for the deleted data via destruction of the associated encryption key (crypto-shredding) within 30 days."
+          }
+        ],
+        "tags": [
+          "gdpr",
+          "lifecycle"
+        ],
+        "standards": [
+          "$f_gdpr"
+        ],
+        "source": "Research default — PO to confirm 30-day bound"
+      },
+      "reason": "Erasure lifecycle"
+    },
+    {
+      "op": "create",
+      "kind": "requirements",
+      "ref": "r_doclimit",
+      "data": {
+        "title": "Document size limit",
+        "statement": "The system shall enforce a configurable maximum document size, defaulting to 16 MiB, and reject larger documents with a size-limit error.",
+        "type": "quality",
+        "category": "performance-efficiency",
+        "priority": "must",
+        "status": "proposed",
+        "rationale": "Unbounded documents risk memory exhaustion and oversized Raft log entries.",
+        "acceptance_criteria": [
+          {
+            "id": "AC1",
+            "text": "With default configuration, a 16 MiB document is accepted and a 16 MiB + 1 byte document is rejected with the size-limit error."
+          },
+          {
+            "id": "AC2",
+            "text": "Changing the configured limit takes effect without a cluster restart."
+          }
+        ],
+        "tags": [
+          "limits"
+        ],
+        "standards": [
+          "$f_limits",
+          "$f_bson"
+        ],
+        "source": "Research default"
+      },
+      "reason": "Capacity limit"
+    },
+    {
+      "op": "create",
+      "kind": "requirements",
+      "ref": "r_serializable",
+      "data": {
+        "title": "Serializable isolation by default",
+        "statement": "The system shall execute every transaction, including single-statement and cross-shard transactions, at serializable isolation regardless of session, collection or client settings.",
+        "type": "quality",
+        "category": "functional-suitability",
+        "priority": "must",
+        "status": "proposed",
+        "rationale": "PO decision: serializable by default. Jepsen found weak defaults undercutting advertised guarantees (MongoDB 4.2.6).",
+        "acceptance_criteria": [
+          {
+            "id": "AC1",
+            "text": "No session, collection or client option can lower isolation below serializable; attempts return a configuration error."
+          },
+          {
+            "id": "AC2",
+            "text": "A Jepsen-style test (network partitions, node crashes, clock skew, membership changes and shard splits) runs for at least 1 hour per release and an Elle-style checker finds zero serializability anomalies."
+          }
+        ],
+        "tags": [
+          "transactions",
+          "consistency"
+        ],
+        "standards": [
+          "$f_crdb_serial",
+          "$f_mongo_defaults"
+        ],
+        "source": "PO elicitation 2026-10-05"
+      },
+      "reason": "Isolation guarantee"
+    },
+    {
+      "op": "create",
+      "kind": "requirements",
+      "ref": "r_retry",
+      "data": {
+        "title": "Safe internal transaction retry",
+        "statement": "The system shall produce 0 lost updates and 0 serializability anomalies attributable to internal transaction retry.",
+        "type": "quality",
+        "category": "functional-suitability",
+        "priority": "must",
+        "status": "proposed",
+        "rationale": "TiDB's auto-retry caused lost updates and read skew (Jepsen 2.1.7). Retries that cannot preserve serializability must surface the serialization-conflict error instead.",
+        "acceptance_criteria": [
+          {
+            "id": "AC1",
+            "text": "An interactive transaction whose read set changed is never silently retried; the client receives the serialization-conflict error."
+          },
+          {
+            "id": "AC2",
+            "text": "The Jepsen-style suite run for at least 1 hour with internal retry enabled reports 0 lost updates."
+          }
+        ],
+        "tags": [
+          "transactions",
+          "consistency"
+        ],
+        "standards": [
+          "$f_tidb_retry"
+        ],
+        "source": "Research"
+      },
+      "reason": "Avoid retry anomalies"
+    },
+    {
+      "op": "create",
+      "kind": "requirements",
+      "ref": "r_commit",
+      "data": {
+        "title": "Durable quorum commit",
+        "statement": "The system shall lose 0 acknowledged writes when every node loses power simultaneously, acknowledging a write only after a majority of the shard's voting replicas have fsynced it.",
+        "type": "quality",
+        "category": "reliability",
+        "priority": "must",
+        "status": "proposed",
+        "rationale": "Prevents loss of acknowledged writes on correlated power loss. Analytics replicas never count toward the quorum.",
+        "acceptance_criteria": [
+          {
+            "id": "AC1",
+            "text": "After power-cutting all nodes of a 3-voter shard immediately after acknowledgment, every acknowledged write is present on restart (1,000 trials, zero losses)."
+          },
+          {
+            "id": "AC2",
+            "text": "With only one voter plus any number of analytics replicas reachable, writes to that shard are not acknowledged."
+          }
+        ],
+        "tags": [
+          "durability",
+          "raft"
+        ],
+        "standards": [
+          "$f_fsync",
+          "$f_tiflash"
+        ],
+        "source": "Research default"
+      },
+      "reason": "Durability"
+    },
+    {
+      "op": "create",
+      "kind": "requirements",
+      "ref": "r_membership",
+      "data": {
+        "title": "Safe membership change",
+        "statement": "The system shall keep at most 1 leader per shard per Raft term in 100% of voter membership changes, using joint consensus or single-server changes.",
+        "type": "quality",
+        "category": "reliability",
+        "priority": "must",
+        "status": "proposed",
+        "rationale": "Single-step multi-voter changes can produce split majorities. New replicas join as non-voting learners and are promoted after catch-up.",
+        "acceptance_criteria": [
+          {
+            "id": "AC1",
+            "text": "Under the Jepsen-style suite with continuous add/remove of replicas, no two leaders are observed in the same term for a shard."
+          },
+          {
+            "id": "AC2",
+            "text": "A newly added replica is not counted as a voter until its log lag is below the configured bound."
+          }
+        ],
+        "tags": [
+          "raft",
+          "replication"
+        ],
+        "standards": [
+          "$f_raft_joint"
+        ],
+        "source": "Research"
+      },
+      "reason": "Raft safety"
+    },
+    {
+      "op": "create",
+      "kind": "requirements",
+      "ref": "r_failover",
+      "data": {
+        "title": "Leader failover time",
+        "statement": "The system shall elect a new shard leader and resume serving writes within 10 seconds (p99) of the current leader's node failing.",
+        "type": "quality",
+        "category": "reliability",
+        "priority": "must",
+        "status": "proposed",
+        "rationale": "Bounds write unavailability per shard; research found no verified industry figure.",
+        "acceptance_criteria": [
+          {
+            "id": "AC1",
+            "text": "Across 100 leader-node kills in a 3-AZ cluster, p99 time from kill to first successful write on the affected shard is ≤ 10 s."
+          },
+          {
+            "id": "AC2",
+            "text": "Configuration validation rejects election timeouts less than 10× the measured heartbeat round trip."
+          }
+        ],
+        "tags": [
+          "raft",
+          "availability"
+        ],
+        "standards": [
+          "$f_raft_timing"
+        ],
+        "source": "Research — PO to confirm 10 s bound"
+      },
+      "reason": "Failover"
+    },
+    {
+      "op": "create",
+      "kind": "requirements",
+      "ref": "r_avail",
+      "data": {
+        "title": "Regional availability SLA",
+        "statement": "The system shall achieve at least 99.99% monthly availability for a regional deployment spanning 3 availability zones.",
+        "type": "quality",
+        "category": "reliability",
+        "priority": "must",
+        "status": "proposed",
+        "rationale": "Research default aligned with Spanner regional SLA structure; 99.999% reserved for future multi-region.",
+        "acceptance_criteria": [
+          {
+            "id": "AC1",
+            "text": "Availability is measured per calendar month as the fraction of 1-minute intervals in which a synthetic probe's read and write both succeed, and is ≥ 99.99%."
+          },
+          {
+            "id": "AC2",
+            "text": "Loss of one full availability zone causes no interval of unavailability longer than the failover bound."
+          }
+        ],
+        "tags": [
+          "availability"
+        ],
+        "standards": [
+          "$f_sla"
+        ],
+        "source": "Research default — PO to confirm"
+      },
+      "reason": "Availability"
+    },
+    {
+      "op": "create",
+      "kind": "requirements",
+      "ref": "r_pitr",
+      "data": {
+        "title": "Point-in-time recovery",
+        "statement": "The system shall restore a cluster to any chosen timestamp within a 7-day retention window, losing no more than 5 minutes of committed transactions.",
+        "type": "quality",
+        "category": "reliability",
+        "priority": "must",
+        "status": "proposed",
+        "rationale": "Quorum replication gives RPO 0 against node loss but not against operator error or corruption.",
+        "acceptance_criteria": [
+          {
+            "id": "AC1",
+            "text": "After destroying the cluster, restoring to a chosen timestamp recovers all transactions committed at least 5 minutes before the loss."
+          },
+          {
+            "id": "AC2",
+            "text": "Restore throughput is measured and published per node, and the documented RTO formula predicts measured restore time within 20%."
+          }
+        ],
+        "tags": [
+          "backup",
+          "recovery"
+        ],
+        "standards": [
+          "$f_pitr"
+        ],
+        "source": "Research default — PO to confirm"
+      },
+      "reason": "Recoverability"
+    },
+    {
+      "op": "create",
+      "kind": "requirements",
+      "ref": "r_upgrade",
+      "data": {
+        "title": "Rolling upgrade without downtime",
+        "statement": "The system shall upgrade one node at a time between consecutive minor versions while continuing to serve reads and writes, transferring shard leadership off each node before it stops.",
+        "type": "quality",
+        "category": "reliability",
+        "priority": "should",
+        "status": "proposed",
+        "rationale": "Planned maintenance must not consume the availability budget.",
+        "acceptance_criteria": [
+          {
+            "id": "AC1",
+            "text": "During a rolling upgrade under YCSB workload A, the synthetic probe records no failed interval and OLTP p99 stays within its target +50%."
+          },
+          {
+            "id": "AC2",
+            "text": "A mixed-version cluster of N and N+1 minor versions passes the transaction test suite."
+          }
+        ],
+        "tags": [
+          "operations"
+        ],
+        "standards": [
+          "$f_upgrade"
+        ],
+        "source": "Research default"
+      },
+      "reason": "Maintenance availability"
+    },
+    {
+      "op": "create",
+      "kind": "requirements",
+      "ref": "r_latency",
+      "data": {
+        "title": "OLTP point read/write latency",
+        "statement": "The system shall serve single-document point reads within 10 ms and point writes within 20 ms at the 99th percentile in a 3-AZ single-region deployment on SSD storage, at 70% of rated cluster throughput.",
+        "type": "quality",
+        "category": "performance-efficiency",
+        "priority": "must",
+        "status": "proposed",
+        "rationale": "PO decision on p99 targets.",
+        "acceptance_criteria": [
+          {
+            "id": "AC1",
+            "text": "YCSB workloads A, B, C and F run for 30 minutes each at 70% of rated throughput; p99 read latency ≤ 10 ms."
+          },
+          {
+            "id": "AC2",
+            "text": "In the same runs, p99 write (update/read-modify-write) latency ≤ 20 ms."
+          }
+        ],
+        "tags": [
+          "performance",
+          "oltp"
+        ],
+        "standards": [
+          "$f_ycsb",
+          "$f_fsync"
+        ],
+        "source": "PO elicitation 2026-10-05"
+      },
+      "reason": "OLTP latency"
+    },
+    {
+      "op": "create",
+      "kind": "requirements",
+      "ref": "r_htap_iso",
+      "data": {
+        "title": "OLTP latency under analytical load",
+        "statement": "The system shall keep OLTP p99 latency within 10% of its no-analytics baseline while analytical queries saturate the analytics replicas.",
+        "type": "quality",
+        "category": "performance-efficiency",
+        "priority": "must",
+        "status": "proposed",
+        "rationale": "The purpose of dedicated analytics replicas is workload isolation.",
+        "acceptance_criteria": [
+          {
+            "id": "AC1",
+            "text": "Running YCSB workload A concurrently with a CH-benCHmark-style analytical load at 100% analytics-replica CPU, OLTP p99 read and write latency increase by no more than 10% versus the same YCSB run without analytics."
+          }
+        ],
+        "tags": [
+          "performance",
+          "htap"
+        ],
+        "source": "Research default — PO to confirm 10% bound"
+      },
+      "reason": "HTAP isolation"
+    },
+    {
+      "op": "create",
+      "kind": "requirements",
+      "ref": "r_analytics",
+      "data": {
+        "title": "Analytics on dedicated replicas",
+        "statement": "The system shall execute queries marked analytical only on dedicated non-voting analytics replicas that store data in the same row/document format as voting replicas.",
+        "type": "functional",
+        "category": "htap",
+        "priority": "must",
+        "status": "proposed",
+        "rationale": "PO decision: dedicated same-format analytics replicas.",
+        "acceptance_criteria": [
+          {
+            "id": "AC1",
+            "text": "An analytical query is never executed on a voting replica; tracing shows only analytics replicas served it."
+          },
+          {
+            "id": "AC2",
+            "text": "If no analytics replica is available, an analytical query fails with an explicit error rather than falling back to voting replicas."
+          }
+        ],
+        "tags": [
+          "htap",
+          "analytics"
+        ],
+        "standards": [
+          "$f_tiflash"
+        ],
+        "source": "PO elicitation 2026-10-05",
+        "notes": "Open: how a query is marked analytical (hint, session, separate endpoint)."
+      },
+      "reason": "HTAP routing"
+    },
+    {
+      "op": "create",
+      "kind": "requirements",
+      "ref": "r_analytics_cons",
+      "data": {
+        "title": "Eventual consistency of analytics reads",
+        "statement": "The system shall document that analytics-replica reads are eventually consistent, with no freshness bound and no cross-shard snapshot guarantee.",
+        "type": "functional",
+        "category": "htap",
+        "priority": "must",
+        "status": "proposed",
+        "rationale": "PO decision: eventual, no freshness guarantee. Users must not mistake analytics results for transactional reads.",
+        "acceptance_criteria": [
+          {
+            "id": "AC1",
+            "text": "User documentation for analytical queries states the absence of freshness and cross-shard snapshot guarantees."
+          },
+          {
+            "id": "AC2",
+            "text": "Every analytical query result includes the per-shard replication positions it read from."
+          }
+        ],
+        "tags": [
+          "htap",
+          "analytics",
+          "consistency"
+        ],
+        "source": "PO elicitation 2026-10-05"
+      },
+      "reason": "Make the trade-off explicit"
+    },
+    {
+      "op": "create",
+      "kind": "requirements",
+      "ref": "r_txn",
+      "data": {
+        "title": "Multi-document cross-shard transactions",
+        "statement": "The system shall commit or abort atomically all writes of a transaction spanning multiple documents and shards.",
+        "type": "functional",
+        "category": "transactions",
+        "priority": "must",
+        "status": "proposed",
+        "rationale": "HTAP OLTP workloads need multi-entity atomic updates.",
+        "acceptance_criteria": [
+          {
+            "id": "AC1",
+            "text": "A transaction writing documents on 3 different shards, with a coordinator crash injected at each commit phase, leaves either all or none of the writes visible after recovery (100 trials)."
+          }
+        ],
+        "tags": [
+          "transactions"
+        ],
+        "source": "Derived from PO decisions"
+      },
+      "reason": "Atomicity"
+    },
+    {
+      "op": "create",
+      "kind": "requirements",
+      "ref": "r_index",
+      "data": {
+        "title": "Transactional secondary indexes",
+        "statement": "The system shall maintain secondary indexes on document fields within the same transaction as the document write.",
+        "type": "functional",
+        "category": "indexing",
+        "priority": "must",
+        "status": "proposed",
+        "rationale": "Asynchronous indexes would violate serializable reads through indexes.",
+        "acceptance_criteria": [
+          {
+            "id": "AC1",
+            "text": "A query via a secondary index issued after a transaction commits returns that transaction's writes."
+          },
+          {
+            "id": "AC2",
+            "text": "A unique secondary index rejects a duplicate value across shards with a constraint-violation error."
+          }
+        ],
+        "tags": [
+          "indexing"
+        ],
+        "source": "Research default"
+      },
+      "reason": "Indexing"
+    },
+    {
+      "op": "create",
+      "kind": "requirements",
+      "ref": "r_online_ddl",
+      "data": {
+        "title": "Online index and schema changes",
+        "statement": "The system shall build and drop secondary indexes and attach or change collection schemas without blocking concurrent reads or writes.",
+        "type": "quality",
+        "category": "maintainability",
+        "priority": "should",
+        "status": "proposed",
+        "rationale": "Schema evolution must not consume the availability budget.",
+        "acceptance_criteria": [
+          {
+            "id": "AC1",
+            "text": "Building an index on a 100 GiB collection under YCSB workload A causes zero failed client requests and OLTP p99 stays within its target +50%."
+          },
+          {
+            "id": "AC2",
+            "text": "An in-progress index build can be cancelled and leaves no partial index visible to queries."
+          }
+        ],
+        "tags": [
+          "operations",
+          "indexing"
+        ],
+        "source": "Research default"
+      },
+      "reason": "Maintainability"
+    },
+    {
+      "op": "create",
+      "kind": "requirements",
+      "ref": "r_rebalance",
+      "data": {
+        "title": "Automatic shard split and rebalance",
+        "statement": "The system shall automatically split shards exceeding a configurable size and rebalance shard replicas across nodes without rejecting client requests.",
+        "type": "quality",
+        "category": "flexibility",
+        "priority": "must",
+        "status": "proposed",
+        "rationale": "Horizontal scalability; splits are a common source of correctness bugs.",
+        "acceptance_criteria": [
+          {
+            "id": "AC1",
+            "text": "Adding a node to a cluster under YCSB workload A results in replica counts per node within ±10% of the mean within 1 hour, with zero failed client requests."
+          },
+          {
+            "id": "AC2",
+            "text": "The Jepsen-style suite with continuous splits finds zero serializability anomalies."
+          }
+        ],
+        "tags": [
+          "scalability",
+          "sharding"
+        ],
+        "source": "Research"
+      },
+      "reason": "Scalability"
+    },
+    {
+      "op": "create",
+      "kind": "requirements",
+      "ref": "r_otel",
+      "data": {
+        "title": "Operational telemetry",
+        "statement": "The system shall export metrics and traces via OpenTelemetry covering request latency, commit latency, WAL fsync latency, transaction abort rate, leader changes and analytics-replica replication lag.",
+        "type": "quality",
+        "category": "maintainability",
+        "priority": "should",
+        "status": "proposed",
+        "rationale": "Operators need visibility, particularly of analytics lag since it carries no SLA.",
+        "acceptance_criteria": [
+          {
+            "id": "AC1",
+            "text": "An OpenTelemetry collector receives each listed metric from every node at least every 15 seconds."
+          },
+          {
+            "id": "AC2",
+            "text": "Analytics replication lag per shard is exported in seconds and in log entries."
+          }
+        ],
+        "tags": [
+          "observability"
+        ],
+        "source": "Research default"
+      },
+      "reason": "Observability"
+    },
+    {
+      "op": "create",
+      "kind": "requirements",
+      "ref": "r_tls",
+      "data": {
+        "title": "Encryption in transit",
+        "statement": "The system shall encrypt 100% of client and intra-cluster connections using TLS 1.3 or TLS 1.2 restricted to AEAD cipher suites.",
+        "type": "quality",
+        "category": "security",
+        "priority": "must",
+        "status": "proposed",
+        "rationale": "NIST SP 800-52r2 baseline.",
+        "acceptance_criteria": [
+          {
+            "id": "AC1",
+            "text": "A TLS scanner against client and peer ports reports no SSLv3, TLS 1.0, TLS 1.1 or non-AEAD cipher suites."
+          },
+          {
+            "id": "AC2",
+            "text": "A plaintext connection attempt to a client or peer port is refused."
+          }
+        ],
+        "tags": [
+          "security",
+          "tls"
+        ],
+        "standards": [
+          "$f_tls"
+        ],
+        "source": "Research default"
+      },
+      "reason": "Confidentiality"
+    },
+    {
+      "op": "create",
+      "kind": "requirements",
+      "ref": "r_mtls",
+      "data": {
+        "title": "Mutual TLS between cluster nodes",
+        "statement": "The system shall refuse 100% of intra-cluster connections not authenticated by a valid cluster certificate.",
+        "type": "quality",
+        "category": "security",
+        "priority": "must",
+        "status": "proposed",
+        "rationale": "Prevents rogue nodes joining or impersonating peers.",
+        "acceptance_criteria": [
+          {
+            "id": "AC1",
+            "text": "A peer connection presenting no certificate, an expired certificate or a certificate from another CA is refused and audit-logged."
+          }
+        ],
+        "tags": [
+          "security",
+          "tls"
+        ],
+        "standards": [
+          "$f_tls"
+        ],
+        "source": "Research default"
+      },
+      "reason": "Peer authenticity"
+    },
+    {
+      "op": "create",
+      "kind": "requirements",
+      "ref": "r_authn",
+      "data": {
+        "title": "Authentication required by default",
+        "statement": "The system shall require authentication for every client connection by default, supporting SCRAM-SHA-256, x.509 client certificates and OIDC tokens.",
+        "type": "quality",
+        "category": "security",
+        "priority": "must",
+        "status": "proposed",
+        "rationale": "Unauthenticated defaults are the commonest real-world database breach.",
+        "acceptance_criteria": [
+          {
+            "id": "AC1",
+            "text": "A freshly installed node rejects unauthenticated connections and listens only on loopback until explicitly configured otherwise."
+          },
+          {
+            "id": "AC2",
+            "text": "A client can authenticate successfully with each of SCRAM-SHA-256, x.509 and OIDC."
+          }
+        ],
+        "tags": [
+          "security",
+          "authn"
+        ],
+        "source": "Research default"
+      },
+      "reason": "Authenticity"
+    },
+    {
+      "op": "create",
+      "kind": "requirements",
+      "ref": "r_rbac",
+      "data": {
+        "title": "Role-based access control",
+        "statement": "The system shall deny 100% of operations not permitted by the requesting principal's roles, with privileges scoped to individual collections.",
+        "type": "quality",
+        "category": "security",
+        "priority": "must",
+        "status": "proposed",
+        "rationale": "SOC 2 / ISO 27001 access-control evidence; least-privilege built-in roles.",
+        "acceptance_criteria": [
+          {
+            "id": "AC1",
+            "text": "A user granted read on collection A receives a permission error on any write to A and any read of collection B."
+          },
+          {
+            "id": "AC2",
+            "text": "Built-in roles (read, readWrite, dbAdmin, clusterAdmin) are documented with their exact privileges."
+          }
+        ],
+        "tags": [
+          "security",
+          "authz"
+        ],
+        "standards": [
+          "$f_gdpr"
+        ],
+        "source": "Research default"
+      },
+      "reason": "Authorization"
+    },
+    {
+      "op": "create",
+      "kind": "requirements",
+      "ref": "r_rest",
+      "data": {
+        "title": "Encryption at rest",
+        "statement": "The system shall encrypt data files, WAL, backups and analytics replicas at rest with AES-256 using data keys wrapped by a KMS-managed key.",
+        "type": "quality",
+        "category": "security",
+        "priority": "must",
+        "status": "proposed",
+        "rationale": "Confidentiality and enables crypto-shredding for erasure.",
+        "acceptance_criteria": [
+          {
+            "id": "AC1",
+            "text": "A byte-level scan of data files, WAL segments and backup files finds no plaintext of a known inserted marker value."
+          },
+          {
+            "id": "AC2",
+            "text": "Rotating the KMS key does not require downtime and old data remains readable."
+          }
+        ],
+        "tags": [
+          "security",
+          "encryption"
+        ],
+        "source": "Research default"
+      },
+      "reason": "Confidentiality"
+    },
+    {
+      "op": "create",
+      "kind": "requirements",
+      "ref": "r_audit",
+      "data": {
+        "title": "Audit logging",
+        "statement": "The system shall record authentication attempts, authorization failures, DDL and administrative actions in an append-only audit log exportable to an external sink, with document values redacted.",
+        "type": "quality",
+        "category": "security",
+        "priority": "must",
+        "status": "proposed",
+        "rationale": "Accountability evidence for SOC 2 / ISO 27001 without retaining PII.",
+        "acceptance_criteria": [
+          {
+            "id": "AC1",
+            "text": "Each listed event type produces an audit record with timestamp, principal, action, target and outcome within 5 seconds."
+          },
+          {
+            "id": "AC2",
+            "text": "Audit records contain no document field values."
+          }
+        ],
+        "tags": [
+          "security",
+          "audit"
+        ],
+        "standards": [
+          "$f_gdpr"
+        ],
+        "source": "Research default"
+      },
+      "reason": "Accountability"
+    },
+    {
+      "op": "create",
+      "kind": "decisions",
+      "ref": "d_type",
+      "data": {
+        "title": "DS-CORE is a key-value/document store for HTAP workloads",
+        "context": "PO asked to define engine type and workload.",
+        "decision": "Key-value / document data model serving both transactional and analytical (HTAP) workloads.",
+        "status": "accepted",
+        "accepted_at": "2026-10-05",
+        "requirements": [
+          "$r_types",
+          "$r_analytics"
+        ]
+      },
+      "reason": "Record PO choice"
+    },
+    {
+      "op": "create",
+      "kind": "decisions",
+      "ref": "d_raft",
+      "data": {
+        "title": "Distributed sharded deployment with Raft",
+        "context": "Choice of deployment and consistency model for v1.",
+        "decision": "Shard data across nodes, replicating each shard with Raft for strong consistency.",
+        "status": "accepted",
+        "accepted_at": "2026-10-05",
+        "requirements": [
+          "$r_raft",
+          "$r_commit",
+          "$r_membership",
+          "$r_failover"
+        ]
+      },
+      "reason": "Record PO choice"
+    },
+    {
+      "op": "create",
+      "kind": "decisions",
+      "ref": "d_serial",
+      "data": {
+        "title": "Serializable isolation by default",
+        "context": "Isolation level options: snapshot isolation, serializable, single-document only.",
+        "decision": "All transactions run at serializable isolation; accept higher abort rates, mitigated by a retryable error contract.",
+        "status": "accepted",
+        "accepted_at": "2026-10-05",
+        "requirements": [
+          "$r_serializable",
+          "$r_retry",
+          "$r_retry_err"
+        ]
+      },
+      "reason": "Record PO choice"
+    },
+    {
+      "op": "create",
+      "kind": "decisions",
+      "ref": "d_analytics",
+      "data": {
+        "title": "Analytics on same-format replicas, eventually consistent",
+        "context": "How to isolate analytics from OLTP and how fresh analytics must be.",
+        "decision": "Dedicated non-voting analytics replicas in row/document format; reads are eventually consistent with no freshness bound.",
+        "status": "accepted",
+        "accepted_at": "2026-10-05",
+        "requirements": [
+          "$r_analytics",
+          "$r_analytics_cons",
+          "$r_htap_iso"
+        ]
+      },
+      "reason": "Record PO choice"
+    },
+    {
+      "op": "create",
+      "kind": "decisions",
+      "ref": "d_partiql",
+      "data": {
+        "title": "PartiQL as primary query API",
+        "context": "Options: MongoDB-compatible, SQL/JSON, PartiQL, native gRPC/REST.",
+        "decision": "PartiQL (SQL++ family) is the primary query and DML language.",
+        "status": "accepted",
+        "accepted_at": "2026-10-05",
+        "requirements": [
+          "$r_partiql",
+          "$r_protocol"
+        ]
+      },
+      "reason": "Record PO choice"
+    }
+  ],
+  "impact_notes": {
+    "stories": "None yet — this is the first requirement set. Every requirement will show 'no story' in the trace gate until /reqforge:plan creates epics, stories and evals.",
+    "code": "No components configured for DS-CORE; no code or trace tags affected.",
+    "evals": "None yet. Planning must add performance evals (REQ latency, HTAP isolation, size limit), e2e/integration evals for reliability (commit durability, failover, membership, PITR, upgrade, availability), security evals for TLS/mTLS/authn/RBAC/at-rest/audit, and a Jepsen-style correctness suite.",
+    "risks": [
+      "Several thresholds are research defaults awaiting PO confirmation: failover ≤ 10 s, 99.99% availability, RPO ≤ 5 min / 7-day PITR window, ≤ 10% OLTP degradation under analytics, 30-day erasure, 16 MiB document limit.",
+      "Open decisions: client transport protocol (gRPC / HTTP/2 / custom) and how a query is marked analytical.",
+      "Serializable-by-default will raise abort rates under contention; clients must handle the retryable error.",
+      "Eventually consistent analytics means cross-shard aggregates can be momentarily inconsistent with each other and with OLTP.",
+      "Five findings are graded THIN (PITR, SLA, JSON Schema, TLS, GDPR, PartiQL) and should be re-verified before external commitments."
+    ]
+  },
+  "base_versions": {},
+  "analysis": {
+    "valid": true,
+    "errors": [],
+    "ops": [
+      {
+        "i": 0,
+        "op": "finding",
+        "kind": "findings",
+        "id": "RF-0001",
+        "ref": "f_raft_timing",
+        "title": "The Raft paper recommends a 150-300 ms election timeout and requires broadcastTime electionTimeout MTBF.",
+        "reason": "Research: consistency slice",
+        "data": {
+          "id": "RF-0001",
+          "claim": "The Raft paper recommends a 150-300 ms election timeout and requires broadcastTime electionTimeout MTBF.",
+          "grade": "VERIFIED",
+          "sources": [
+            "https://raft.github.io/raft.pdf"
+          ],
+          "date": "2026-10-05",
+          "perishability": "slow",
+          "refresh_by": "2027-04-03"
+        }
+      },
+      {
+        "i": 1,
+        "op": "finding",
+        "kind": "findings",
+        "id": "RF-0002",
+        "ref": "f_raft_joint",
+        "title": "Raft handles membership changes with two-phase joint consensus in which both old and new configurations apply until the joint configuration commits.",
+        "reason": "Research: consistency slice",
+        "data": {
+          "id": "RF-0002",
+          "claim": "Raft handles membership changes with two-phase joint consensus in which both old and new configurations apply until the joint configuration commits.",
+          "grade": "VERIFIED",
+          "sources": [
+            "https://raft.github.io/raft.pdf"
+          ],
+          "date": "2026-10-05",
+          "perishability": "slow",
+          "refresh_by": "2027-04-03"
+        }
+      },
+      {
+        "i": 2,
+        "op": "finding",
+        "kind": "findings",
+        "id": "RF-0003",
+        "ref": "f_tidb_retry",
+        "title": "Jepsen found TiDB 2.1.7 to 3.0.0-beta.1 exhibited read skew and lost updates due to transaction auto-retry, fixed by disabling retry by default in 3.0.0-rc.2.",
+        "reason": "Research: consistency slice",
+        "data": {
+          "id": "RF-0003",
+          "claim": "Jepsen found TiDB 2.1.7 to 3.0.0-beta.1 exhibited read skew and lost updates due to transaction auto-retry, fixed by disabling retry by default in 3.0.0-rc.2.",
+          "grade": "VERIFIED",
+          "sources": [
+            "https://jepsen.io/analyses/tidb-2.1.7"
+          ],
+          "date": "2026-10-05",
+          "perishability": "slow",
+          "refresh_by": "2027-04-03"
+        }
+      },
+      {
+        "i": 3,
+        "op": "finding",
+        "kind": "findings",
+        "id": "RF-0004",
+        "ref": "f_mongo_defaults",
+        "title": "Jepsen found MongoDB 4.2.6 transactions defaulted to read concern local and w:1 and showed snapshot isolation violations including read skew.",
+        "reason": "Research: consistency slice",
+        "data": {
+          "id": "RF-0004",
+          "claim": "Jepsen found MongoDB 4.2.6 transactions defaulted to read concern local and w:1 and showed snapshot isolation violations including read skew.",
+          "grade": "VERIFIED",
+          "sources": [
+            "https://jepsen.io/analyses/mongodb-4.2.6"
+          ],
+          "date": "2026-10-05",
+          "perishability": "fast",
+          "refresh_by": "2026-12-04"
+        }
+      },
+      {
+        "i": 4,
+        "op": "finding",
+        "kind": "findings",
+        "id": "RF-0005",
+        "ref": "f_crdb_serial",
+        "title": "CockroachDB offers serializable as its only isolation level and documents its guarantee as no stale reads rather than strict serializability.",
+        "reason": "Research: consistency slice",
+        "data": {
+          "id": "RF-0005",
+          "claim": "CockroachDB offers serializable as its only isolation level and documents its guarantee as no stale reads rather than strict serializability.",
+          "grade": "VERIFIED",
+          "sources": [
+            "https://www.cockroachlabs.com/blog/consistency-model/",
+            "https://docs.cockroachlabs.com/docs/stable/architecture/transaction-layer"
+          ],
+          "date": "2026-10-05",
+          "perishability": "fast",
+          "refresh_by": "2026-12-04"
+        }
+      },
+      {
+        "i": 5,
+        "op": "finding",
+        "kind": "findings",
+        "id": "RF-0006",
+        "ref": "f_tiflash",
+        "title": "TiFlash replicas are Raft learners that replicate asynchronously and do not participate in commit quorum.",
+        "reason": "Research: consistency slice",
+        "data": {
+          "id": "RF-0006",
+          "claim": "TiFlash replicas are Raft learners that replicate asynchronously and do not participate in commit quorum.",
+          "grade": "VERIFIED",
+          "sources": [
+            "https://docs.pingcap.com/tidb/stable/tiflash-overview/"
+          ],
+          "date": "2026-10-05",
+          "perishability": "fast",
+          "refresh_by": "2026-12-04"
+        }
+      },
+      {
+        "i": 6,
+        "op": "finding",
+        "kind": "findings",
+        "id": "RF-0007",
+        "ref": "f_ycsb",
+        "title": "YCSB core workloads are A update-heavy 50/50, B read-mostly 95/5, C read-only, D read-latest, E short ranges and F read-modify-write.",
+        "reason": "Research: durability/performance slice",
+        "data": {
+          "id": "RF-0007",
+          "claim": "YCSB core workloads are A update-heavy 50/50, B read-mostly 95/5, C read-only, D read-latest, E short ranges and F read-modify-write.",
+          "grade": "VERIFIED",
+          "sources": [
+            "https://github.com/brianfrankcooper/YCSB/wiki/Core-Workloads"
+          ],
+          "date": "2026-10-05",
+          "perishability": "slow",
+          "refresh_by": "2027-04-03"
+        }
+      },
+      {
+        "i": 7,
+        "op": "finding",
+        "kind": "findings",
+        "id": "RF-0008",
+        "ref": "f_fsync",
+        "title": "etcd documents typical fdatasync latency of about 10 ms on spinning disks and under 1 ms on SSDs, and that cluster performance is bounded by network RTT and disk I/O.",
+        "reason": "Research: durability/performance slice",
+        "data": {
+          "id": "RF-0008",
+          "claim": "etcd documents typical fdatasync latency of about 10 ms on spinning disks and under 1 ms on SSDs, and that cluster performance is bounded by network RTT and disk I/O.",
+          "grade": "VERIFIED",
+          "sources": [
+            "https://etcd.io/docs/v3.5/op-guide/performance/"
+          ],
+          "date": "2026-10-05",
+          "perishability": "slow",
+          "refresh_by": "2027-04-03"
+        }
+      },
+      {
+        "i": 8,
+        "op": "finding",
+        "kind": "findings",
+        "id": "RF-0009",
+        "ref": "f_pitr",
+        "title": "TiDB log backup for PITR can reach an RPO as short as five minutes, with about 5% overhead and restore at about 30 GiB per hour per TiKV node.",
+        "reason": "Research: durability/performance slice",
+        "data": {
+          "id": "RF-0009",
+          "claim": "TiDB log backup for PITR can reach an RPO as short as five minutes, with about 5% overhead and restore at about 30 GiB per hour per TiKV node.",
+          "grade": "THIN",
+          "sources": [
+            "https://docs.pingcap.com/tidb/stable/backup-and-restore-overview/"
+          ],
+          "date": "2026-10-05",
+          "perishability": "fast",
+          "refresh_by": "2026-12-04"
+        }
+      },
+      {
+        "i": 9,
+        "op": "finding",
+        "kind": "findings",
+        "id": "RF-0010",
+        "ref": "f_sla",
+        "title": "Cloud Spanner commits 99.999% monthly uptime for multi-region and dual-region instances and 99.99% for regional instances, computed per month per project per region.",
+        "reason": "Research: durability/performance slice",
+        "data": {
+          "id": "RF-0010",
+          "claim": "Cloud Spanner commits 99.999% monthly uptime for multi-region and dual-region instances and 99.99% for regional instances, computed per month per project per region.",
+          "grade": "THIN",
+          "sources": [
+            "https://cloud.google.com/spanner/sla"
+          ],
+          "date": "2026-10-05",
+          "perishability": "fast",
+          "refresh_by": "2026-12-04"
+        }
+      },
+      {
+        "i": 10,
+        "op": "finding",
+        "kind": "findings",
+        "id": "RF-0011",
+        "ref": "f_upgrade",
+        "title": "TiDB supports online rolling upgrades with leader eviction before node stop and a 5-minute default leader-transfer timeout.",
+        "reason": "Research: durability/performance slice",
+        "data": {
+          "id": "RF-0011",
+          "claim": "TiDB supports online rolling upgrades with leader eviction before node stop and a 5-minute default leader-transfer timeout.",
+          "grade": "VERIFIED",
+          "sources": [
+            "https://docs.pingcap.com/tidb/stable/upgrade-tidb-using-tiup/"
+          ],
+          "date": "2026-10-05",
+          "perishability": "fast",
+          "refresh_by": "2026-12-04"
+        }
+      },
+      {
+        "i": 11,
+        "op": "finding",
+        "kind": "findings",
+        "id": "RF-0012",
+        "ref": "f_limits",
+        "title": "MongoDB limits BSON documents to 16 MiB, nesting to 100 levels and indexes to 64 per collection.",
+        "reason": "Research: durability/performance slice",
+        "data": {
+          "id": "RF-0012",
+          "claim": "MongoDB limits BSON documents to 16 MiB, nesting to 100 levels and indexes to 64 per collection.",
+          "grade": "VERIFIED",
+          "sources": [
+            "https://www.mongodb.com/docs/manual/reference/limits/"
+          ],
+          "date": "2026-10-05",
+          "perishability": "fast",
+          "refresh_by": "2026-12-04"
+        }
+      },
+      {
+        "i": 12,
+        "op": "finding",
+        "kind": "findings",
+        "id": "RF-0013",
+        "ref": "f_json",
+        "title": "RFC 8259 says JSON object names SHOULD be unique, parser behaviour on duplicates is unpredictable, and exact integer interoperability is only guaranteed within ±(2^53−1).",
+        "reason": "Research: data/API/security slice",
+        "data": {
+          "id": "RF-0013",
+          "claim": "RFC 8259 says JSON object names SHOULD be unique, parser behaviour on duplicates is unpredictable, and exact integer interoperability is only guaranteed within ±(2^53−1).",
+          "grade": "VERIFIED",
+          "sources": [
+            "https://www.rfc-editor.org/rfc/rfc8259"
+          ],
+          "date": "2026-10-05",
+          "perishability": "slow",
+          "refresh_by": "2027-04-03"
+        }
+      },
+      {
+        "i": 13,
+        "op": "finding",
+        "kind": "findings",
+        "id": "RF-0014",
+        "ref": "f_bson",
+        "title": "BSON 1.1 defines int32, int64, double and decimal128 types and does not specify a maximum document size.",
+        "reason": "Research: data/API/security slice",
+        "data": {
+          "id": "RF-0014",
+          "claim": "BSON 1.1 defines int32, int64, double and decimal128 types and does not specify a maximum document size.",
+          "grade": "VERIFIED",
+          "sources": [
+            "https://bsonspec.org/spec.html"
+          ],
+          "date": "2026-10-05",
+          "perishability": "slow",
+          "refresh_by": "2027-04-03"
+        }
+      },
+      {
+        "i": 14,
+        "op": "finding",
+        "kind": "findings",
+        "id": "RF-0015",
+        "ref": "f_jsonschema",
+        "title": "JSON Schema 2020-12 is the current stable version and treats the format keyword as annotation-only unless the format-assertion vocabulary is used.",
+        "reason": "Research: data/API/security slice",
+        "data": {
+          "id": "RF-0015",
+          "claim": "JSON Schema 2020-12 is the current stable version and treats the format keyword as annotation-only unless the format-assertion vocabulary is used.",
+          "grade": "THIN",
+          "sources": [
+            "https://json-schema.org/specification"
+          ],
+          "date": "2026-10-05",
+          "perishability": "fast",
+          "refresh_by": "2026-12-04"
+        }
+      },
+      {
+        "i": 15,
+        "op": "finding",
+        "kind": "findings",
+        "id": "RF-0016",
+        "ref": "f_tls",
+        "title": "NIST SP 800-52r2 requires TLS servers to support TLS 1.3 by 2024-01-01.",
+        "reason": "Research: data/API/security slice",
+        "data": {
+          "id": "RF-0016",
+          "claim": "NIST SP 800-52r2 requires TLS servers to support TLS 1.3 by 2024-01-01.",
+          "grade": "THIN",
+          "sources": [
+            "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-52r2.pdf"
+          ],
+          "date": "2026-10-05",
+          "perishability": "slow",
+          "refresh_by": "2027-04-03"
+        }
+      },
+      {
+        "i": 16,
+        "op": "finding",
+        "kind": "findings",
+        "id": "RF-0017",
+        "ref": "f_gdpr",
+        "title": "GDPR Article 17 erasure applies to personal data held in storage files, backups, replicas and logs; SOC 2 and ISO/IEC 27001:2022 expect evidence of access control, encryption and logging.",
+        "reason": "Research: data/API/security slice",
+        "data": {
+          "id": "RF-0017",
+          "claim": "GDPR Article 17 erasure applies to personal data held in storage files, backups, replicas and logs; SOC 2 and ISO/IEC 27001:2022 expect evidence of access control, encryption and logging.",
+          "grade": "THIN",
+          "sources": [
+            "https://gdpr-info.eu/art-17-gdpr/"
+          ],
+          "date": "2026-10-05",
+          "perishability": "slow",
+          "refresh_by": "2027-04-03"
+        }
+      },
+      {
+        "i": 17,
+        "op": "finding",
+        "kind": "findings",
+        "id": "RF-0018",
+        "ref": "f_partiql",
+        "title": "PartiQL (SQL++ family) is a SQL-compatible query language for nested and semi-structured data; not verified against a primary specification.",
+        "reason": "Research: data/API/security slice",
+        "data": {
+          "id": "RF-0018",
+          "claim": "PartiQL (SQL++ family) is a SQL-compatible query language for nested and semi-structured data; not verified against a primary specification.",
+          "grade": "THIN",
+          "sources": [
+            "https://partiql.org/"
+          ],
+          "date": "2026-10-05",
+          "perishability": "slow",
+          "refresh_by": "2027-04-03"
+        }
+      },
+      {
+        "i": 18,
+        "op": "create",
+        "kind": "requirements",
+        "id": "REQ-0001",
+        "ref": "r_raft",
+        "title": "Raft replication per shard",
+        "reason": "Core architecture constraint",
+        "data": {
+          "id": "REQ-0001",
+          "priority": "must",
+          "status": "proposed",
+          "acceptance_criteria": [
+            {
+              "id": "AC1",
+              "text": "Every shard has 3 or 5 voting replicas; even voter counts are rejected by configuration validation."
+            },
+            {
+              "id": "AC2",
+              "text": "With 3 AZs available, no two voters of the same shard are placed in the same AZ."
+            }
+          ],
+          "tags": [
+            "raft",
+            "replication"
+          ],
+          "standards": [
+            "RF-0001"
+          ],
+          "title": "Raft replication per shard",
+          "statement": "The system shall replicate every shard using the Raft consensus protocol with an odd number of voting replicas (default 3) placed in distinct availability zones.",
+          "type": "constraint",
+          "category": "technology",
+          "rationale": "PO decision: distributed, sharded, strong consistency via Raft.",
+          "source": "PO elicitation 2026-10-05"
+        }
+      },
+      {
+        "i": 19,
+        "op": "create",
+        "kind": "requirements",
+        "id": "REQ-0002",
+        "ref": "r_compliance",
+        "title": "SOC 2 Type II and ISO 27001 readiness",
+        "reason": "Compliance baseline",
+        "data": {
+          "id": "REQ-0002",
+          "priority": "should",
+          "status": "proposed",
+          "acceptance_criteria": [
+            {
+              "id": "AC1",
+              "text": "A control matrix maps each SOC 2 Trust Services Criterion and ISO 27001 Annex A control in scope to a DS-CORE requirement or documented exclusion."
+            }
+          ],
+          "tags": [
+            "compliance"
+          ],
+          "standards": [
+            "RF-0017"
+          ],
+          "title": "SOC 2 Type II and ISO 27001 readiness",
+          "statement": "The system shall provide the security controls and audit evidence required for SOC 2 Type II and ISO/IEC 27001:2022 certification.",
+          "type": "constraint",
+          "category": "regulatory",
+          "rationale": "Research default: common enterprise buyer requirement; FIPS 140-3 deferred until a market requires it.",
+          "source": "Research default — PO to confirm",
+          "notes": "Not explicitly chosen by the PO; FIPS 140-3 out of scope for v1."
+        }
+      },
+      {
+        "i": 20,
+        "op": "create",
+        "kind": "requirements",
+        "id": "REQ-0003",
+        "ref": "r_partiql",
+        "title": "PartiQL query language",
+        "reason": "Primary query interface",
+        "data": {
+          "id": "REQ-0003",
+          "priority": "must",
+          "status": "proposed",
+          "acceptance_criteria": [
+            {
+              "id": "AC1",
+              "text": "A published conformance matrix lists every PartiQL feature as supported, partially supported or unsupported."
+            },
+            {
+              "id": "AC2",
+              "text": "All statements marked supported in the conformance matrix pass the project's PartiQL conformance test suite."
+            },
+            {
+              "id": "AC3",
+              "text": "Unsupported syntax returns a parse error naming the unsupported feature, not a generic failure."
+            }
+          ],
+          "tags": [
+            "api",
+            "partiql"
+          ],
+          "standards": [
+            "RF-0018"
+          ],
+          "title": "PartiQL query language",
+          "statement": "The system shall accept queries and data manipulation statements (SELECT, INSERT, UPDATE, DELETE) expressed in PartiQL over documents and nested values.",
+          "type": "interface",
+          "category": "api",
+          "rationale": "PO decision: SQL++/PartiQL as the primary query API.",
+          "source": "PO elicitation 2026-10-05"
+        }
+      },
+      {
+        "i": 21,
+        "op": "create",
+        "kind": "requirements",
+        "id": "REQ-0004",
+        "ref": "r_protocol",
+        "title": "Versioned client protocol",
+        "reason": "Transport for the PartiQL API",
+        "data": {
+          "id": "REQ-0004",
+          "priority": "must",
+          "status": "proposed",
+          "acceptance_criteria": [
+            {
+              "id": "AC1",
+              "text": "The protocol specification is published with a version number, and the server rejects unsupported client protocol versions with a version-mismatch error."
+            },
+            {
+              "id": "AC2",
+              "text": "A client can begin, commit and roll back a multi-statement transaction through the protocol."
+            }
+          ],
+          "tags": [
+            "api",
+            "protocol"
+          ],
+          "title": "Versioned client protocol",
+          "statement": "The system shall expose a documented, versioned client protocol for submitting PartiQL statements and controlling transactions (begin, commit, rollback).",
+          "type": "interface",
+          "category": "api",
+          "rationale": "PartiQL is a language, not a transport; clients need a stable protocol.",
+          "source": "Derived from PO decision",
+          "notes": "Open: transport choice (gRPC vs. HTTP/2 vs. custom binary) not yet decided."
+        }
+      },
+      {
+        "i": 22,
+        "op": "create",
+        "kind": "requirements",
+        "id": "REQ-0005",
+        "ref": "r_retry_err",
+        "title": "Retryable serialization-conflict error",
+        "reason": "Client contract for serializable aborts",
+        "data": {
+          "id": "REQ-0005",
+          "priority": "must",
+          "status": "proposed",
+          "acceptance_criteria": [
+            {
+              "id": "AC1",
+              "text": "A forced write-write conflict between two concurrent transactions returns the documented serialization-conflict code to the aborted client."
+            },
+            {
+              "id": "AC2",
+              "text": "Non-retryable failures (syntax, permission, constraint violation) never return the serialization-conflict code."
+            }
+          ],
+          "tags": [
+            "api",
+            "transactions"
+          ],
+          "title": "Retryable serialization-conflict error",
+          "statement": "The system shall return a distinct, documented retryable error code when a transaction aborts because of a serialization conflict.",
+          "type": "interface",
+          "category": "api",
+          "rationale": "Serializable isolation raises abort rates; clients need to distinguish retryable conflicts from permanent failures.",
+          "source": "Derived from PO decision"
+        }
+      },
+      {
+        "i": 23,
+        "op": "create",
+        "kind": "requirements",
+        "id": "REQ-0006",
+        "ref": "r_types",
+        "title": "Typed document values",
+        "reason": "Document data model",
+        "data": {
+          "id": "REQ-0006",
+          "priority": "must",
+          "status": "proposed",
+          "acceptance_criteria": [
+            {
+              "id": "AC1",
+              "text": "Writing and reading back int64 values ±(2^63−1) and decimal128 values returns identical values and types."
+            },
+            {
+              "id": "AC2",
+              "text": "Documents nested up to 100 levels round-trip unchanged."
+            }
+          ],
+          "tags": [
+            "data-model"
+          ],
+          "standards": [
+            "RF-0014",
+            "RF-0013"
+          ],
+          "title": "Typed document values",
+          "statement": "The system shall store document values with explicit types, including int64, double, decimal128, timestamp, binary, array and nested document, without loss of precision on round trip.",
+          "type": "data",
+          "category": "model",
+          "rationale": "Plain JSON loses integer precision beyond 2^53 and has no decimal type.",
+          "source": "Research default"
+        }
+      },
+      {
+        "i": 24,
+        "op": "create",
+        "kind": "requirements",
+        "id": "REQ-0007",
+        "ref": "r_dupkeys",
+        "title": "Reject duplicate field names",
+        "reason": "Data quality",
+        "data": {
+          "id": "REQ-0007",
+          "priority": "must",
+          "status": "proposed",
+          "acceptance_criteria": [
+            {
+              "id": "AC1",
+              "text": "An insert or update containing an object with a repeated field name fails with a validation error and stores nothing."
+            }
+          ],
+          "tags": [
+            "data-model",
+            "validation"
+          ],
+          "standards": [
+            "RF-0013"
+          ],
+          "title": "Reject duplicate field names",
+          "statement": "The system shall reject at ingest any document that contains duplicate field names within the same object.",
+          "type": "data",
+          "category": "quality",
+          "rationale": "RFC 8259 leaves duplicate-key behaviour undefined; parsers disagree, creating consistency and injection risk.",
+          "source": "Research default"
+        }
+      },
+      {
+        "i": 25,
+        "op": "create",
+        "kind": "requirements",
+        "id": "REQ-0008",
+        "ref": "r_schema",
+        "title": "Optional per-collection schema validation",
+        "reason": "Schema enforcement",
+        "data": {
+          "id": "REQ-0008",
+          "priority": "should",
+          "status": "proposed",
+          "acceptance_criteria": [
+            {
+              "id": "AC1",
+              "text": "With a schema attached, a non-conforming insert is rejected with an error naming the failing schema path."
+            },
+            {
+              "id": "AC2",
+              "text": "A schema containing a remote (http/https) $ref is rejected when attached."
+            }
+          ],
+          "tags": [
+            "data-model",
+            "validation"
+          ],
+          "standards": [
+            "RF-0015"
+          ],
+          "title": "Optional per-collection schema validation",
+          "statement": "The system shall reject writes that do not conform to the JSON Schema 2020-12 document attached to their collection.",
+          "type": "data",
+          "category": "quality",
+          "rationale": "Lets teams enforce structure where needed while keeping document flexibility; collections without a schema are unvalidated.",
+          "source": "Research default — PO to confirm"
+        }
+      },
+      {
+        "i": 26,
+        "op": "create",
+        "kind": "requirements",
+        "id": "REQ-0009",
+        "ref": "r_erasure",
+        "title": "Bounded physical erasure",
+        "reason": "Erasure lifecycle",
+        "data": {
+          "id": "REQ-0009",
+          "priority": "should",
+          "status": "proposed",
+          "acceptance_criteria": [
+            {
+              "id": "AC1",
+              "text": "30 days after a delete, a byte-level scan of data files, WAL segments and analytics replicas finds no plaintext of the deleted document."
+            },
+            {
+              "id": "AC2",
+              "text": "Backups older than the delete become unreadable for the deleted data via destruction of the associated encryption key (crypto-shredding) within 30 days."
+            }
+          ],
+          "tags": [
+            "gdpr",
+            "lifecycle"
+          ],
+          "standards": [
+            "RF-0017"
+          ],
+          "title": "Bounded physical erasure",
+          "statement": "The system shall make deleted documents unrecoverable from data files, WAL, replicas and backups within 30 days of deletion.",
+          "type": "data",
+          "category": "lifecycle",
+          "rationale": "GDPR Art. 17: deletes in log-structured/replicated engines leave copies in tombstones, WAL, replicas and backups.",
+          "source": "Research default — PO to confirm 30-day bound"
+        }
+      },
+      {
+        "i": 27,
+        "op": "create",
+        "kind": "requirements",
+        "id": "REQ-0010",
+        "ref": "r_doclimit",
+        "title": "Document size limit",
+        "reason": "Capacity limit",
+        "data": {
+          "id": "REQ-0010",
+          "priority": "must",
+          "status": "proposed",
+          "acceptance_criteria": [
+            {
+              "id": "AC1",
+              "text": "With default configuration, a 16 MiB document is accepted and a 16 MiB + 1 byte document is rejected with the size-limit error."
+            },
+            {
+              "id": "AC2",
+              "text": "Changing the configured limit takes effect without a cluster restart."
+            }
+          ],
+          "tags": [
+            "limits"
+          ],
+          "standards": [
+            "RF-0012",
+            "RF-0014"
+          ],
+          "title": "Document size limit",
+          "statement": "The system shall enforce a configurable maximum document size, defaulting to 16 MiB, and reject larger documents with a size-limit error.",
+          "type": "quality",
+          "category": "performance-efficiency",
+          "rationale": "Unbounded documents risk memory exhaustion and oversized Raft log entries.",
+          "source": "Research default"
+        }
+      },
+      {
+        "i": 28,
+        "op": "create",
+        "kind": "requirements",
+        "id": "REQ-0011",
+        "ref": "r_serializable",
+        "title": "Serializable isolation by default",
+        "reason": "Isolation guarantee",
+        "data": {
+          "id": "REQ-0011",
+          "priority": "must",
+          "status": "proposed",
+          "acceptance_criteria": [
+            {
+              "id": "AC1",
+              "text": "No session, collection or client option can lower isolation below serializable; attempts return a configuration error."
+            },
+            {
+              "id": "AC2",
+              "text": "A Jepsen-style test (network partitions, node crashes, clock skew, membership changes and shard splits) runs for at least 1 hour per release and an Elle-style checker finds zero serializability anomalies."
+            }
+          ],
+          "tags": [
+            "transactions",
+            "consistency"
+          ],
+          "standards": [
+            "RF-0005",
+            "RF-0004"
+          ],
+          "title": "Serializable isolation by default",
+          "statement": "The system shall execute every transaction, including single-statement and cross-shard transactions, at serializable isolation regardless of session, collection or client settings.",
+          "type": "quality",
+          "category": "functional-suitability",
+          "rationale": "PO decision: serializable by default. Jepsen found weak defaults undercutting advertised guarantees (MongoDB 4.2.6).",
+          "source": "PO elicitation 2026-10-05"
+        }
+      },
+      {
+        "i": 29,
+        "op": "create",
+        "kind": "requirements",
+        "id": "REQ-0012",
+        "ref": "r_retry",
+        "title": "Safe internal transaction retry",
+        "reason": "Avoid retry anomalies",
+        "data": {
+          "id": "REQ-0012",
+          "priority": "must",
+          "status": "proposed",
+          "acceptance_criteria": [
+            {
+              "id": "AC1",
+              "text": "An interactive transaction whose read set changed is never silently retried; the client receives the serialization-conflict error."
+            },
+            {
+              "id": "AC2",
+              "text": "The Jepsen-style suite run for at least 1 hour with internal retry enabled reports 0 lost updates."
+            }
+          ],
+          "tags": [
+            "transactions",
+            "consistency"
+          ],
+          "standards": [
+            "RF-0003"
+          ],
+          "title": "Safe internal transaction retry",
+          "statement": "The system shall produce 0 lost updates and 0 serializability anomalies attributable to internal transaction retry.",
+          "type": "quality",
+          "category": "functional-suitability",
+          "rationale": "TiDB's auto-retry caused lost updates and read skew (Jepsen 2.1.7). Retries that cannot preserve serializability must surface the serialization-conflict error instead.",
+          "source": "Research"
+        }
+      },
+      {
+        "i": 30,
+        "op": "create",
+        "kind": "requirements",
+        "id": "REQ-0013",
+        "ref": "r_commit",
+        "title": "Durable quorum commit",
+        "reason": "Durability",
+        "data": {
+          "id": "REQ-0013",
+          "priority": "must",
+          "status": "proposed",
+          "acceptance_criteria": [
+            {
+              "id": "AC1",
+              "text": "After power-cutting all nodes of a 3-voter shard immediately after acknowledgment, every acknowledged write is present on restart (1,000 trials, zero losses)."
+            },
+            {
+              "id": "AC2",
+              "text": "With only one voter plus any number of analytics replicas reachable, writes to that shard are not acknowledged."
+            }
+          ],
+          "tags": [
+            "durability",
+            "raft"
+          ],
+          "standards": [
+            "RF-0008",
+            "RF-0006"
+          ],
+          "title": "Durable quorum commit",
+          "statement": "The system shall lose 0 acknowledged writes when every node loses power simultaneously, acknowledging a write only after a majority of the shard's voting replicas have fsynced it.",
+          "type": "quality",
+          "category": "reliability",
+          "rationale": "Prevents loss of acknowledged writes on correlated power loss. Analytics replicas never count toward the quorum.",
+          "source": "Research default"
+        }
+      },
+      {
+        "i": 31,
+        "op": "create",
+        "kind": "requirements",
+        "id": "REQ-0014",
+        "ref": "r_membership",
+        "title": "Safe membership change",
+        "reason": "Raft safety",
+        "data": {
+          "id": "REQ-0014",
+          "priority": "must",
+          "status": "proposed",
+          "acceptance_criteria": [
+            {
+              "id": "AC1",
+              "text": "Under the Jepsen-style suite with continuous add/remove of replicas, no two leaders are observed in the same term for a shard."
+            },
+            {
+              "id": "AC2",
+              "text": "A newly added replica is not counted as a voter until its log lag is below the configured bound."
+            }
+          ],
+          "tags": [
+            "raft",
+            "replication"
+          ],
+          "standards": [
+            "RF-0002"
+          ],
+          "title": "Safe membership change",
+          "statement": "The system shall keep at most 1 leader per shard per Raft term in 100% of voter membership changes, using joint consensus or single-server changes.",
+          "type": "quality",
+          "category": "reliability",
+          "rationale": "Single-step multi-voter changes can produce split majorities. New replicas join as non-voting learners and are promoted after catch-up.",
+          "source": "Research"
+        }
+      },
+      {
+        "i": 32,
+        "op": "create",
+        "kind": "requirements",
+        "id": "REQ-0015",
+        "ref": "r_failover",
+        "title": "Leader failover time",
+        "reason": "Failover",
+        "data": {
+          "id": "REQ-0015",
+          "priority": "must",
+          "status": "proposed",
+          "acceptance_criteria": [
+            {
+              "id": "AC1",
+              "text": "Across 100 leader-node kills in a 3-AZ cluster, p99 time from kill to first successful write on the affected shard is ≤ 10 s."
+            },
+            {
+              "id": "AC2",
+              "text": "Configuration validation rejects election timeouts less than 10× the measured heartbeat round trip."
+            }
+          ],
+          "tags": [
+            "raft",
+            "availability"
+          ],
+          "standards": [
+            "RF-0001"
+          ],
+          "title": "Leader failover time",
+          "statement": "The system shall elect a new shard leader and resume serving writes within 10 seconds (p99) of the current leader's node failing.",
+          "type": "quality",
+          "category": "reliability",
+          "rationale": "Bounds write unavailability per shard; research found no verified industry figure.",
+          "source": "Research — PO to confirm 10 s bound"
+        }
+      },
+      {
+        "i": 33,
+        "op": "create",
+        "kind": "requirements",
+        "id": "REQ-0016",
+        "ref": "r_avail",
+        "title": "Regional availability SLA",
+        "reason": "Availability",
+        "data": {
+          "id": "REQ-0016",
+          "priority": "must",
+          "status": "proposed",
+          "acceptance_criteria": [
+            {
+              "id": "AC1",
+              "text": "Availability is measured per calendar month as the fraction of 1-minute intervals in which a synthetic probe's read and write both succeed, and is ≥ 99.99%."
+            },
+            {
+              "id": "AC2",
+              "text": "Loss of one full availability zone causes no interval of unavailability longer than the failover bound."
+            }
+          ],
+          "tags": [
+            "availability"
+          ],
+          "standards": [
+            "RF-0010"
+          ],
+          "title": "Regional availability SLA",
+          "statement": "The system shall achieve at least 99.99% monthly availability for a regional deployment spanning 3 availability zones.",
+          "type": "quality",
+          "category": "reliability",
+          "rationale": "Research default aligned with Spanner regional SLA structure; 99.999% reserved for future multi-region.",
+          "source": "Research default — PO to confirm"
+        }
+      },
+      {
+        "i": 34,
+        "op": "create",
+        "kind": "requirements",
+        "id": "REQ-0017",
+        "ref": "r_pitr",
+        "title": "Point-in-time recovery",
+        "reason": "Recoverability",
+        "data": {
+          "id": "REQ-0017",
+          "priority": "must",
+          "status": "proposed",
+          "acceptance_criteria": [
+            {
+              "id": "AC1",
+              "text": "After destroying the cluster, restoring to a chosen timestamp recovers all transactions committed at least 5 minutes before the loss."
+            },
+            {
+              "id": "AC2",
+              "text": "Restore throughput is measured and published per node, and the documented RTO formula predicts measured restore time within 20%."
+            }
+          ],
+          "tags": [
+            "backup",
+            "recovery"
+          ],
+          "standards": [
+            "RF-0009"
+          ],
+          "title": "Point-in-time recovery",
+          "statement": "The system shall restore a cluster to any chosen timestamp within a 7-day retention window, losing no more than 5 minutes of committed transactions.",
+          "type": "quality",
+          "category": "reliability",
+          "rationale": "Quorum replication gives RPO 0 against node loss but not against operator error or corruption.",
+          "source": "Research default — PO to confirm"
+        }
+      },
+      {
+        "i": 35,
+        "op": "create",
+        "kind": "requirements",
+        "id": "REQ-0018",
+        "ref": "r_upgrade",
+        "title": "Rolling upgrade without downtime",
+        "reason": "Maintenance availability",
+        "data": {
+          "id": "REQ-0018",
+          "priority": "should",
+          "status": "proposed",
+          "acceptance_criteria": [
+            {
+              "id": "AC1",
+              "text": "During a rolling upgrade under YCSB workload A, the synthetic probe records no failed interval and OLTP p99 stays within its target +50%."
+            },
+            {
+              "id": "AC2",
+              "text": "A mixed-version cluster of N and N+1 minor versions passes the transaction test suite."
+            }
+          ],
+          "tags": [
+            "operations"
+          ],
+          "standards": [
+            "RF-0011"
+          ],
+          "title": "Rolling upgrade without downtime",
+          "statement": "The system shall upgrade one node at a time between consecutive minor versions while continuing to serve reads and writes, transferring shard leadership off each node before it stops.",
+          "type": "quality",
+          "category": "reliability",
+          "rationale": "Planned maintenance must not consume the availability budget.",
+          "source": "Research default"
+        }
+      },
+      {
+        "i": 36,
+        "op": "create",
+        "kind": "requirements",
+        "id": "REQ-0019",
+        "ref": "r_latency",
+        "title": "OLTP point read/write latency",
+        "reason": "OLTP latency",
+        "data": {
+          "id": "REQ-0019",
+          "priority": "must",
+          "status": "proposed",
+          "acceptance_criteria": [
+            {
+              "id": "AC1",
+              "text": "YCSB workloads A, B, C and F run for 30 minutes each at 70% of rated throughput; p99 read latency ≤ 10 ms."
+            },
+            {
+              "id": "AC2",
+              "text": "In the same runs, p99 write (update/read-modify-write) latency ≤ 20 ms."
+            }
+          ],
+          "tags": [
+            "performance",
+            "oltp"
+          ],
+          "standards": [
+            "RF-0007",
+            "RF-0008"
+          ],
+          "title": "OLTP point read/write latency",
+          "statement": "The system shall serve single-document point reads within 10 ms and point writes within 20 ms at the 99th percentile in a 3-AZ single-region deployment on SSD storage, at 70% of rated cluster throughput.",
+          "type": "quality",
+          "category": "performance-efficiency",
+          "rationale": "PO decision on p99 targets.",
+          "source": "PO elicitation 2026-10-05"
+        }
+      },
+      {
+        "i": 37,
+        "op": "create",
+        "kind": "requirements",
+        "id": "REQ-0020",
+        "ref": "r_htap_iso",
+        "title": "OLTP latency under analytical load",
+        "reason": "HTAP isolation",
+        "data": {
+          "id": "REQ-0020",
+          "priority": "must",
+          "status": "proposed",
+          "acceptance_criteria": [
+            {
+              "id": "AC1",
+              "text": "Running YCSB workload A concurrently with a CH-benCHmark-style analytical load at 100% analytics-replica CPU, OLTP p99 read and write latency increase by no more than 10% versus the same YCSB run without analytics."
+            }
+          ],
+          "tags": [
+            "performance",
+            "htap"
+          ],
+          "title": "OLTP latency under analytical load",
+          "statement": "The system shall keep OLTP p99 latency within 10% of its no-analytics baseline while analytical queries saturate the analytics replicas.",
+          "type": "quality",
+          "category": "performance-efficiency",
+          "rationale": "The purpose of dedicated analytics replicas is workload isolation.",
+          "source": "Research default — PO to confirm 10% bound"
+        }
+      },
+      {
+        "i": 38,
+        "op": "create",
+        "kind": "requirements",
+        "id": "REQ-0021",
+        "ref": "r_analytics",
+        "title": "Analytics on dedicated replicas",
+        "reason": "HTAP routing",
+        "data": {
+          "id": "REQ-0021",
+          "priority": "must",
+          "status": "proposed",
+          "acceptance_criteria": [
+            {
+              "id": "AC1",
+              "text": "An analytical query is never executed on a voting replica; tracing shows only analytics replicas served it."
+            },
+            {
+              "id": "AC2",
+              "text": "If no analytics replica is available, an analytical query fails with an explicit error rather than falling back to voting replicas."
+            }
+          ],
+          "tags": [
+            "htap",
+            "analytics"
+          ],
+          "standards": [
+            "RF-0006"
+          ],
+          "title": "Analytics on dedicated replicas",
+          "statement": "The system shall execute queries marked analytical only on dedicated non-voting analytics replicas that store data in the same row/document format as voting replicas.",
+          "type": "functional",
+          "category": "htap",
+          "rationale": "PO decision: dedicated same-format analytics replicas.",
+          "source": "PO elicitation 2026-10-05",
+          "notes": "Open: how a query is marked analytical (hint, session, separate endpoint)."
+        }
+      },
+      {
+        "i": 39,
+        "op": "create",
+        "kind": "requirements",
+        "id": "REQ-0022",
+        "ref": "r_analytics_cons",
+        "title": "Eventual consistency of analytics reads",
+        "reason": "Make the trade-off explicit",
+        "data": {
+          "id": "REQ-0022",
+          "priority": "must",
+          "status": "proposed",
+          "acceptance_criteria": [
+            {
+              "id": "AC1",
+              "text": "User documentation for analytical queries states the absence of freshness and cross-shard snapshot guarantees."
+            },
+            {
+              "id": "AC2",
+              "text": "Every analytical query result includes the per-shard replication positions it read from."
+            }
+          ],
+          "tags": [
+            "htap",
+            "analytics",
+            "consistency"
+          ],
+          "title": "Eventual consistency of analytics reads",
+          "statement": "The system shall document that analytics-replica reads are eventually consistent, with no freshness bound and no cross-shard snapshot guarantee.",
+          "type": "functional",
+          "category": "htap",
+          "rationale": "PO decision: eventual, no freshness guarantee. Users must not mistake analytics results for transactional reads.",
+          "source": "PO elicitation 2026-10-05"
+        }
+      },
+      {
+        "i": 40,
+        "op": "create",
+        "kind": "requirements",
+        "id": "REQ-0023",
+        "ref": "r_txn",
+        "title": "Multi-document cross-shard transactions",
+        "reason": "Atomicity",
+        "data": {
+          "id": "REQ-0023",
+          "priority": "must",
+          "status": "proposed",
+          "acceptance_criteria": [
+            {
+              "id": "AC1",
+              "text": "A transaction writing documents on 3 different shards, with a coordinator crash injected at each commit phase, leaves either all or none of the writes visible after recovery (100 trials)."
+            }
+          ],
+          "tags": [
+            "transactions"
+          ],
+          "title": "Multi-document cross-shard transactions",
+          "statement": "The system shall commit or abort atomically all writes of a transaction spanning multiple documents and shards.",
+          "type": "functional",
+          "category": "transactions",
+          "rationale": "HTAP OLTP workloads need multi-entity atomic updates.",
+          "source": "Derived from PO decisions"
+        }
+      },
+      {
+        "i": 41,
+        "op": "create",
+        "kind": "requirements",
+        "id": "REQ-0024",
+        "ref": "r_index",
+        "title": "Transactional secondary indexes",
+        "reason": "Indexing",
+        "data": {
+          "id": "REQ-0024",
+          "priority": "must",
+          "status": "proposed",
+          "acceptance_criteria": [
+            {
+              "id": "AC1",
+              "text": "A query via a secondary index issued after a transaction commits returns that transaction's writes."
+            },
+            {
+              "id": "AC2",
+              "text": "A unique secondary index rejects a duplicate value across shards with a constraint-violation error."
+            }
+          ],
+          "tags": [
+            "indexing"
+          ],
+          "title": "Transactional secondary indexes",
+          "statement": "The system shall maintain secondary indexes on document fields within the same transaction as the document write.",
+          "type": "functional",
+          "category": "indexing",
+          "rationale": "Asynchronous indexes would violate serializable reads through indexes.",
+          "source": "Research default"
+        }
+      },
+      {
+        "i": 42,
+        "op": "create",
+        "kind": "requirements",
+        "id": "REQ-0025",
+        "ref": "r_online_ddl",
+        "title": "Online index and schema changes",
+        "reason": "Maintainability",
+        "data": {
+          "id": "REQ-0025",
+          "priority": "should",
+          "status": "proposed",
+          "acceptance_criteria": [
+            {
+              "id": "AC1",
+              "text": "Building an index on a 100 GiB collection under YCSB workload A causes zero failed client requests and OLTP p99 stays within its target +50%."
+            },
+            {
+              "id": "AC2",
+              "text": "An in-progress index build can be cancelled and leaves no partial index visible to queries."
+            }
+          ],
+          "tags": [
+            "operations",
+            "indexing"
+          ],
+          "title": "Online index and schema changes",
+          "statement": "The system shall build and drop secondary indexes and attach or change collection schemas without blocking concurrent reads or writes.",
+          "type": "quality",
+          "category": "maintainability",
+          "rationale": "Schema evolution must not consume the availability budget.",
+          "source": "Research default"
+        }
+      },
+      {
+        "i": 43,
+        "op": "create",
+        "kind": "requirements",
+        "id": "REQ-0026",
+        "ref": "r_rebalance",
+        "title": "Automatic shard split and rebalance",
+        "reason": "Scalability",
+        "data": {
+          "id": "REQ-0026",
+          "priority": "must",
+          "status": "proposed",
+          "acceptance_criteria": [
+            {
+              "id": "AC1",
+              "text": "Adding a node to a cluster under YCSB workload A results in replica counts per node within ±10% of the mean within 1 hour, with zero failed client requests."
+            },
+            {
+              "id": "AC2",
+              "text": "The Jepsen-style suite with continuous splits finds zero serializability anomalies."
+            }
+          ],
+          "tags": [
+            "scalability",
+            "sharding"
+          ],
+          "title": "Automatic shard split and rebalance",
+          "statement": "The system shall automatically split shards exceeding a configurable size and rebalance shard replicas across nodes without rejecting client requests.",
+          "type": "quality",
+          "category": "flexibility",
+          "rationale": "Horizontal scalability; splits are a common source of correctness bugs.",
+          "source": "Research"
+        }
+      },
+      {
+        "i": 44,
+        "op": "create",
+        "kind": "requirements",
+        "id": "REQ-0027",
+        "ref": "r_otel",
+        "title": "Operational telemetry",
+        "reason": "Observability",
+        "data": {
+          "id": "REQ-0027",
+          "priority": "should",
+          "status": "proposed",
+          "acceptance_criteria": [
+            {
+              "id": "AC1",
+              "text": "An OpenTelemetry collector receives each listed metric from every node at least every 15 seconds."
+            },
+            {
+              "id": "AC2",
+              "text": "Analytics replication lag per shard is exported in seconds and in log entries."
+            }
+          ],
+          "tags": [
+            "observability"
+          ],
+          "title": "Operational telemetry",
+          "statement": "The system shall export metrics and traces via OpenTelemetry covering request latency, commit latency, WAL fsync latency, transaction abort rate, leader changes and analytics-replica replication lag.",
+          "type": "quality",
+          "category": "maintainability",
+          "rationale": "Operators need visibility, particularly of analytics lag since it carries no SLA.",
+          "source": "Research default"
+        }
+      },
+      {
+        "i": 45,
+        "op": "create",
+        "kind": "requirements",
+        "id": "REQ-0028",
+        "ref": "r_tls",
+        "title": "Encryption in transit",
+        "reason": "Confidentiality",
+        "data": {
+          "id": "REQ-0028",
+          "priority": "must",
+          "status": "proposed",
+          "acceptance_criteria": [
+            {
+              "id": "AC1",
+              "text": "A TLS scanner against client and peer ports reports no SSLv3, TLS 1.0, TLS 1.1 or non-AEAD cipher suites."
+            },
+            {
+              "id": "AC2",
+              "text": "A plaintext connection attempt to a client or peer port is refused."
+            }
+          ],
+          "tags": [
+            "security",
+            "tls"
+          ],
+          "standards": [
+            "RF-0016"
+          ],
+          "title": "Encryption in transit",
+          "statement": "The system shall encrypt 100% of client and intra-cluster connections using TLS 1.3 or TLS 1.2 restricted to AEAD cipher suites.",
+          "type": "quality",
+          "category": "security",
+          "rationale": "NIST SP 800-52r2 baseline.",
+          "source": "Research default"
+        }
+      },
+      {
+        "i": 46,
+        "op": "create",
+        "kind": "requirements",
+        "id": "REQ-0029",
+        "ref": "r_mtls",
+        "title": "Mutual TLS between cluster nodes",
+        "reason": "Peer authenticity",
+        "data": {
+          "id": "REQ-0029",
+          "priority": "must",
+          "status": "proposed",
+          "acceptance_criteria": [
+            {
+              "id": "AC1",
+              "text": "A peer connection presenting no certificate, an expired certificate or a certificate from another CA is refused and audit-logged."
+            }
+          ],
+          "tags": [
+            "security",
+            "tls"
+          ],
+          "standards": [
+            "RF-0016"
+          ],
+          "title": "Mutual TLS between cluster nodes",
+          "statement": "The system shall refuse 100% of intra-cluster connections not authenticated by a valid cluster certificate.",
+          "type": "quality",
+          "category": "security",
+          "rationale": "Prevents rogue nodes joining or impersonating peers.",
+          "source": "Research default"
+        }
+      },
+      {
+        "i": 47,
+        "op": "create",
+        "kind": "requirements",
+        "id": "REQ-0030",
+        "ref": "r_authn",
+        "title": "Authentication required by default",
+        "reason": "Authenticity",
+        "data": {
+          "id": "REQ-0030",
+          "priority": "must",
+          "status": "proposed",
+          "acceptance_criteria": [
+            {
+              "id": "AC1",
+              "text": "A freshly installed node rejects unauthenticated connections and listens only on loopback until explicitly configured otherwise."
+            },
+            {
+              "id": "AC2",
+              "text": "A client can authenticate successfully with each of SCRAM-SHA-256, x.509 and OIDC."
+            }
+          ],
+          "tags": [
+            "security",
+            "authn"
+          ],
+          "title": "Authentication required by default",
+          "statement": "The system shall require authentication for every client connection by default, supporting SCRAM-SHA-256, x.509 client certificates and OIDC tokens.",
+          "type": "quality",
+          "category": "security",
+          "rationale": "Unauthenticated defaults are the commonest real-world database breach.",
+          "source": "Research default"
+        }
+      },
+      {
+        "i": 48,
+        "op": "create",
+        "kind": "requirements",
+        "id": "REQ-0031",
+        "ref": "r_rbac",
+        "title": "Role-based access control",
+        "reason": "Authorization",
+        "data": {
+          "id": "REQ-0031",
+          "priority": "must",
+          "status": "proposed",
+          "acceptance_criteria": [
+            {
+              "id": "AC1",
+              "text": "A user granted read on collection A receives a permission error on any write to A and any read of collection B."
+            },
+            {
+              "id": "AC2",
+              "text": "Built-in roles (read, readWrite, dbAdmin, clusterAdmin) are documented with their exact privileges."
+            }
+          ],
+          "tags": [
+            "security",
+            "authz"
+          ],
+          "standards": [
+            "RF-0017"
+          ],
+          "title": "Role-based access control",
+          "statement": "The system shall deny 100% of operations not permitted by the requesting principal's roles, with privileges scoped to individual collections.",
+          "type": "quality",
+          "category": "security",
+          "rationale": "SOC 2 / ISO 27001 access-control evidence; least-privilege built-in roles.",
+          "source": "Research default"
+        }
+      },
+      {
+        "i": 49,
+        "op": "create",
+        "kind": "requirements",
+        "id": "REQ-0032",
+        "ref": "r_rest",
+        "title": "Encryption at rest",
+        "reason": "Confidentiality",
+        "data": {
+          "id": "REQ-0032",
+          "priority": "must",
+          "status": "proposed",
+          "acceptance_criteria": [
+            {
+              "id": "AC1",
+              "text": "A byte-level scan of data files, WAL segments and backup files finds no plaintext of a known inserted marker value."
+            },
+            {
+              "id": "AC2",
+              "text": "Rotating the KMS key does not require downtime and old data remains readable."
+            }
+          ],
+          "tags": [
+            "security",
+            "encryption"
+          ],
+          "title": "Encryption at rest",
+          "statement": "The system shall encrypt data files, WAL, backups and analytics replicas at rest with AES-256 using data keys wrapped by a KMS-managed key.",
+          "type": "quality",
+          "category": "security",
+          "rationale": "Confidentiality and enables crypto-shredding for erasure.",
+          "source": "Research default"
+        }
+      },
+      {
+        "i": 50,
+        "op": "create",
+        "kind": "requirements",
+        "id": "REQ-0033",
+        "ref": "r_audit",
+        "title": "Audit logging",
+        "reason": "Accountability",
+        "data": {
+          "id": "REQ-0033",
+          "priority": "must",
+          "status": "proposed",
+          "acceptance_criteria": [
+            {
+              "id": "AC1",
+              "text": "Each listed event type produces an audit record with timestamp, principal, action, target and outcome within 5 seconds."
+            },
+            {
+              "id": "AC2",
+              "text": "Audit records contain no document field values."
+            }
+          ],
+          "tags": [
+            "security",
+            "audit"
+          ],
+          "standards": [
+            "RF-0017"
+          ],
+          "title": "Audit logging",
+          "statement": "The system shall record authentication attempts, authorization failures, DDL and administrative actions in an append-only audit log exportable to an external sink, with document values redacted.",
+          "type": "quality",
+          "category": "security",
+          "rationale": "Accountability evidence for SOC 2 / ISO 27001 without retaining PII.",
+          "source": "Research default"
+        }
+      },
+      {
+        "i": 51,
+        "op": "create",
+        "kind": "decisions",
+        "id": "DEC-0001",
+        "ref": "d_type",
+        "title": "DS-CORE is a key-value/document store for HTAP workloads",
+        "reason": "Record PO choice",
+        "data": {
+          "id": "DEC-0001",
+          "status": "accepted",
+          "requirements": [
+            "REQ-0006",
+            "REQ-0021"
+          ],
+          "title": "DS-CORE is a key-value/document store for HTAP workloads",
+          "context": "PO asked to define engine type and workload.",
+          "decision": "Key-value / document data model serving both transactional and analytical (HTAP) workloads.",
+          "accepted_at": "2026-10-05"
+        }
+      },
+      {
+        "i": 52,
+        "op": "create",
+        "kind": "decisions",
+        "id": "DEC-0002",
+        "ref": "d_raft",
+        "title": "Distributed sharded deployment with Raft",
+        "reason": "Record PO choice",
+        "data": {
+          "id": "DEC-0002",
+          "status": "accepted",
+          "requirements": [
+            "REQ-0001",
+            "REQ-0013",
+            "REQ-0014",
+            "REQ-0015"
+          ],
+          "title": "Distributed sharded deployment with Raft",
+          "context": "Choice of deployment and consistency model for v1.",
+          "decision": "Shard data across nodes, replicating each shard with Raft for strong consistency.",
+          "accepted_at": "2026-10-05"
+        }
+      },
+      {
+        "i": 53,
+        "op": "create",
+        "kind": "decisions",
+        "id": "DEC-0003",
+        "ref": "d_serial",
+        "title": "Serializable isolation by default",
+        "reason": "Record PO choice",
+        "data": {
+          "id": "DEC-0003",
+          "status": "accepted",
+          "requirements": [
+            "REQ-0011",
+            "REQ-0012",
+            "REQ-0005"
+          ],
+          "title": "Serializable isolation by default",
+          "context": "Isolation level options: snapshot isolation, serializable, single-document only.",
+          "decision": "All transactions run at serializable isolation; accept higher abort rates, mitigated by a retryable error contract.",
+          "accepted_at": "2026-10-05"
+        }
+      },
+      {
+        "i": 54,
+        "op": "create",
+        "kind": "decisions",
+        "id": "DEC-0004",
+        "ref": "d_analytics",
+        "title": "Analytics on same-format replicas, eventually consistent",
+        "reason": "Record PO choice",
+        "data": {
+          "id": "DEC-0004",
+          "status": "accepted",
+          "requirements": [
+            "REQ-0021",
+            "REQ-0022",
+            "REQ-0020"
+          ],
+          "title": "Analytics on same-format replicas, eventually consistent",
+          "context": "How to isolate analytics from OLTP and how fresh analytics must be.",
+          "decision": "Dedicated non-voting analytics replicas in row/document format; reads are eventually consistent with no freshness bound.",
+          "accepted_at": "2026-10-05"
+        }
+      },
+      {
+        "i": 55,
+        "op": "create",
+        "kind": "decisions",
+        "id": "DEC-0005",
+        "ref": "d_partiql",
+        "title": "PartiQL as primary query API",
+        "reason": "Record PO choice",
+        "data": {
+          "id": "DEC-0005",
+          "status": "accepted",
+          "requirements": [
+            "REQ-0003",
+            "REQ-0004"
+          ],
+          "title": "PartiQL as primary query API",
+          "context": "Options: MongoDB-compatible, SQL/JSON, PartiQL, native gRPC/REST.",
+          "decision": "PartiQL (SQL++ family) is the primary query and DML language.",
+          "accepted_at": "2026-10-05"
+        }
+      }
+    ],
+    "refmap": {
+      "f_raft_timing": "RF-0001",
+      "f_raft_joint": "RF-0002",
+      "f_tidb_retry": "RF-0003",
+      "f_mongo_defaults": "RF-0004",
+      "f_crdb_serial": "RF-0005",
+      "f_tiflash": "RF-0006",
+      "f_ycsb": "RF-0007",
+      "f_fsync": "RF-0008",
+      "f_pitr": "RF-0009",
+      "f_sla": "RF-0010",
+      "f_upgrade": "RF-0011",
+      "f_limits": "RF-0012",
+      "f_json": "RF-0013",
+      "f_bson": "RF-0014",
+      "f_jsonschema": "RF-0015",
+      "f_tls": "RF-0016",
+      "f_gdpr": "RF-0017",
+      "f_partiql": "RF-0018",
+      "r_raft": "REQ-0001",
+      "r_compliance": "REQ-0002",
+      "r_partiql": "REQ-0003",
+      "r_protocol": "REQ-0004",
+      "r_retry_err": "REQ-0005",
+      "r_types": "REQ-0006",
+      "r_dupkeys": "REQ-0007",
+      "r_schema": "REQ-0008",
+      "r_erasure": "REQ-0009",
+      "r_doclimit": "REQ-0010",
+      "r_serializable": "REQ-0011",
+      "r_retry": "REQ-0012",
+      "r_commit": "REQ-0013",
+      "r_membership": "REQ-0014",
+      "r_failover": "REQ-0015",
+      "r_avail": "REQ-0016",
+      "r_pitr": "REQ-0017",
+      "r_upgrade": "REQ-0018",
+      "r_latency": "REQ-0019",
+      "r_htap_iso": "REQ-0020",
+      "r_analytics": "REQ-0021",
+      "r_analytics_cons": "REQ-0022",
+      "r_txn": "REQ-0023",
+      "r_index": "REQ-0024",
+      "r_online_ddl": "REQ-0025",
+      "r_rebalance": "REQ-0026",
+      "r_otel": "REQ-0027",
+      "r_tls": "REQ-0028",
+      "r_mtls": "REQ-0029",
+      "r_authn": "REQ-0030",
+      "r_rbac": "REQ-0031",
+      "r_rest": "REQ-0032",
+      "r_audit": "REQ-0033",
+      "d_type": "DEC-0001",
+      "d_raft": "DEC-0002",
+      "d_serial": "DEC-0003",
+      "d_analytics": "DEC-0004",
+      "d_partiql": "DEC-0005"
+    },
+    "lint": {
+      "before": {
+        "error": 0,
+        "warning": 22,
+        "info": 0
+      },
+      "after": {
+        "error": 0,
+        "warning": 9,
+        "info": 0
+      },
+      "new": [],
+      "resolved": [
+        {
+          "severity": "warning",
+          "rule": "coverage-gap",
+          "ids": [],
+          "message": "no requirement covers constraint/regulatory; add one or waive it in reqforge.json coverage_waivers with a reason"
+        },
+        {
+          "severity": "warning",
+          "rule": "coverage-gap",
+          "ids": [],
+          "message": "no requirement covers constraint/technology; add one or waive it in reqforge.json coverage_waivers with a reason"
+        },
+        {
+          "severity": "warning",
+          "rule": "coverage-gap",
+          "ids": [],
+          "message": "no requirement covers interface/api; add one or waive it in reqforge.json coverage_waivers with a reason"
+        },
+        {
+          "severity": "warning",
+          "rule": "coverage-gap",
+          "ids": [],
+          "message": "no requirement covers data/model; add one or waive it in reqforge.json coverage_waivers with a reason"
+        },
+        {
+          "severity": "warning",
+          "rule": "coverage-gap",
+          "ids": [],
+          "message": "no requirement covers data/lifecycle; add one or waive it in reqforge.json coverage_waivers with a reason"
+        },
+        {
+          "severity": "warning",
+          "rule": "coverage-gap",
+          "ids": [],
+          "message": "no requirement covers data/quality; add one or waive it in reqforge.json coverage_waivers with a reason"
+        },
+        {
+          "severity": "warning",
+          "rule": "coverage-gap",
+          "ids": [],
+          "message": "no requirement covers quality/functional-suitability; add one or waive it in reqforge.json coverage_waivers with a reason"
+        },
+        {
+          "severity": "warning",
+          "rule": "coverage-gap",
+          "ids": [],
+          "message": "no requirement covers quality/performance-efficiency; add one or waive it in reqforge.json coverage_waivers with a reason"
+        },
+        {
+          "severity": "warning",
+          "rule": "coverage-gap",
+          "ids": [],
+          "message": "no requirement covers quality/reliability; add one or waive it in reqforge.json coverage_waivers with a reason"
+        },
+        {
+          "severity": "warning",
+          "rule": "coverage-gap",
+          "ids": [],
+          "message": "no requirement covers quality/security; add one or waive it in reqforge.json coverage_waivers with a reason"
+        },
+        {
+          "severity": "warning",
+          "rule": "coverage-gap",
+          "ids": [],
+          "message": "no requirement covers quality/maintainability; add one or waive it in reqforge.json coverage_waivers with a reason"
+        },
+        {
+          "severity": "warning",
+          "rule": "coverage-gap",
+          "ids": [],
+          "message": "no requirement covers quality/flexibility; add one or waive it in reqforge.json coverage_waivers with a reason"
+        },
+        {
+          "severity": "warning",
+          "rule": "coverage-gap",
+          "ids": [],
+          "message": "no requirement covers functional; add one or waive it in reqforge.json coverage_waivers with a reason"
+        }
+      ],
+      "gaps_before": 22,
+      "gaps_after": 9,
+      "mece_ok": true
+    },
+    "trace": {
+      "ok_before": true,
+      "ok_after": false,
+      "metrics_before": {
+        "requirements": 0,
+        "active": 0,
+        "epics": 0,
+        "stories": 0,
+        "tasks": 0,
+        "evals": 0,
+        "requirement_coverage": 1.0,
+        "criteria_coverage": 1.0
+      },
+      "metrics_after": {
+        "requirements": 33,
+        "active": 33,
+        "epics": 0,
+        "stories": 0,
+        "tasks": 0,
+        "evals": 0,
+        "requirement_coverage": 0.0,
+        "criteria_coverage": 0.0
+      },
+      "delta": [
+        {
+          "check": "req-coverage",
+          "name": "Every active requirement maps to at least one story",
+          "severity": "error",
+          "new_failures": [
+            "REQ-0001 has no story",
+            "REQ-0002 has no story",
+            "REQ-0003 has no story",
+            "REQ-0004 has no story",
+            "REQ-0005 has no story",
+            "REQ-0006 has no story",
+            "REQ-0007 has no story",
+            "REQ-0008 has no story",
+            "REQ-0009 has no story",
+            "REQ-0010 has no story",
+            "REQ-0011 has no story",
+            "REQ-0012 has no story",
+            "REQ-0013 has no story",
+            "REQ-0014 has no story",
+            "REQ-0015 has no story",
+            "REQ-0016 has no story",
+            "REQ-0017 has no story",
+            "REQ-0018 has no story",
+            "REQ-0019 has no story",
+            "REQ-0020 has no story",
+            "REQ-0021 has no story",
+            "REQ-0022 has no story",
+            "REQ-0023 has no story",
+            "REQ-0024 has no story",
+            "REQ-0025 has no story",
+            "REQ-0026 has no story",
+            "REQ-0027 has no story",
+            "REQ-0028 has no story",
+            "REQ-0029 has no story",
+            "REQ-0030 has no story",
+            "REQ-0031 has no story",
+            "REQ-0032 has no story",
+            "REQ-0033 has no story"
+          ],
+          "fixed": []
+        },
+        {
+          "check": "criteria-coverage",
+          "name": "Requirement acceptance criteria are covered by evals",
+          "severity": "error",
+          "new_failures": [
+            "REQ-0001#AC1 not covered by any eval",
+            "REQ-0001#AC2 not covered by any eval",
+            "REQ-0002#AC1 not covered by any eval",
+            "REQ-0003#AC1 not covered by any eval",
+            "REQ-0003#AC2 not covered by any eval",
+            "REQ-0003#AC3 not covered by any eval",
+            "REQ-0004#AC1 not covered by any eval",
+            "REQ-0004#AC2 not covered by any eval",
+            "REQ-0005#AC1 not covered by any eval",
+            "REQ-0005#AC2 not covered by any eval",
+            "REQ-0006#AC1 not covered by any eval",
+            "REQ-0006#AC2 not covered by any eval",
+            "REQ-0007#AC1 not covered by any eval",
+            "REQ-0008#AC1 not covered by any eval",
+            "REQ-0008#AC2 not covered by any eval",
+            "REQ-0009#AC1 not covered by any eval",
+            "REQ-0009#AC2 not covered by any eval",
+            "REQ-0010#AC1 not covered by any eval",
+            "REQ-0010#AC2 not covered by any eval",
+            "REQ-0011#AC1 not covered by any eval",
+            "REQ-0011#AC2 not covered by any eval",
+            "REQ-0012#AC1 not covered by any eval",
+            "REQ-0012#AC2 not covered by any eval",
+            "REQ-0013#AC1 not covered by any eval",
+            "REQ-0013#AC2 not covered by any eval",
+            "REQ-0014#AC1 not covered by any eval",
+            "REQ-0014#AC2 not covered by any eval",
+            "REQ-0015#AC1 not covered by any eval",
+            "REQ-0015#AC2 not covered by any eval",
+            "REQ-0016#AC1 not covered by any eval",
+            "REQ-0016#AC2 not covered by any eval",
+            "REQ-0017#AC1 not covered by any eval",
+            "REQ-0017#AC2 not covered by any eval",
+            "REQ-0018#AC1 not covered by any eval",
+            "REQ-0018#AC2 not covered by any eval",
+            "REQ-0019#AC1 not covered by any eval",
+            "REQ-0019#AC2 not covered by any eval",
+            "REQ-0020#AC1 not covered by any eval",
+            "REQ-0021#AC1 not covered by any eval",
+            "REQ-0021#AC2 not covered by any eval",
+            "REQ-0022#AC1 not covered by any eval",
+            "REQ-0022#AC2 not covered by any eval",
+            "REQ-0023#AC1 not covered by any eval",
+            "REQ-0024#AC1 not covered by any eval",
+            "REQ-0024#AC2 not covered by any eval",
+            "REQ-0025#AC1 not covered by any eval",
+            "REQ-0025#AC2 not covered by any eval",
+            "REQ-0026#AC1 not covered by any eval",
+            "REQ-0026#AC2 not covered by any eval",
+            "REQ-0027#AC1 not covered by any eval",
+            "REQ-0027#AC2 not covered by any eval",
+            "REQ-0028#AC1 not covered by any eval",
+            "REQ-0028#AC2 not covered by any eval",
+            "REQ-0029#AC1 not covered by any eval",
+            "REQ-0030#AC1 not covered by any eval",
+            "REQ-0030#AC2 not covered by any eval",
+            "REQ-0031#AC1 not covered by any eval",
+            "REQ-0031#AC2 not covered by any eval",
+            "REQ-0032#AC1 not covered by any eval",
+            "REQ-0032#AC2 not covered by any eval",
+            "REQ-0033#AC1 not covered by any eval",
+            "REQ-0033#AC2 not covered by any eval"
+          ],
+          "fixed": []
+        },
+        {
+          "check": "quality-evals",
+          "name": "Quality requirements verified by matching eval kinds",
+          "severity": "error",
+          "new_failures": [
+            "REQ-0010 (performance-efficiency) needs an eval of kind performance",
+            "REQ-0013 (reliability) needs an eval of kind e2e/integration/smoke/synthetic-monitor",
+            "REQ-0014 (reliability) needs an eval of kind e2e/integration/smoke/synthetic-monitor",
+            "REQ-0015 (reliability) needs an eval of kind e2e/integration/smoke/synthetic-monitor",
+            "REQ-0016 (reliability) needs an eval of kind e2e/integration/smoke/synthetic-monitor",
+            "REQ-0017 (reliability) needs an eval of kind e2e/integration/smoke/synthetic-monitor",
+            "REQ-0018 (reliability) needs an eval of kind e2e/integration/smoke/synthetic-monitor",
+            "REQ-0019 (performance-efficiency) needs an eval of kind performance",
+            "REQ-0020 (performance-efficiency) needs an eval of kind performance",
+            "REQ-0028 (security) needs an eval of kind security",
+            "REQ-0029 (security) needs an eval of kind security",
+            "REQ-0030 (security) needs an eval of kind security",
+            "REQ-0031 (security) needs an eval of kind security",
+            "REQ-0032 (security) needs an eval of kind security",
+            "REQ-0033 (security) needs an eval of kind security"
+          ],
+          "fixed": []
+        }
+      ]
+    },
+    "impact": {
+      "requirements": [
+        "REQ-0001",
+        "REQ-0002",
+        "REQ-0003",
+        "REQ-0004",
+        "REQ-0005",
+        "REQ-0006",
+        "REQ-0007",
+        "REQ-0008",
+        "REQ-0009",
+        "REQ-0010",
+        "REQ-0011",
+        "REQ-0012",
+        "REQ-0013",
+        "REQ-0014",
+        "REQ-0015",
+        "REQ-0016",
+        "REQ-0017",
+        "REQ-0018",
+        "REQ-0019",
+        "REQ-0020",
+        "REQ-0021",
+        "REQ-0022",
+        "REQ-0023",
+        "REQ-0024",
+        "REQ-0025",
+        "REQ-0026",
+        "REQ-0027",
+        "REQ-0028",
+        "REQ-0029",
+        "REQ-0030",
+        "REQ-0031",
+        "REQ-0032",
+        "REQ-0033"
+      ],
+      "children": [],
+      "stories": [],
+      "tasks": [],
+      "evals": [],
+      "components": [],
+      "in_progress_work": []
+    }
+  }
+}
