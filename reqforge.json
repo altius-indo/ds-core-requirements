@@ -18,8 +18,8 @@
   },
   "agent_queue": {
     "enabled": true,
-    "limit": 2,
+    "limit": 8,
     "changed_by": "jyoti.sanyal",
-    "changed_at": "2026-10-06T04:55:44+00:00"
+    "changed_at": "2026-10-06T05:00:37+00:00"
   }
 }
