@@ -1,0 +1,764 @@
+{
+  "id": "CS-0003",
+  "title": "DS-CORE: runtime environment, client drivers and bulk import",
+  "summary": "Closes three taxonomy gaps: supported runtime platforms and Kubernetes operator (constraint/environment, flexibility), official drivers in six languages (compatibility), and bulk import from CSV/JSON Lines, Neo4j and MongoDB exports (data/migration).",
+  "rationale": "PO decisions 2026-10-05: Linux x86-64 + ARM64 on bare metal/VMs plus a Kubernetes operator; drivers for Java, Python, Go, JavaScript/TypeScript, Rust and C#/.NET; import from generic CSV/JSON Lines, Neo4j (Cypher/GraphML) and MongoDB (BSON/Extended JSON).",
+  "status": "pending",
+  "created": "2026-10-06T04:56:15+00:00",
+  "valid": true,
+  "ops": [
+    {
+      "op": "create",
+      "kind": "requirements",
+      "ref": "r_env",
+      "data": {
+        "title": "Supported platforms",
+        "statement": "The system shall run on Linux on x86-64 and ARM64 processors, on bare-metal servers and virtual machines.",
+        "type": "constraint",
+        "category": "environment",
+        "priority": "must",
+        "status": "proposed",
+        "rationale": "PO decision: Linux x86-64 and ARM64 on bare metal/VMs.",
+        "acceptance_criteria": [
+          {
+            "id": "AC1",
+            "text": "Each release publishes server binaries for linux/amd64 and linux/arm64."
+          },
+          {
+            "id": "AC2",
+            "text": "The full release test suite, including the Jepsen-style suite, passes on both linux/amd64 and linux/arm64."
+          },
+          {
+            "id": "AC3",
+            "text": "A cluster mixing amd64 and arm64 nodes passes the transaction test suite."
+          }
+        ],
+        "tags": [
+          "platform"
+        ],
+        "source": "PO elicitation 2026-10-05",
+        "notes": "Open: minimum Linux kernel and glibc versions."
+      },
+      "reason": "Close constraint/environment gap"
+    },
+    {
+      "op": "create",
+      "kind": "requirements",
+      "ref": "r_k8s",
+      "data": {
+        "title": "Kubernetes operator",
+        "statement": "The system shall provide a Kubernetes operator that brings a declared 3-node cluster to a ready, serving state within 10 minutes of the cluster resource being applied.",
+        "type": "quality",
+        "category": "flexibility",
+        "priority": "must",
+        "status": "proposed",
+        "rationale": "PO decision: Kubernetes operator in addition to bare metal/VMs.",
+        "acceptance_criteria": [
+          {
+            "id": "AC1",
+            "text": "On each of the 3 most recent Kubernetes minor releases, applying a 3-node cluster resource yields a cluster that accepts authenticated GQL reads and writes within 10 minutes."
+          },
+          {
+            "id": "AC2",
+            "text": "Changing the declared node count from 3 to 5 adds nodes and rebalances replicas with zero failed client requests."
+          },
+          {
+            "id": "AC3",
+            "text": "Changing the declared version performs a rolling upgrade that meets REQ-0021 acceptance criteria."
+          }
+        ],
+        "tags": [
+          "platform",
+          "kubernetes",
+          "operations"
+        ],
+        "source": "PO elicitation 2026-10-05"
+      },
+      "reason": "Installability on Kubernetes"
+    },
+    {
+      "op": "create",
+      "kind": "requirements",
+      "ref": "r_drivers",
+      "data": {
+        "title": "Official client drivers",
+        "statement": "The system shall provide official client drivers for Java, Python, Go, JavaScript/TypeScript, Rust and C#/.NET, each passing 100% of the shared driver conformance suite.",
+        "type": "quality",
+        "category": "compatibility",
+        "priority": "must",
+        "status": "proposed",
+        "rationale": "PO decision: six officially supported driver languages.",
+        "acceptance_criteria": [
+          {
+            "id": "AC1",
+            "text": "A shared conformance suite (connection, authentication, GQL execution, transactions, retryable serialization-conflict error, typed value round-trip) passes 100% for each of the six drivers."
+          },
+          {
+            "id": "AC2",
+            "text": "Each driver is published to its ecosystem registry (Maven Central, PyPI, Go modules, npm, NuGet, crates.io) with every server release."
+          },
+          {
+            "id": "AC3",
+            "text": "Each driver passes the conformance suite against the current and previous server minor versions."
+          }
+        ],
+        "tags": [
+          "drivers",
+          "api"
+        ],
+        "source": "PO elicitation 2026-10-05"
+      },
+      "reason": "Close quality/compatibility gap"
+    },
+    {
+      "op": "create",
+      "kind": "requirements",
+      "ref": "r_import",
+      "data": {
+        "title": "Bulk import throughput",
+        "statement": "The system shall bulk-import graph data at a sustained rate of at least 50,000 nodes plus edges per second on a 3-node cluster.",
+        "type": "data",
+        "category": "migration",
+        "priority": "must",
+        "status": "proposed",
+        "rationale": "Customers need to move existing data into DS-CORE in hours, not days. Rate is a starting target for PO confirmation.",
+        "acceptance_criteria": [
+          {
+            "id": "AC1",
+            "text": "Importing 100 million nodes and 500 million edges from CSV on a 3-node SSD cluster sustains ≥ 50,000 elements per second averaged over the run."
+          },
+          {
+            "id": "AC2",
+            "text": "Invalid records are written to a reject file with source location and reason, and all valid records are imported."
+          },
+          {
+            "id": "AC3",
+            "text": "An import interrupted by a node failure can be resumed and completes without duplicate nodes or edges."
+          }
+        ],
+        "tags": [
+          "migration",
+          "import"
+        ],
+        "source": "PO elicitation 2026-10-05 — PO to confirm 50k/s"
+      },
+      "reason": "Close data/migration gap"
+    },
+    {
+      "op": "create",
+      "kind": "requirements",
+      "ref": "r_import_csv",
+      "data": {
+        "title": "Import from CSV and JSON Lines",
+        "statement": "The system shall import nodes and edges from CSV and JSON Lines files using a documented mapping for identifiers, labels, edge endpoints, edge types and properties.",
+        "type": "data",
+        "category": "migration",
+        "priority": "must",
+        "status": "proposed",
+        "parent": "$r_import",
+        "rationale": "PO decision: source-agnostic generic format.",
+        "acceptance_criteria": [
+          {
+            "id": "AC1",
+            "text": "A sample dataset of node and edge files in CSV and in JSON Lines imports to a graph whose node count, edge count and property values match the source exactly."
+          }
+        ],
+        "tags": [
+          "migration",
+          "import"
+        ],
+        "source": "PO elicitation 2026-10-05"
+      },
+      "reason": "Generic import source"
+    },
+    {
+      "op": "create",
+      "kind": "requirements",
+      "ref": "r_import_neo4j",
+      "data": {
+        "title": "Import from Neo4j exports",
+        "statement": "The system shall import Neo4j exports in Cypher-script and GraphML formats, preserving node labels, relationship types, direction and properties.",
+        "type": "data",
+        "category": "migration",
+        "priority": "must",
+        "status": "proposed",
+        "parent": "$r_import",
+        "rationale": "PO decision: Neo4j is a likely migration source for graph users.",
+        "acceptance_criteria": [
+          {
+            "id": "AC1",
+            "text": "A reference Neo4j database exported as Cypher script and as GraphML imports with identical node, relationship, label, type and property counts."
+          },
+          {
+            "id": "AC2",
+            "text": "Neo4j property types without a DS-CORE equivalent are converted per a documented mapping table or reported in the reject file."
+          }
+        ],
+        "tags": [
+          "migration",
+          "import",
+          "neo4j"
+        ],
+        "source": "PO elicitation 2026-10-05"
+      },
+      "reason": "Neo4j import source"
+    },
+    {
+      "op": "create",
+      "kind": "requirements",
+      "ref": "r_import_mongo",
+      "data": {
+        "title": "Import from MongoDB exports",
+        "statement": "The system shall import MongoDB exports in BSON and Extended JSON as nodes, converting user-configured reference fields into edges.",
+        "type": "data",
+        "category": "migration",
+        "priority": "must",
+        "status": "proposed",
+        "parent": "$r_import",
+        "rationale": "PO decision: MongoDB documents carry no edges; references must be mapped explicitly.",
+        "acceptance_criteria": [
+          {
+            "id": "AC1",
+            "text": "A mongodump BSON export and a mongoexport Extended JSON export each import as one node per document, labelled by collection, with int64, decimal128, date and binary values preserved."
+          },
+          {
+            "id": "AC2",
+            "text": "With a mapping declaring field orders.customer_id as an edge of type PLACED_BY to customers, every order node has exactly one PLACED_BY edge to its customer node; unresolved references are listed in the reject file."
+          }
+        ],
+        "tags": [
+          "migration",
+          "import",
+          "mongodb"
+        ],
+        "source": "PO elicitation 2026-10-05"
+      },
+      "reason": "MongoDB import source"
+    },
+    {
+      "op": "create",
+      "kind": "decisions",
+      "ref": "d_platform",
+      "data": {
+        "title": "Linux x86-64/ARM64 plus Kubernetes operator",
+        "context": "Runtime environments for v1: options included VM-only, Helm-only, or operator-only.",
+        "decision": "Support Linux on x86-64 and ARM64 on bare metal and VMs, plus a Kubernetes operator.",
+        "status": "accepted",
+        "accepted_at": "2026-10-05",
+        "requirements": [
+          "$r_env",
+          "$r_k8s"
+        ]
+      },
+      "reason": "Record PO choice"
+    },
+    {
+      "op": "create",
+      "kind": "decisions",
+      "ref": "d_drivers",
+      "data": {
+        "title": "Six official driver languages",
+        "context": "Driver scope options ranged from Go only to six languages.",
+        "decision": "Official drivers for Java, Python, Go, JavaScript/TypeScript, Rust and C#/.NET, held to one shared conformance suite.",
+        "status": "accepted",
+        "accepted_at": "2026-10-05",
+        "requirements": [
+          "$r_drivers"
+        ]
+      },
+      "reason": "Record PO choice"
+    },
+    {
+      "op": "create",
+      "kind": "decisions",
+      "ref": "d_import",
+      "data": {
+        "title": "Bulk import sources for v1",
+        "context": "Candidate sources: generic CSV/JSON Lines, Neo4j, MongoDB, relational CSV with FK mapping.",
+        "decision": "Support CSV/JSON Lines node and edge files, Neo4j Cypher/GraphML exports and MongoDB BSON/Extended JSON exports; relational FK mapping deferred.",
+        "status": "accepted",
+        "accepted_at": "2026-10-05",
+        "requirements": [
+          "$r_import",
+          "$r_import_csv",
+          "$r_import_neo4j",
+          "$r_import_mongo"
+        ]
+      },
+      "reason": "Record PO choice"
+    }
+  ],
+  "impact_notes": {
+    "stories": "None exist yet; no story links change.",
+    "code": "No components configured; no code or trace tags affected.",
+    "evals": "None yet. Planning must add: cross-architecture CI matrix (amd64/arm64), a Kubernetes e2e eval across 3 K8s versions, a shared driver conformance suite run per language, an import performance eval and import correctness evals per source.",
+    "risks": [
+      "Six drivers is a large ongoing maintenance surface; each must track every protocol change.",
+      "Import rate 50,000 elements/s and K8s ready-in-10-minutes are starting targets awaiting PO confirmation.",
+      "Minimum Linux kernel/glibc versions are still open.",
+      "Relational-to-graph import (FK→edge) is explicitly deferred."
+    ]
+  },
+  "base_versions": {},
+  "analysis": {
+    "valid": true,
+    "errors": [],
+    "ops": [
+      {
+        "i": 0,
+        "op": "create",
+        "kind": "requirements",
+        "id": "REQ-0041",
+        "ref": "r_env",
+        "title": "Supported platforms",
+        "reason": "Close constraint/environment gap",
+        "data": {
+          "id": "REQ-0041",
+          "priority": "must",
+          "status": "proposed",
+          "acceptance_criteria": [
+            {
+              "id": "AC1",
+              "text": "Each release publishes server binaries for linux/amd64 and linux/arm64."
+            },
+            {
+              "id": "AC2",
+              "text": "The full release test suite, including the Jepsen-style suite, passes on both linux/amd64 and linux/arm64."
+            },
+            {
+              "id": "AC3",
+              "text": "A cluster mixing amd64 and arm64 nodes passes the transaction test suite."
+            }
+          ],
+          "tags": [
+            "platform"
+          ],
+          "title": "Supported platforms",
+          "statement": "The system shall run on Linux on x86-64 and ARM64 processors, on bare-metal servers and virtual machines.",
+          "type": "constraint",
+          "category": "environment",
+          "rationale": "PO decision: Linux x86-64 and ARM64 on bare metal/VMs.",
+          "source": "PO elicitation 2026-10-05",
+          "notes": "Open: minimum Linux kernel and glibc versions."
+        }
+      },
+      {
+        "i": 1,
+        "op": "create",
+        "kind": "requirements",
+        "id": "REQ-0042",
+        "ref": "r_k8s",
+        "title": "Kubernetes operator",
+        "reason": "Installability on Kubernetes",
+        "data": {
+          "id": "REQ-0042",
+          "priority": "must",
+          "status": "proposed",
+          "acceptance_criteria": [
+            {
+              "id": "AC1",
+              "text": "On each of the 3 most recent Kubernetes minor releases, applying a 3-node cluster resource yields a cluster that accepts authenticated GQL reads and writes within 10 minutes."
+            },
+            {
+              "id": "AC2",
+              "text": "Changing the declared node count from 3 to 5 adds nodes and rebalances replicas with zero failed client requests."
+            },
+            {
+              "id": "AC3",
+              "text": "Changing the declared version performs a rolling upgrade that meets REQ-0021 acceptance criteria."
+            }
+          ],
+          "tags": [
+            "platform",
+            "kubernetes",
+            "operations"
+          ],
+          "title": "Kubernetes operator",
+          "statement": "The system shall provide a Kubernetes operator that brings a declared 3-node cluster to a ready, serving state within 10 minutes of the cluster resource being applied.",
+          "type": "quality",
+          "category": "flexibility",
+          "rationale": "PO decision: Kubernetes operator in addition to bare metal/VMs.",
+          "source": "PO elicitation 2026-10-05"
+        }
+      },
+      {
+        "i": 2,
+        "op": "create",
+        "kind": "requirements",
+        "id": "REQ-0043",
+        "ref": "r_drivers",
+        "title": "Official client drivers",
+        "reason": "Close quality/compatibility gap",
+        "data": {
+          "id": "REQ-0043",
+          "priority": "must",
+          "status": "proposed",
+          "acceptance_criteria": [
+            {
+              "id": "AC1",
+              "text": "A shared conformance suite (connection, authentication, GQL execution, transactions, retryable serialization-conflict error, typed value round-trip) passes 100% for each of the six drivers."
+            },
+            {
+              "id": "AC2",
+              "text": "Each driver is published to its ecosystem registry (Maven Central, PyPI, Go modules, npm, NuGet, crates.io) with every server release."
+            },
+            {
+              "id": "AC3",
+              "text": "Each driver passes the conformance suite against the current and previous server minor versions."
+            }
+          ],
+          "tags": [
+            "drivers",
+            "api"
+          ],
+          "title": "Official client drivers",
+          "statement": "The system shall provide official client drivers for Java, Python, Go, JavaScript/TypeScript, Rust and C#/.NET, each passing 100% of the shared driver conformance suite.",
+          "type": "quality",
+          "category": "compatibility",
+          "rationale": "PO decision: six officially supported driver languages.",
+          "source": "PO elicitation 2026-10-05"
+        }
+      },
+      {
+        "i": 3,
+        "op": "create",
+        "kind": "requirements",
+        "id": "REQ-0044",
+        "ref": "r_import",
+        "title": "Bulk import throughput",
+        "reason": "Close data/migration gap",
+        "data": {
+          "id": "REQ-0044",
+          "priority": "must",
+          "status": "proposed",
+          "acceptance_criteria": [
+            {
+              "id": "AC1",
+              "text": "Importing 100 million nodes and 500 million edges from CSV on a 3-node SSD cluster sustains ≥ 50,000 elements per second averaged over the run."
+            },
+            {
+              "id": "AC2",
+              "text": "Invalid records are written to a reject file with source location and reason, and all valid records are imported."
+            },
+            {
+              "id": "AC3",
+              "text": "An import interrupted by a node failure can be resumed and completes without duplicate nodes or edges."
+            }
+          ],
+          "tags": [
+            "migration",
+            "import"
+          ],
+          "title": "Bulk import throughput",
+          "statement": "The system shall bulk-import graph data at a sustained rate of at least 50,000 nodes plus edges per second on a 3-node cluster.",
+          "type": "data",
+          "category": "migration",
+          "rationale": "Customers need to move existing data into DS-CORE in hours, not days. Rate is a starting target for PO confirmation.",
+          "source": "PO elicitation 2026-10-05 — PO to confirm 50k/s"
+        }
+      },
+      {
+        "i": 4,
+        "op": "create",
+        "kind": "requirements",
+        "id": "REQ-0045",
+        "ref": "r_import_csv",
+        "title": "Import from CSV and JSON Lines",
+        "reason": "Generic import source",
+        "data": {
+          "id": "REQ-0045",
+          "priority": "must",
+          "status": "proposed",
+          "acceptance_criteria": [
+            {
+              "id": "AC1",
+              "text": "A sample dataset of node and edge files in CSV and in JSON Lines imports to a graph whose node count, edge count and property values match the source exactly."
+            }
+          ],
+          "tags": [
+            "migration",
+            "import"
+          ],
+          "title": "Import from CSV and JSON Lines",
+          "statement": "The system shall import nodes and edges from CSV and JSON Lines files using a documented mapping for identifiers, labels, edge endpoints, edge types and properties.",
+          "type": "data",
+          "category": "migration",
+          "parent": "REQ-0044",
+          "rationale": "PO decision: source-agnostic generic format.",
+          "source": "PO elicitation 2026-10-05"
+        }
+      },
+      {
+        "i": 5,
+        "op": "create",
+        "kind": "requirements",
+        "id": "REQ-0046",
+        "ref": "r_import_neo4j",
+        "title": "Import from Neo4j exports",
+        "reason": "Neo4j import source",
+        "data": {
+          "id": "REQ-0046",
+          "priority": "must",
+          "status": "proposed",
+          "acceptance_criteria": [
+            {
+              "id": "AC1",
+              "text": "A reference Neo4j database exported as Cypher script and as GraphML imports with identical node, relationship, label, type and property counts."
+            },
+            {
+              "id": "AC2",
+              "text": "Neo4j property types without a DS-CORE equivalent are converted per a documented mapping table or reported in the reject file."
+            }
+          ],
+          "tags": [
+            "migration",
+            "import",
+            "neo4j"
+          ],
+          "title": "Import from Neo4j exports",
+          "statement": "The system shall import Neo4j exports in Cypher-script and GraphML formats, preserving node labels, relationship types, direction and properties.",
+          "type": "data",
+          "category": "migration",
+          "parent": "REQ-0044",
+          "rationale": "PO decision: Neo4j is a likely migration source for graph users.",
+          "source": "PO elicitation 2026-10-05"
+        }
+      },
+      {
+        "i": 6,
+        "op": "create",
+        "kind": "requirements",
+        "id": "REQ-0047",
+        "ref": "r_import_mongo",
+        "title": "Import from MongoDB exports",
+        "reason": "MongoDB import source",
+        "data": {
+          "id": "REQ-0047",
+          "priority": "must",
+          "status": "proposed",
+          "acceptance_criteria": [
+            {
+              "id": "AC1",
+              "text": "A mongodump BSON export and a mongoexport Extended JSON export each import as one node per document, labelled by collection, with int64, decimal128, date and binary values preserved."
+            },
+            {
+              "id": "AC2",
+              "text": "With a mapping declaring field orders.customer_id as an edge of type PLACED_BY to customers, every order node has exactly one PLACED_BY edge to its customer node; unresolved references are listed in the reject file."
+            }
+          ],
+          "tags": [
+            "migration",
+            "import",
+            "mongodb"
+          ],
+          "title": "Import from MongoDB exports",
+          "statement": "The system shall import MongoDB exports in BSON and Extended JSON as nodes, converting user-configured reference fields into edges.",
+          "type": "data",
+          "category": "migration",
+          "parent": "REQ-0044",
+          "rationale": "PO decision: MongoDB documents carry no edges; references must be mapped explicitly.",
+          "source": "PO elicitation 2026-10-05"
+        }
+      },
+      {
+        "i": 7,
+        "op": "create",
+        "kind": "decisions",
+        "id": "DEC-0008",
+        "ref": "d_platform",
+        "title": "Linux x86-64/ARM64 plus Kubernetes operator",
+        "reason": "Record PO choice",
+        "data": {
+          "id": "DEC-0008",
+          "status": "accepted",
+          "requirements": [
+            "REQ-0041",
+            "REQ-0042"
+          ],
+          "title": "Linux x86-64/ARM64 plus Kubernetes operator",
+          "context": "Runtime environments for v1: options included VM-only, Helm-only, or operator-only.",
+          "decision": "Support Linux on x86-64 and ARM64 on bare metal and VMs, plus a Kubernetes operator.",
+          "accepted_at": "2026-10-05"
+        }
+      },
+      {
+        "i": 8,
+        "op": "create",
+        "kind": "decisions",
+        "id": "DEC-0009",
+        "ref": "d_drivers",
+        "title": "Six official driver languages",
+        "reason": "Record PO choice",
+        "data": {
+          "id": "DEC-0009",
+          "status": "accepted",
+          "requirements": [
+            "REQ-0043"
+          ],
+          "title": "Six official driver languages",
+          "context": "Driver scope options ranged from Go only to six languages.",
+          "decision": "Official drivers for Java, Python, Go, JavaScript/TypeScript, Rust and C#/.NET, held to one shared conformance suite.",
+          "accepted_at": "2026-10-05"
+        }
+      },
+      {
+        "i": 9,
+        "op": "create",
+        "kind": "decisions",
+        "id": "DEC-0010",
+        "ref": "d_import",
+        "title": "Bulk import sources for v1",
+        "reason": "Record PO choice",
+        "data": {
+          "id": "DEC-0010",
+          "status": "accepted",
+          "requirements": [
+            "REQ-0044",
+            "REQ-0045",
+            "REQ-0046",
+            "REQ-0047"
+          ],
+          "title": "Bulk import sources for v1",
+          "context": "Candidate sources: generic CSV/JSON Lines, Neo4j, MongoDB, relational CSV with FK mapping.",
+          "decision": "Support CSV/JSON Lines node and edge files, Neo4j Cypher/GraphML exports and MongoDB BSON/Extended JSON exports; relational FK mapping deferred.",
+          "accepted_at": "2026-10-05"
+        }
+      }
+    ],
+    "refmap": {
+      "r_env": "REQ-0041",
+      "r_k8s": "REQ-0042",
+      "r_drivers": "REQ-0043",
+      "r_import": "REQ-0044",
+      "r_import_csv": "REQ-0045",
+      "r_import_neo4j": "REQ-0046",
+      "r_import_mongo": "REQ-0047",
+      "d_platform": "DEC-0008",
+      "d_drivers": "DEC-0009",
+      "d_import": "DEC-0010"
+    },
+    "lint": {
+      "before": {
+        "error": 0,
+        "warning": 9,
+        "info": 0
+      },
+      "after": {
+        "error": 0,
+        "warning": 6,
+        "info": 0
+      },
+      "new": [],
+      "resolved": [
+        {
+          "severity": "warning",
+          "rule": "coverage-gap",
+          "ids": [],
+          "message": "no requirement covers constraint/environment; add one or waive it in reqforge.json coverage_waivers with a reason"
+        },
+        {
+          "severity": "warning",
+          "rule": "coverage-gap",
+          "ids": [],
+          "message": "no requirement covers data/migration; add one or waive it in reqforge.json coverage_waivers with a reason"
+        },
+        {
+          "severity": "warning",
+          "rule": "coverage-gap",
+          "ids": [],
+          "message": "no requirement covers quality/compatibility; add one or waive it in reqforge.json coverage_waivers with a reason"
+        }
+      ],
+      "gaps_before": 9,
+      "gaps_after": 6,
+      "mece_ok": true
+    },
+    "trace": {
+      "ok_before": false,
+      "ok_after": false,
+      "metrics_before": {
+        "requirements": 40,
+        "active": 40,
+        "epics": 0,
+        "stories": 0,
+        "tasks": 0,
+        "evals": 0,
+        "requirement_coverage": 0.0,
+        "criteria_coverage": 0.0
+      },
+      "metrics_after": {
+        "requirements": 47,
+        "active": 47,
+        "epics": 0,
+        "stories": 0,
+        "tasks": 0,
+        "evals": 0,
+        "requirement_coverage": 0.0,
+        "criteria_coverage": 0.0
+      },
+      "delta": [
+        {
+          "check": "req-coverage",
+          "name": "Every active requirement maps to at least one story",
+          "severity": "error",
+          "new_failures": [
+            "REQ-0041 has no story",
+            "REQ-0042 has no story",
+            "REQ-0043 has no story",
+            "REQ-0044 has no story",
+            "REQ-0045 has no story",
+            "REQ-0046 has no story",
+            "REQ-0047 has no story"
+          ],
+          "fixed": []
+        },
+        {
+          "check": "criteria-coverage",
+          "name": "Requirement acceptance criteria are covered by evals",
+          "severity": "error",
+          "new_failures": [
+            "REQ-0041#AC1 not covered by any eval",
+            "REQ-0041#AC2 not covered by any eval",
+            "REQ-0041#AC3 not covered by any eval",
+            "REQ-0042#AC1 not covered by any eval",
+            "REQ-0042#AC2 not covered by any eval",
+            "REQ-0042#AC3 not covered by any eval",
+            "REQ-0043#AC1 not covered by any eval",
+            "REQ-0043#AC2 not covered by any eval",
+            "REQ-0043#AC3 not covered by any eval",
+            "REQ-0044#AC1 not covered by any eval",
+            "REQ-0044#AC2 not covered by any eval",
+            "REQ-0044#AC3 not covered by any eval",
+            "REQ-0045#AC1 not covered by any eval",
+            "REQ-0046#AC1 not covered by any eval",
+            "REQ-0046#AC2 not covered by any eval",
+            "REQ-0047#AC1 not covered by any eval",
+            "REQ-0047#AC2 not covered by any eval"
+          ],
+          "fixed": []
+        }
+      ]
+    },
+    "impact": {
+      "requirements": [
+        "REQ-0041",
+        "REQ-0042",
+        "REQ-0043",
+        "REQ-0044",
+        "REQ-0045",
+        "REQ-0046",
+        "REQ-0047"
+      ],
+      "children": [
+        "REQ-0045",
+        "REQ-0046",
+        "REQ-0047"
+      ],
+      "stories": [],
+      "tasks": [],
+      "evals": [],
+      "components": [],
+      "in_progress_work": []
+    }
+  }
+}
