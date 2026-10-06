@@ -5,7 +5,7 @@
   "type": "interface",
   "category": "api",
   "priority": "must",
-  "status": "proposed",
+  "status": "approved",
   "rationale": "GQL is a language, not a transport; clients need a stable protocol.",
   "acceptance_criteria": [
     {
@@ -25,7 +25,7 @@
   "stakeholders": [],
   "source": "Derived from PO decision",
   "notes": "Open: transport (gRPC vs HTTP/2 vs custom binary).",
-  "version": 1,
+  "version": 2,
   "created": "2026-10-06T04:50:53+00:00",
-  "updated": "2026-10-06T04:50:53+00:00"
+  "updated": "2026-10-06T05:00:22+00:00"
 }

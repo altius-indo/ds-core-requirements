@@ -5,7 +5,7 @@
   "type": "data",
   "category": "lifecycle",
   "priority": "should",
-  "status": "proposed",
+  "status": "approved",
   "rationale": "GDPR Art. 17: deletes in log-structured/replicated engines leave copies in tombstones, WAL, replicas and backups.",
   "acceptance_criteria": [
     {
@@ -26,7 +26,7 @@
   ],
   "stakeholders": [],
   "source": "Research default — PO to confirm 30-day bound",
-  "version": 1,
+  "version": 2,
   "created": "2026-10-06T04:50:53+00:00",
-  "updated": "2026-10-06T04:50:53+00:00"
+  "updated": "2026-10-06T05:00:22+00:00"
 }

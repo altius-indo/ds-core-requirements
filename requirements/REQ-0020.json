@@ -5,7 +5,7 @@
   "type": "quality",
   "category": "reliability",
   "priority": "must",
-  "status": "proposed",
+  "status": "approved",
   "rationale": "Quorum replication protects against node loss, not operator error or corruption.",
   "acceptance_criteria": [
     {
@@ -26,7 +26,7 @@
   ],
   "stakeholders": [],
   "source": "Research default — PO to confirm",
-  "version": 1,
+  "version": 2,
   "created": "2026-10-06T04:50:53+00:00",
-  "updated": "2026-10-06T04:50:53+00:00"
+  "updated": "2026-10-06T05:00:22+00:00"
 }

@@ -5,7 +5,7 @@
   "type": "constraint",
   "category": "technology",
   "priority": "must",
-  "status": "proposed",
+  "status": "approved",
   "rationale": "PO decision: distributed, sharded, strong consistency via Raft.",
   "acceptance_criteria": [
     {
@@ -26,7 +26,7 @@
   ],
   "stakeholders": [],
   "source": "PO elicitation 2026-10-05",
-  "version": 1,
+  "version": 2,
   "created": "2026-10-06T04:50:53+00:00",
-  "updated": "2026-10-06T04:50:53+00:00"
+  "updated": "2026-10-06T05:00:22+00:00"
 }

@@ -5,7 +5,7 @@
   "type": "functional",
   "category": "transactions",
   "priority": "must",
-  "status": "proposed",
+  "status": "approved",
   "rationale": "Graph mutations routinely touch several entities and both ends of each edge.",
   "acceptance_criteria": [
     {
@@ -19,7 +19,7 @@
   "standards": [],
   "stakeholders": [],
   "source": "Derived from PO decisions",
-  "version": 1,
+  "version": 2,
   "created": "2026-10-06T04:50:53+00:00",
-  "updated": "2026-10-06T04:50:53+00:00"
+  "updated": "2026-10-06T05:00:22+00:00"
 }

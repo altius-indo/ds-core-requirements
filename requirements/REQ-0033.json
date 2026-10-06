@@ -5,7 +5,7 @@
   "type": "quality",
   "category": "flexibility",
   "priority": "must",
-  "status": "proposed",
+  "status": "approved",
   "rationale": "Range partitioning keeps a node and its adjacency together; hash partitioning would scatter one-hop reads.",
   "acceptance_criteria": [
     {
@@ -24,7 +24,7 @@
   "standards": [],
   "stakeholders": [],
   "source": "Research + design recommendation",
-  "version": 1,
+  "version": 2,
   "created": "2026-10-06T04:50:53+00:00",
-  "updated": "2026-10-06T04:50:53+00:00"
+  "updated": "2026-10-06T05:00:22+00:00"
 }

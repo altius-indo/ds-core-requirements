@@ -5,7 +5,7 @@
   "type": "data",
   "category": "migration",
   "priority": "must",
-  "status": "proposed",
+  "status": "approved",
   "rationale": "Customers need to move existing data into DS-CORE in hours, not days. Rate is a starting target for PO confirmation.",
   "acceptance_criteria": [
     {
@@ -28,7 +28,7 @@
   "standards": [],
   "stakeholders": [],
   "source": "PO elicitation 2026-10-05 — PO to confirm 50k/s",
-  "version": 1,
+  "version": 2,
   "created": "2026-10-06T04:56:45+00:00",
-  "updated": "2026-10-06T04:56:45+00:00"
+  "updated": "2026-10-06T05:00:22+00:00"
 }

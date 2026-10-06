@@ -5,7 +5,7 @@
   "type": "quality",
   "category": "compatibility",
   "priority": "must",
-  "status": "proposed",
+  "status": "approved",
   "rationale": "PO decision: six officially supported driver languages.",
   "acceptance_criteria": [
     {
@@ -28,7 +28,7 @@
   "standards": [],
   "stakeholders": [],
   "source": "PO elicitation 2026-10-05",
-  "version": 1,
+  "version": 2,
   "created": "2026-10-06T04:56:45+00:00",
-  "updated": "2026-10-06T04:56:45+00:00"
+  "updated": "2026-10-06T05:00:22+00:00"
 }

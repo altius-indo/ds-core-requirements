@@ -5,7 +5,7 @@
   "type": "functional",
   "category": "indexing",
   "priority": "must",
-  "status": "proposed",
+  "status": "approved",
   "rationale": "Asynchronous indexes would violate serializable reads through indexes.",
   "acceptance_criteria": [
     {
@@ -23,7 +23,7 @@
   "standards": [],
   "stakeholders": [],
   "source": "Research default",
-  "version": 1,
+  "version": 2,
   "created": "2026-10-06T04:50:53+00:00",
-  "updated": "2026-10-06T04:50:53+00:00"
+  "updated": "2026-10-06T05:00:22+00:00"
 }

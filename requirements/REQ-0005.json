@@ -5,7 +5,7 @@
   "type": "interface",
   "category": "api",
   "priority": "must",
-  "status": "proposed",
+  "status": "approved",
   "rationale": "Serializable isolation raises abort rates; clients must tell retryable conflicts from permanent failures.",
   "acceptance_criteria": [
     {
@@ -24,7 +24,7 @@
   "standards": [],
   "stakeholders": [],
   "source": "Derived from PO decision",
-  "version": 1,
+  "version": 2,
   "created": "2026-10-06T04:50:53+00:00",
-  "updated": "2026-10-06T04:50:53+00:00"
+  "updated": "2026-10-06T05:00:22+00:00"
 }
