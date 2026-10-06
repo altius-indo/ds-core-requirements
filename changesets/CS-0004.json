@@ -1,0 +1,284 @@
+{
+  "id": "CS-0004",
+  "title": "DS-CORE: Rust implementation language and native-library allow-list",
+  "summary": "Adds two technology constraints: server engine and server-side tools are written in Rust; native C/C++ libraries may be linked only from an approved allow-list.",
+  "rationale": "PO decisions 2026-10-05: Rust for storage, Raft, GQL engine, CLI and bulk importer (operator and non-Rust drivers excluded); FFI allowed for reviewed dependencies such as RocksDB and aws-lc.",
+  "status": "pending",
+  "created": "2026-10-06T04:59:16+00:00",
+  "valid": true,
+  "ops": [
+    {
+      "op": "create",
+      "kind": "requirements",
+      "ref": "r_rust",
+      "data": {
+        "title": "Rust for server and server-side tools",
+        "statement": "The system shall implement its server engine (storage, Raft replication, GQL engine) and server-side tools (CLI, bulk importer) in Rust.",
+        "type": "constraint",
+        "category": "technology",
+        "priority": "must",
+        "status": "proposed",
+        "rationale": "PO decision: Rust for memory safety and performance. The Kubernetes operator and the non-Rust client drivers are out of scope of this constraint.",
+        "acceptance_criteria": [
+          {
+            "id": "AC1",
+            "text": "All first-party source in the server, CLI and importer repositories is Rust, built with a pinned stable Rust toolchain and cargo; CI fails if first-party C, C++ or Go source is added there."
+          },
+          {
+            "id": "AC2",
+            "text": "Each first-party `unsafe` block carries a SAFETY comment, and CI reports the count of unsafe blocks per release."
+          }
+        ],
+        "tags": [
+          "rust",
+          "platform"
+        ],
+        "source": "PO elicitation 2026-10-05",
+        "notes": "Open: minimum supported Rust version (MSRV) policy."
+      },
+      "reason": "PO decision: implementation language"
+    },
+    {
+      "op": "create",
+      "kind": "requirements",
+      "ref": "r_ffi",
+      "data": {
+        "title": "Native-library allow-list",
+        "statement": "The system shall link native C/C++ libraries into Rust server components only if each library is on an approved, version-pinned allow-list.",
+        "type": "constraint",
+        "category": "technology",
+        "priority": "must",
+        "status": "proposed",
+        "parent": "$r_rust",
+        "rationale": "PO decision: FFI is permitted for proven dependencies (e.g. RocksDB for storage, aws-lc for FIPS-ready crypto), reviewed per dependency.",
+        "acceptance_criteria": [
+          {
+            "id": "AC1",
+            "text": "A CI check (e.g. cargo-deny plus a build-script/linker audit) fails the build when a native library not on the allow-list, or at an unpinned version, is linked."
+          },
+          {
+            "id": "AC2",
+            "text": "Each allow-list entry records owner, purpose, licence, pinned version and review date."
+          }
+        ],
+        "tags": [
+          "rust",
+          "dependencies",
+          "supply-chain"
+        ],
+        "source": "PO elicitation 2026-10-05"
+      },
+      "reason": "PO decision: FFI policy"
+    },
+    {
+      "op": "create",
+      "kind": "decisions",
+      "ref": "d_rust",
+      "data": {
+        "title": "Rust implementation with reviewed native allow-list",
+        "context": "Implementation language for DS-CORE; scope options were server only, server plus tools, or everything; FFI options were allow-list, pure Rust, or crypto-only.",
+        "decision": "Server engine and server-side tools (storage, Raft, GQL engine, CLI, bulk importer) are written in Rust. The Kubernetes operator and non-Rust drivers are excluded. Native C/C++ libraries may be linked only from a version-pinned, reviewed allow-list (candidates: RocksDB, aws-lc).",
+        "status": "accepted",
+        "accepted_at": "2026-10-05",
+        "requirements": [
+          "$r_rust",
+          "$r_ffi"
+        ]
+      },
+      "reason": "Record PO choice"
+    }
+  ],
+  "impact_notes": {
+    "stories": "None exist yet; no story links change.",
+    "code": "No components configured yet. When planning, register server, CLI and importer as Rust components (language: rust) so trace tags are scanned.",
+    "evals": "Planning must add static evals: a CI language/source check, an unsafe-block report, and a cargo-deny/linker allow-list check.",
+    "risks": [
+      "RocksDB and aws-lc via FFI bring C/C++ memory-safety and build-toolchain exposure into a Rust codebase; allow-list review must be maintained.",
+      "The Rust driver (REQ-0043) can share types with the server, but the other five drivers need separate maintenance.",
+      "MSRV policy is open."
+    ]
+  },
+  "base_versions": {},
+  "analysis": {
+    "valid": true,
+    "errors": [],
+    "ops": [
+      {
+        "i": 0,
+        "op": "create",
+        "kind": "requirements",
+        "id": "REQ-0048",
+        "ref": "r_rust",
+        "title": "Rust for server and server-side tools",
+        "reason": "PO decision: implementation language",
+        "data": {
+          "id": "REQ-0048",
+          "priority": "must",
+          "status": "proposed",
+          "acceptance_criteria": [
+            {
+              "id": "AC1",
+              "text": "All first-party source in the server, CLI and importer repositories is Rust, built with a pinned stable Rust toolchain and cargo; CI fails if first-party C, C++ or Go source is added there."
+            },
+            {
+              "id": "AC2",
+              "text": "Each first-party `unsafe` block carries a SAFETY comment, and CI reports the count of unsafe blocks per release."
+            }
+          ],
+          "tags": [
+            "rust",
+            "platform"
+          ],
+          "title": "Rust for server and server-side tools",
+          "statement": "The system shall implement its server engine (storage, Raft replication, GQL engine) and server-side tools (CLI, bulk importer) in Rust.",
+          "type": "constraint",
+          "category": "technology",
+          "rationale": "PO decision: Rust for memory safety and performance. The Kubernetes operator and the non-Rust client drivers are out of scope of this constraint.",
+          "source": "PO elicitation 2026-10-05",
+          "notes": "Open: minimum supported Rust version (MSRV) policy."
+        }
+      },
+      {
+        "i": 1,
+        "op": "create",
+        "kind": "requirements",
+        "id": "REQ-0049",
+        "ref": "r_ffi",
+        "title": "Native-library allow-list",
+        "reason": "PO decision: FFI policy",
+        "data": {
+          "id": "REQ-0049",
+          "priority": "must",
+          "status": "proposed",
+          "acceptance_criteria": [
+            {
+              "id": "AC1",
+              "text": "A CI check (e.g. cargo-deny plus a build-script/linker audit) fails the build when a native library not on the allow-list, or at an unpinned version, is linked."
+            },
+            {
+              "id": "AC2",
+              "text": "Each allow-list entry records owner, purpose, licence, pinned version and review date."
+            }
+          ],
+          "tags": [
+            "rust",
+            "dependencies",
+            "supply-chain"
+          ],
+          "title": "Native-library allow-list",
+          "statement": "The system shall link native C/C++ libraries into Rust server components only if each library is on an approved, version-pinned allow-list.",
+          "type": "constraint",
+          "category": "technology",
+          "parent": "REQ-0048",
+          "rationale": "PO decision: FFI is permitted for proven dependencies (e.g. RocksDB for storage, aws-lc for FIPS-ready crypto), reviewed per dependency.",
+          "source": "PO elicitation 2026-10-05"
+        }
+      },
+      {
+        "i": 2,
+        "op": "create",
+        "kind": "decisions",
+        "id": "DEC-0011",
+        "ref": "d_rust",
+        "title": "Rust implementation with reviewed native allow-list",
+        "reason": "Record PO choice",
+        "data": {
+          "id": "DEC-0011",
+          "status": "accepted",
+          "requirements": [
+            "REQ-0048",
+            "REQ-0049"
+          ],
+          "title": "Rust implementation with reviewed native allow-list",
+          "context": "Implementation language for DS-CORE; scope options were server only, server plus tools, or everything; FFI options were allow-list, pure Rust, or crypto-only.",
+          "decision": "Server engine and server-side tools (storage, Raft, GQL engine, CLI, bulk importer) are written in Rust. The Kubernetes operator and non-Rust drivers are excluded. Native C/C++ libraries may be linked only from a version-pinned, reviewed allow-list (candidates: RocksDB, aws-lc).",
+          "accepted_at": "2026-10-05"
+        }
+      }
+    ],
+    "refmap": {
+      "r_rust": "REQ-0048",
+      "r_ffi": "REQ-0049",
+      "d_rust": "DEC-0011"
+    },
+    "lint": {
+      "before": {
+        "error": 0,
+        "warning": 6,
+        "info": 0
+      },
+      "after": {
+        "error": 0,
+        "warning": 6,
+        "info": 0
+      },
+      "new": [],
+      "resolved": [],
+      "gaps_before": 6,
+      "gaps_after": 6,
+      "mece_ok": true
+    },
+    "trace": {
+      "ok_before": false,
+      "ok_after": false,
+      "metrics_before": {
+        "requirements": 47,
+        "active": 47,
+        "epics": 0,
+        "stories": 0,
+        "tasks": 0,
+        "evals": 0,
+        "requirement_coverage": 0.0,
+        "criteria_coverage": 0.0
+      },
+      "metrics_after": {
+        "requirements": 49,
+        "active": 49,
+        "epics": 0,
+        "stories": 0,
+        "tasks": 0,
+        "evals": 0,
+        "requirement_coverage": 0.0,
+        "criteria_coverage": 0.0
+      },
+      "delta": [
+        {
+          "check": "req-coverage",
+          "name": "Every active requirement maps to at least one story",
+          "severity": "error",
+          "new_failures": [
+            "REQ-0048 has no story",
+            "REQ-0049 has no story"
+          ],
+          "fixed": []
+        },
+        {
+          "check": "criteria-coverage",
+          "name": "Requirement acceptance criteria are covered by evals",
+          "severity": "error",
+          "new_failures": [
+            "REQ-0048#AC1 not covered by any eval",
+            "REQ-0048#AC2 not covered by any eval",
+            "REQ-0049#AC1 not covered by any eval",
+            "REQ-0049#AC2 not covered by any eval"
+          ],
+          "fixed": []
+        }
+      ]
+    },
+    "impact": {
+      "requirements": [
+        "REQ-0048",
+        "REQ-0049"
+      ],
+      "children": [
+        "REQ-0049"
+      ],
+      "stories": [],
+      "tasks": [],
+      "evals": [],
+      "components": [],
+      "in_progress_work": []
+    }
+  }
+}
