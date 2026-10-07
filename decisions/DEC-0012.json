@@ -1,0 +1,18 @@
+{
+  "id": "DEC-0012",
+  "title": "Raft-replicated timestamp oracle (TSO) as the transaction timestamp source",
+  "context": "TASK-0009 compared a centralised TSO (Percolator/TiDB style) with HLC plus uncertainty intervals (CockroachDB style). REQ-0014 AC2 requires 0 anomalies under clock skew; v1 is single-region (AZ-level placement, REQ-0001).",
+  "decision": "Transactions take start_ts and commit_ts from a strictly monotonic TSO on the meta-range leaseholder, persisting a high-water mark through Raft and serving batched timestamps from memory. Combined with Percolator-style prewrite and commit-time read-set validation this gives (strict) serializability with no dependence on clock synchronisation. Revisit if multi-region writes become a requirement.",
+  "status": "proposed",
+  "requirements": [
+    "REQ-0014",
+    "REQ-0005",
+    "REQ-0015",
+    "REQ-0028",
+    "REQ-0010"
+  ],
+  "tags": [],
+  "version": 1,
+  "created": "2026-10-07T02:54:28+00:00",
+  "updated": "2026-10-07T02:54:28+00:00"
+}

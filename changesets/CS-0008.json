@@ -3,7 +3,7 @@
   "title": "Timestamp source: Raft-replicated TSO (TASK-0009)",
   "summary": "",
   "rationale": "From docs/design/transactions.md in the ds-core repo. TSO makes serializability independent of clock skew, which REQ-0014 AC2's clock nemesis tests on every release; v1 is single-region so the TSO round trip is same-region and batchable.",
-  "status": "pending",
+  "status": "applied",
   "created": "2026-10-07T02:54:06+00:00",
   "valid": true,
   "ops": [
@@ -107,5 +107,8 @@
       "components": [],
       "in_progress_work": []
     }
-  }
+  },
+  "applied_at": "2026-10-07T02:54:28+00:00",
+  "excluded_ops": [],
+  "assigned_ids": {}
 }
