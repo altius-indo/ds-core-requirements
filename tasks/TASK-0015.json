@@ -9,9 +9,9 @@
   "status": "in-progress",
   "estimate": "4d",
   "tags": [],
-  "next_action": "Parser approach drafted in docs/design/gql-parser.md (84c0fe8). Remaining: obtain a verified ISO/IEC 39075 feature list (needs web access or the ISO text) and write docs/gql-conformance.toml; decide whether 'n/a' is an allowed status.",
+  "next_action": "Parser approach drafted in design/gql-parser.md (reqforge Design view). Remaining: obtain a verified ISO/IEC 39075 feature list (needs WebSearch/WebFetch or the ISO text) and write docs/gql-conformance.toml in the ds-core repo; decide whether 'n/a' is an allowed status.",
   "next_action_set": "2026-10-06",
-  "version": 3,
+  "version": 4,
   "created": "2026-10-06T13:58:30+00:00",
-  "updated": "2026-10-07T02:54:54+00:00"
+  "updated": "2026-10-07T02:59:23+00:00"
 }
