@@ -9,9 +9,9 @@
   "status": "in-progress",
   "estimate": "5d",
   "tags": [],
-  "next_action": "Draft docs/design/transactions.md choosing TSO vs HLC with REQ-0014 Jepsen implications; record the choice as a new DEC.",
+  "next_action": "Review ds-core docs/design/transactions.md (commit 84c0fe8) and apply or reject changeset CS-0008 (TSO decision); answer Q2-Q5 (timeouts, deadlock handling, parallel commits, read-set cap), then mark done.",
   "next_action_set": "2026-10-06",
-  "version": 2,
+  "version": 3,
   "created": "2026-10-06T13:58:30+00:00",
-  "updated": "2026-10-06T14:08:32+00:00"
+  "updated": "2026-10-07T02:54:52+00:00"
 }
