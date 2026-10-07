@@ -9,9 +9,9 @@
   "status": "in-progress",
   "estimate": "5d",
   "tags": [],
-  "next_action": "Review ds-core docs/design/transactions.md (commit 84c0fe8) and apply or reject changeset CS-0008 (TSO decision); answer Q2-Q5 (timeouts, deadlock handling, parallel commits, read-set cap), then mark done.",
+  "next_action": "Review design/transactions.md (reqforge Design view); DEC-0012 (TSO) exists from CS-0008 but is still 'proposed' — accept it; answer Q2-Q5 (timeouts, deadlock handling, parallel commits, read-set cap), then mark done.",
   "next_action_set": "2026-10-06",
-  "version": 3,
+  "version": 4,
   "created": "2026-10-06T13:58:30+00:00",
-  "updated": "2026-10-07T02:54:52+00:00"
+  "updated": "2026-10-07T02:59:22+00:00"
 }
