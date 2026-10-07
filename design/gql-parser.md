@@ -18,9 +18,10 @@ realises: [REQ-0003, REQ-0004]
 > grammar repo, antlr4rust, pest, lalrpop, chumsky and tree-sitter are background
 > knowledge marked **[verify]**.
 >
-> The other half of TASK-0015, `docs/gql-conformance.toml` (one row per ISO/IEC 39075
-> feature), is **not yet written**. Its feature IDs must come from a verified source,
-> not from memory.
+> The other half of TASK-0015 is now written: `docs/gql-conformance.toml` in the ds-core
+> repo lists all 228 optional features (52 supported, 6 partial, 170 unsupported).
+> Its feature IDs and names come verbatim from ISO's machine-readable
+> `ISO_IEC_39075(en)-features.xml`, vendored unmodified in `spec/`.
 
 ## 1. What the parser must do
 
@@ -115,14 +116,20 @@ text ─▶ lexer ─▶ parser ─▶ AST ─▶ binder ─▶ logical plan ─
 
 ## 5. Open questions for the reviewer
 
-1. **Q1. Source of truth for the feature list** behind `gql-conformance.toml`.
-   - The standard is paywalled.
-   - Options: the purchased ISO text, the opengql grammar or other public material, or
-     a list someone already holds (the E1 checker expects `spec/iso39075-features.txt`).
-2. **Q2. A fourth status value.** Does the matrix allow `n/a`, for example for
-   graph-type features under DEC-0007? REQ-0003 AC1 names only
-   supported/partial/unsupported. Does STORY-0010 E1's `check-matrix.py --require-status`
-   accept `n/a`?
+1. **Q1. Source of truth for the feature list. Resolved.** ISO publishes
+   `ISO_IEC_39075(en)-features.xml` free at https://standards.iso.org/iso-iec/39075/ed-1/en/.
+   It is vendored unmodified in `spec/`, and STORY-0010 E1 now checks against it.
+   Note that Neo4j's docs number GF07 and GV70–GV71 differently from this file. The
+   ISO file is authoritative.
+2. **Q2. A fourth status value. Resolved: no.** The matrix uses only the three
+   statuses in REQ-0003 AC1. Features that don't apply, such as graph types under
+   DEC-0007, are `unsupported`, with the reason recorded.
+3. **Q2b. v1 scope calls in the matrix that are worth a second look:**
+   - G002/G003: explicit match-mode keywords are rejected.
+   - GQ03: UNION is unsupported.
+   - GQ15: GROUP BY is unsupported.
+   - GP01: CALL subqueries are unsupported.
+   - G061: unbounded quantifiers are rejected on the OLTP path.
 3. **Q3. Record the parser choice as a DEC** (hand-written recursive descent plus Pratt)?
 4. **Q4. Use the opengql ANTLR grammar as a CI oracle?** It depends on the grammar's
    licence permitting this.
