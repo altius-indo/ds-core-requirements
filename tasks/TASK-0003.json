@@ -6,12 +6,12 @@
   "depends_on": [],
   "evals": [],
   "done_when": "Design doc reviewed covering range descriptor, Raft library choice, placement, WAL fsync path and node/edge key encoding.",
-  "status": "in-progress",
+  "status": "done",
   "estimate": "5d",
   "tags": [],
-  "next_action": "Review design/raft-ranges.md (reqforge Design view): verify the [verify] claims about raft-rs/openraft, answer Q1-Q8 (raft-rs choice, election timeouts, range_max_bytes, edge property duplication), record the Raft library as a DEC, then mark done.",
-  "next_action_set": "2026-10-06",
-  "version": 4,
+  "next_action": "Done: design/raft-ranges.md approved to proceed by the PO on 2026-10-07; open questions Q2-Q8 stay listed there. raft-rs decision proposed in a changeset.",
+  "next_action_set": "2026-10-07",
+  "version": 5,
   "created": "2026-10-06T13:58:30+00:00",
-  "updated": "2026-10-07T02:59:20+00:00"
+  "updated": "2026-10-08T01:41:54+00:00"
 }
