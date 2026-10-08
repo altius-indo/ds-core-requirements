@@ -8,12 +8,12 @@
   ],
   "evals": [],
   "done_when": "Story evals E1 and E2 pass.",
-  "status": "todo",
+  "status": "done",
   "estimate": "3d",
   "tags": [],
-  "next_action": "Define SERIALIZATION_CONFLICT in server/src/error.rs and restrict internal retry to read-set-unchanged cases in server/src/txn/retry.rs.",
-  "next_action_set": "2026-10-06",
-  "version": 1,
+  "next_action": "Done: server/src/txn/error.rs (SERIALIZATION_CONFLICT 40001, only retryable code) and server/src/txn/retry.rs (auto-commit re-run, interactive never retried); STORY-0006 E1-E3 green in CI run 37719690268. E4 (jepsen --workload register) runs in durability.yml.",
+  "next_action_set": "2026-10-07",
+  "version": 2,
   "created": "2026-10-06T13:58:30+00:00",
-  "updated": "2026-10-06T13:58:30+00:00"
+  "updated": "2026-10-08T05:23:06+00:00"
 }
