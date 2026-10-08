@@ -6,12 +6,12 @@
   "depends_on": [],
   "evals": [],
   "done_when": "Design doc reviewed: timestamp source (TSO vs HLC), commit protocol, conflict detection, coordinator recovery.",
-  "status": "in-progress",
+  "status": "done",
   "estimate": "5d",
   "tags": [],
-  "next_action": "Review design/transactions.md (reqforge Design view); DEC-0012 (TSO) exists from CS-0008 but is still 'proposed' — accept it; answer Q2-Q5 (timeouts, deadlock handling, parallel commits, read-set cap), then mark done.",
-  "next_action_set": "2026-10-06",
-  "version": 4,
+  "next_action": "Done: design/transactions.md approved to proceed by the PO on 2026-10-07; DEC-0012 acceptance proposed in a changeset; open questions Q2-Q5 stay listed there.",
+  "next_action_set": "2026-10-07",
+  "version": 5,
   "created": "2026-10-06T13:58:30+00:00",
-  "updated": "2026-10-07T02:59:22+00:00"
+  "updated": "2026-10-08T01:41:55+00:00"
 }
