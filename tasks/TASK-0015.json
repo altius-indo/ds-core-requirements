@@ -6,12 +6,12 @@
   "depends_on": [],
   "evals": [],
   "done_when": "docs/gql-conformance.toml lists every ISO/IEC 39075 feature with v1 status; parser approach decided.",
-  "status": "in-progress",
+  "status": "done",
   "estimate": "4d",
   "tags": [],
-  "next_action": "Review ds-core docs/gql-conformance.toml (228 ISO features: 52 supported, 6 partial, 170 unsupported) and design/gql-parser.md; adjust v1 scope if needed (open: G002/G003 match-mode keywords, GQ03 UNION, GQ15 GROUP BY, GP01 CALL), then mark done.",
+  "next_action": "Done: docs/gql-conformance.toml (228 features) and design/gql-parser.md approved to proceed by the PO on 2026-10-07.",
   "next_action_set": "2026-10-07",
-  "version": 5,
+  "version": 6,
   "created": "2026-10-06T13:58:30+00:00",
-  "updated": "2026-10-07T03:06:50+00:00"
+  "updated": "2026-10-08T01:41:56+00:00"
 }
