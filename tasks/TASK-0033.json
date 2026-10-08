@@ -8,12 +8,12 @@
   ],
   "evals": [],
   "done_when": "Story evals E1 and E2 pass.",
-  "status": "todo",
+  "status": "done",
   "estimate": "4d",
   "tags": [],
-  "next_action": "Wire rustls with the aws-lc-rs provider in server/src/net/tls.rs; AEAD-only suites; peer cert verification against the cluster CA.",
-  "next_action_set": "2026-10-06",
-  "version": 1,
+  "next_action": "Done: server/src/net/tls.rs + net/listener.rs; STORY-0021 E1 (scripts/security/tls-scan.sh) and E2 (server/tests/security.rs) green in CI run 37712283660.",
+  "next_action_set": "2026-10-07",
+  "version": 2,
   "created": "2026-10-06T13:58:30+00:00",
-  "updated": "2026-10-06T13:58:30+00:00"
+  "updated": "2026-10-08T01:21:24+00:00"
 }
