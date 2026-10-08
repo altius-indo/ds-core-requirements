@@ -14,7 +14,8 @@
     "reqforge_git": "",
     "setup_steps": [],
     "deploy_command": "",
-    "monitor_cron": "*/30 * * * *"
+    "monitor_cron": "*/30 * * * *",
+    "code_repo": "https://github.com/altius-indo/ds-core"
   },
   "agent_queue": {
     "enabled": true,
