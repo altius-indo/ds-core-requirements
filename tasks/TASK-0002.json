@@ -8,12 +8,12 @@
   ],
   "evals": [],
   "done_when": "Both static evals of the story fail on a seeded violation and pass on main.",
-  "status": "todo",
+  "status": "done",
   "estimate": "2d",
   "tags": [],
-  "next_action": "Write scripts/ci/rust-policy.sh and deny.native.toml listing rocksdb and aws-lc with owner, purpose, licence, version, review date.",
-  "next_action_set": "2026-10-06",
-  "version": 1,
+  "next_action": "Done: scripts/ci/rust-policy.sh and scripts/ci/ffi-allowlist.sh green in CI run 37710578711; both reject their tests/fixtures seeded violations and pass on main.",
+  "next_action_set": "2026-10-07",
+  "version": 2,
   "created": "2026-10-06T13:58:30+00:00",
-  "updated": "2026-10-06T13:58:30+00:00"
+  "updated": "2026-10-08T00:59:52+00:00"
 }
