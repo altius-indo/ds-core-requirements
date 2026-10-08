@@ -183,23 +183,21 @@ write path is the bottleneck.
 
 | Setting | Default | Rule |
 |---|---|---|
-| `heartbeat_interval` | 500 ms | — |
-| `election_timeout` | 5 s (randomised over [5 s, 10 s)) | Must be ≥ 10 × measured heartbeat RTT (REQ-0018 AC2); validated at startup and on change |
-| PreVote and CheckQuorum | on | Prevents a partitioned node from disrupting the group |
-| Lease duration | `election_timeout` minus max clock offset | The leader stops serving lease reads before a new leader can be elected |
+| `heartbeat_interval` | 150 ms | At most a third of the minimum election timeout |
+| `election_timeout` | randomised over [1.5 s, 3 s) | Must be ≥ 10 × measured heartbeat RTT (REQ-0018 AC2); validated at startup and on change (`server/src/raft/config.rs`) |
+| Lease | openraft leader lease | A follower will not vote while the old leader's lease is live |
 
-**Failover budget:**
+**Measured failover (TASK-0007, `dscore-harness fault leader-kill`).** Kill-to-first-write
+comes out at about **2 × `election_max`**: followers first wait out the dead leader's lease,
+then elect.
 
-| Step | Time |
-|---|---|
-| Detection | ≤ 10 s worst case (top of the randomised election range) |
-| PreVote and election | ~1–2 RTT |
-| New leader applies its log tail and acquires the lease | — |
+| Timing | Trials | p50 | p99 | Meets 10 s p99? |
+|---|---|---|---|---|
+| Draft: 300 ms heartbeat, 3–6 s election | 10 | 9.9 s | 11.7 s | No |
+| **Default: 150 ms heartbeat, 1.5–3 s election** | 20 | 5.0 s | 6.1 s | Yes |
 
-That leaves no headroom against the 10 s p99 target at the top of the timeout range.
-The recommendation is therefore an election timeout randomised over [3 s, 6 s) with a
-300 ms heartbeat. TASK-0007 must measure this in the harness (leader-kill × 100);
-open question Q5.
+The defaults satisfy AC2 for any heartbeat round trip up to 150 ms, far above cross-AZ
+latency. The nightly durability workflow runs the full 100-trial eval.
 
 ## 8. Membership change, split and rebalance (REQ-0017, REQ-0033)
 
@@ -299,7 +297,7 @@ default bytewise comparator.
 2. **Q2. 5 voters with only 3 zones.** Reject, or allow shared zones?
 3. **Q3. Raft log store.** Separate `raftdb` RocksDB for v1, with Raft Engine deferred until benchmarked?
 4. **Q4. Meta addressing.** A single meta range in v1; at what descriptor count do we move to two-level?
-5. **Q5. Election timeout defaults.** Are [3 s, 6 s) with a 300 ms heartbeat acceptable given the 10 s p99 failover target?
+5. **Q5. Election timeout defaults. Resolved by measurement:** the drafted 3–6 s range gave p99 11.7 s; defaults are now 150 ms / 1.5–3 s (p99 6.1 s, §7).
 6. **Q6. `range_max_bytes` default.** 512 MiB proposed. Smaller ranges speed rebalancing but mean more Raft groups.
 7. **Q7. Edge properties.** Duplicate them in both entries (proposed) or use pointer in-entries?
 8. **Q8. Node ids.** Confirm random 64-bit ids. Applications look nodes up by their own keys through unique indexes, never by insertion order.
