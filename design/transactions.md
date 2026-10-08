@@ -31,7 +31,7 @@ realises: [REQ-0014, REQ-0028, REQ-0015, REQ-0005, REQ-0010]
 - **Storage:** multi-version (MVCC) on the ordered keyspace. Writes first land as **intents**, which are provisional writes owned by a transaction.
 - **Commit:** Percolator-style two-phase commit. Each transaction has a **transaction record** on its *anchor* (primary) key. Commit is a single Raft write of that record. Secondary intents are resolved asynchronously.
 - **Serializability:** **commit-time read validation**. The transaction reads at `start_ts`, gets `commit_ts`, then checks that nothing it read changed in `(start_ts, commit_ts]`. If something did, it aborts with `SERIALIZATION_CONFLICT`.
-- **Fast path:** a transaction whose writes all fall in one range commits in a single Raft entry (1PC).
+- **Single range:** a transaction confined to one range commits in two Raft entries: prewrite, then `CommitLocal` (§5).
 
 ## 3. Timestamp source: TSO vs HLC
 
@@ -119,9 +119,22 @@ or a scanned range `[a, b)`, for example the adjacency prefix of a one-hop trave
 5. **Resolve.** Asynchronously, turn each intent into a committed version at
    `commit_ts`, then garbage-collect the record.
 
-**Single-range fast path (1PC).** When every write and every read span is in one
-range, the leaseholder does steps 1–4 as one Raft entry. It validates against its own
-data under the range latch, so there are no intents and no record.
+**Single range (two entries).** When every write and every read span is in one range:
+1. Prewrite the intents together with the record (one entry).
+2. Take `commit_ts`.
+3. A single `CommitLocal` entry validates the reads, checks the record is still PENDING,
+   marks it COMMITTED and turns the intents into versions.
+
+*Why not one entry (corrected 2026-10-07):* the draft took `commit_ts` first and wrote
+versions in one entry with no intents. That breaks the §6.1 invariant, which needs
+intents durable before `commit_ts`:
+- Writer W takes `commit_ts = c`. Its entry is not yet applied.
+- Reader R starts at `s > c`. It sees neither W's version nor an intent, so it reads the
+  old value.
+- R commits. W's version at `c < s` is outside R's validation window, so R overwrites W.
+
+`dscore-harness jepsen --workload register` caught this as lost updates: about 10% of
+70k contended increments. With two entries it records 0 violations.
 
 **Read-only transactions** read at `start_ts` and commit without validation (§6.2).
 
