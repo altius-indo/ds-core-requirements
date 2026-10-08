@@ -8,12 +8,12 @@
   ],
   "evals": [],
   "done_when": "Story evals E1 and E2 pass.",
-  "status": "todo",
+  "status": "done",
   "estimate": "5d",
   "tags": [],
-  "next_action": "Implement server/src/graph/value.rs (int64, decimal128, timestamp, binary, list, record) and a live-reloadable max_property_bytes setting.",
-  "next_action_set": "2026-10-06",
-  "version": 1,
+  "next_action": "Done: server/src/graph/value.rs, limits.rs, catalog.rs; STORY-0008 E1 (server/tests/graph_model.rs) and E2 (server/tests/limits.rs) green in CI run 37710947482. STORY-0008 E3 waits on TASK-0005 and storage (TASK-0004).",
+  "next_action_set": "2026-10-07",
+  "version": 2,
   "created": "2026-10-06T13:58:30+00:00",
-  "updated": "2026-10-06T13:58:30+00:00"
+  "updated": "2026-10-08T01:03:40+00:00"
 }
