@@ -9,12 +9,12 @@
   ],
   "evals": [],
   "done_when": "Story evals E1-E3 pass.",
-  "status": "todo",
+  "status": "in-progress",
   "estimate": "20d",
   "tags": [],
-  "next_action": "Implement server/src/txn/coordinator.rs with parallel commit and crash recovery; add tests/txn.rs coordinator_crash_atomic.",
-  "next_action_set": "2026-10-06",
-  "version": 1,
+  "next_action": "STORY-0005 E1 isolation_locked and E3 coordinator_crash_atomic green (server/tests/txn.rs, CI run 37719690268). Remaining: E2 Jepsen list-append with an Elle-style checker in dscore-harness (with TASK-0005).",
+  "next_action_set": "2026-10-07",
+  "version": 2,
   "created": "2026-10-06T13:58:30+00:00",
-  "updated": "2026-10-06T13:58:30+00:00"
+  "updated": "2026-10-08T05:23:08+00:00"
 }
