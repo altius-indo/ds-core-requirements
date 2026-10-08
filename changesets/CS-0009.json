@@ -3,7 +3,7 @@
   "title": "Accept TSO (DEC-0012) and record raft-rs as the Raft library",
   "summary": "",
   "rationale": "PO approved proceeding on the TASK-0003/0009 design drafts on 2026-10-07. design/transactions.md recommends the TSO; design/raft-ranges.md §4 recommends raft-rs for multi-Raft with per-store batched fsync.",
-  "status": "pending",
+  "status": "rejected",
   "created": "2026-10-08T01:41:52+00:00",
   "valid": true,
   "ops": [
@@ -128,5 +128,7 @@
       "components": [],
       "in_progress_work": []
     }
-  }
+  },
+  "rejected_reason": "Superseded: raft-rs 0.7.0 (latest on crates.io) fails the advisory gate (RUSTSEC-2024-0437 protobuf 2.28, RUSTSEC-2025-0057 fxhash) and does not build with current protoc. Replaced by a changeset choosing openraft 0.9.",
+  "rejected_at": "2026-10-08T01:45:22+00:00"
 }
