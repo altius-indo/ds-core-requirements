@@ -10,8 +10,8 @@
   "coverage_waivers": {},
   "components": {},
   "cicd": {
-    "requirements_repo": "",
-    "reqforge_git": "",
+    "requirements_repo": "https://github.com/altius-indo/ds-core-requirements",
+    "reqforge_git": "https://github.com/altius-indo/reqforge",
     "setup_steps": [],
     "deploy_command": "",
     "monitor_cron": "*/30 * * * *",
