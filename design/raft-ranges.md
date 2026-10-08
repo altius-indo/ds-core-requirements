@@ -94,17 +94,28 @@ struct ReplicaDescriptor {
 | Per-group cost | One struct plus user-scheduled ticks. Many groups can share one thread and one fsync | Per-group tokio tasks and channels **[verify]** |
 | Pure Rust (DEC-0011) | Yes; protobuf codegen is Rust **[verify]** | Yes |
 
-**Recommendation: raft-rs.** DS-CORE is multi-Raft at the scale of thousands of ranges
-per store. With raft-rs we control batching: one event loop per store drains `Ready`
-from many groups, writes all their log entries in **one** RocksDB write batch, and
-fsyncs once. That is the main lever on write latency and on the 1,000-trial power-cut
-test. Owning the I/O loop also lets us prove the fsync-before-ack ordering in §6 in our
-own code, not inside a framework's scheduler.
+**Decision (revised 2026-10-07 during TASK-0004): openraft 0.9.** The draft recommended
+raft-rs, but implementation found that its latest crates.io release, 0.7.0, can't be used:
 
-The cost is that we write more code ourselves: tick scheduling, snapshots, and message
-batching. openraft is the better choice only if the group count stays small, which the
-split policy in §8 rules out. Recorded as open question Q1 for the reviewer to confirm;
-if accepted, record it as a DEC.
+- It depends on protobuf 2.28 (RUSTSEC-2024-0437, a crash from uncontrolled recursion)
+  and fxhash (RUSTSEC-2025-0057, unmaintained), so it fails the cargo-deny advisory gate.
+- Its build script rejects current `protoc` versions.
+- TiKV uses raft-rs from git, which `deny.toml` forbids.
+
+openraft 0.9.25 is pure Rust and passes cargo-deny and the native allow-list.
+
+**How the §6 guarantees carry over:**
+
+- **Fsync before ack.** openraft's storage-v2 `RaftLogStorage::append` hands the store an
+  `IOFlushed` callback. DS-CORE's RocksDB log store calls it only after the entries are
+  fsynced, so a node counts toward a quorum only for durable entries.
+- **Cross-group batching.** Appends from many groups queue to one per-store writer. It
+  writes them in a single synced `WriteBatch` and then fires every callback. The batching
+  lever survives; it moves from a `Ready` loop into the log store.
+- **Per-group cost.** Each group is a set of tokio tasks, which are cheap, but the count
+  must be measured at the split policy's range density (§8, Q6).
+
+Revisit when openraft 0.10 is stable. Recorded as DEC (changeset CS-0010).
 
 ## 5. Replica placement (REQ-0001, REQ-0016 AC2)
 
@@ -284,7 +295,7 @@ default bytewise comparator.
 
 ## 11. Open questions for the reviewer
 
-1. **Q1. Raft library.** Confirm raft-rs over openraft (§4). If accepted, record a DEC.
+1. **Q1. Raft library. Resolved:** openraft 0.9 (§4, changeset CS-0010).
 2. **Q2. 5 voters with only 3 zones.** Reject, or allow shared zones?
 3. **Q3. Raft log store.** Separate `raftdb` RocksDB for v1, with Raft Engine deferred until benchmarked?
 4. **Q4. Meta addressing.** A single meta range in v1; at what descriptor count do we move to two-level?
