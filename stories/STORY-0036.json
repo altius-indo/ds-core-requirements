@@ -15,7 +15,7 @@
       "id": "E1",
       "name": "language and unsafe policy",
       "kind": "static",
-      "command": "scripts/ci/rust-policy.sh --forbid-langs c,cpp,go --require-safety-comments --report-unsafe-count",
+      "command": "scripts/ci/rust-policy.sh --forbid-langs c,cpp,go --require-safety-comments --report-unsafe-count --negative-fixture tests/fixtures/rust-policy",
       "covers": [
         "REQ-0048#AC1",
         "REQ-0048#AC2"
@@ -32,10 +32,10 @@
       ]
     }
   ],
-  "status": "in-progress",
+  "status": "done",
   "points": 5,
   "tags": [],
-  "version": 3,
+  "version": 4,
   "created": "2026-10-06T13:58:30+00:00",
-  "updated": "2026-10-06T14:08:32+00:00"
+  "updated": "2026-10-08T00:59:48+00:00"
 }
