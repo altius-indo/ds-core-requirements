@@ -9,12 +9,12 @@
   ],
   "evals": [],
   "done_when": "Story evals E1 and E2 pass.",
-  "status": "todo",
+  "status": "in-progress",
   "estimate": "8d",
   "tags": [],
-  "next_action": "Implement server/src/graph/keys.rs ({node}/d, {node}/o/{type}/{dst}/{rank}, {node}/i/...) and write both directions in one txn.",
-  "next_action_set": "2026-10-06",
-  "version": 1,
+  "next_action": "server/src/graph/keys.rs + store.rs: STORY-0007 E1 node_edge_roundtrip and E3 duplicate_node_id_rejected green; E2 jepsen --workload edges 2 min green with unsafe self-check; the 1 h E2 runs in durability dispatch 37732064883.",
+  "next_action_set": "2026-10-07",
+  "version": 2,
   "created": "2026-10-06T13:58:30+00:00",
-  "updated": "2026-10-06T13:58:30+00:00"
+  "updated": "2026-10-08T05:23:15+00:00"
 }
