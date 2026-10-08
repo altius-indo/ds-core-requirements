@@ -8,12 +8,12 @@
   ],
   "evals": [],
   "done_when": "Story evals E1-E3 pass in CI.",
-  "status": "todo",
+  "status": "in-progress",
   "estimate": "3d",
   "tags": [],
-  "next_action": "Add .github/workflows/release.yml building x86_64 and aarch64 linux targets, plus scripts/ci/run-matrix.sh.",
-  "next_action_set": "2026-10-06",
-  "version": 1,
+  "next_action": "E1 (scripts/release/check-artifacts.sh, release run 37711099958) and E2 (scripts/ci/run-matrix.sh on ubuntu-24.04 + ubuntu-24.04-arm, ci run 37711093125) green. Remaining: E3 mixed-arch cluster txn suite once dscore-harness drives a cluster (TASK-0005, TASK-0010).",
+  "next_action_set": "2026-10-07",
+  "version": 2,
   "created": "2026-10-06T13:58:30+00:00",
-  "updated": "2026-10-06T13:58:30+00:00"
+  "updated": "2026-10-08T01:05:50+00:00"
 }
