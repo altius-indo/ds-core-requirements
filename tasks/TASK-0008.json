@@ -11,9 +11,9 @@
   "status": "in-progress",
   "estimate": "10d",
   "tags": [],
-  "next_action": "4c54086: jepsen splits workload (E2) found anomalies; fixed applied-log-id decoding + split replica start (pre-fix fails Elle on seeds 2355/11, post-fix passes). Awaiting 1 h E2 in dispatch 37898314927. Then step 2: replica sets, size split, rebalancer (E1).",
+  "next_action": "E1 `scenario add-node` + E2 `jepsen --workload splits` built (0a8ea27, 2cd0095): 20k-record add-node 173 moves, 9.9% dev, 0 failed/lost. Mark done when the full durability dispatch on 2cd0095 passes add-node and splits.",
   "next_action_set": "2026-10-09",
-  "version": 3,
+  "version": 4,
   "created": "2026-10-06T13:58:30+00:00",
-  "updated": "2026-10-09T07:19:23+00:00"
+  "updated": "2026-10-09T07:39:09+00:00"
 }
