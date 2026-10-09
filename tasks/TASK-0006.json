@@ -8,12 +8,12 @@
   ],
   "evals": [],
   "done_when": "Story eval E1 passes for 1 hour.",
-  "status": "in-progress",
+  "status": "done",
   "estimate": "5d",
   "tags": [],
-  "next_action": "server/src/raft/membership.rs + dscore-harness jepsen --workload membership; 2-min CI run: 153 promotions, 45 terms, 0 violations. The 1 h STORY-0002 E1 runs in durability dispatch 37732064883.",
-  "next_action_set": "2026-10-07",
-  "version": 2,
+  "next_action": "Done. STORY-0002 E1 for 1 h in durability dispatch 37732064883: 1,311,225 writes, 859 learner promotions (max lag 2), 859 removals, 307 terms, single-leader and learner-promotion checks clean.",
+  "next_action_set": "2026-10-08",
+  "version": 3,
   "created": "2026-10-06T13:58:30+00:00",
-  "updated": "2026-10-08T05:23:13+00:00"
+  "updated": "2026-10-09T06:22:55+00:00"
 }
