@@ -8,12 +8,12 @@
   ],
   "evals": [],
   "done_when": "Harness supports power-cut, leader-kill, partition, clock-skew nemeses and an Elle-style checker.",
-  "status": "todo",
+  "status": "in-progress",
   "estimate": "10d",
   "tags": [],
   "next_action": "Create harness/src/nemesis.rs with partition, crash, power-cut and clock-skew; integrate the Elle checker via elle-cli.",
   "next_action_set": "2026-10-06",
-  "version": 1,
+  "version": 2,
   "created": "2026-10-06T13:58:30+00:00",
-  "updated": "2026-10-06T13:58:30+00:00"
+  "updated": "2026-10-09T06:15:45+00:00"
 }
