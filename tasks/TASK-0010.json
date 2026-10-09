@@ -12,9 +12,9 @@
   "status": "in-progress",
   "estimate": "20d",
   "tags": [],
-  "next_action": "STORY-0005 E1 isolation_locked and E3 coordinator_crash_atomic green (server/tests/txn.rs, CI run 37719690268). Remaining: E2 Jepsen list-append with an Elle-style checker in dscore-harness (with TASK-0005).",
-  "next_action_set": "2026-10-07",
-  "version": 2,
+  "next_action": "E1, E3 green. E2: nightly 1 h list-append at d4eed7c failed Elle (a range lost ~190 s of appends); likely root cause the applied-log-id decoding in server/src/raft/state_machine.rs, fixed in 4c54086. Mark done when dispatch 37898314927 passes E2.",
+  "next_action_set": "2026-10-09",
+  "version": 3,
   "created": "2026-10-06T13:58:30+00:00",
-  "updated": "2026-10-08T05:23:08+00:00"
+  "updated": "2026-10-09T07:19:28+00:00"
 }
