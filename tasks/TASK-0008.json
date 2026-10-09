@@ -11,9 +11,9 @@
   "status": "in-progress",
   "estimate": "10d",
   "tags": [],
-  "next_action": "Step 1 done (24ce598): splits with interval persistence, record movement, RangeMismatch re-routing; tests/split.rs; list-append split nemesis under Elle in CI. Step 2: per-range replica sets, size-based split trigger, rebalancer for add-node (E1).",
-  "next_action_set": "2026-10-08",
-  "version": 2,
+  "next_action": "4c54086: jepsen splits workload (E2) found anomalies; fixed applied-log-id decoding + split replica start (pre-fix fails Elle on seeds 2355/11, post-fix passes). Awaiting 1 h E2 in dispatch 37898314927. Then step 2: replica sets, size split, rebalancer (E1).",
+  "next_action_set": "2026-10-09",
+  "version": 3,
   "created": "2026-10-06T13:58:30+00:00",
-  "updated": "2026-10-09T06:22:59+00:00"
+  "updated": "2026-10-09T07:19:23+00:00"
 }
