@@ -9,12 +9,12 @@
   ],
   "evals": [],
   "done_when": "Story evals E1 and E2 pass.",
-  "status": "in-progress",
+  "status": "done",
   "estimate": "8d",
   "tags": [],
-  "next_action": "server/src/graph/keys.rs + store.rs: STORY-0007 E1 node_edge_roundtrip and E3 duplicate_node_id_rejected green; E2 jepsen --workload edges 2 min green with unsafe self-check; the 1 h E2 runs in durability dispatch 37732064883.",
-  "next_action_set": "2026-10-07",
-  "version": 2,
+  "next_action": "Done. STORY-0007 E2 for 1 h in durability dispatch 37732064883: 68,534 committed ops, 41 snapshot checks up to 2,756 edges, 0 one-sided edges (unsafe self-check found 152); E1/E3 green in CI.",
+  "next_action_set": "2026-10-08",
+  "version": 3,
   "created": "2026-10-06T13:58:30+00:00",
-  "updated": "2026-10-08T05:23:15+00:00"
+  "updated": "2026-10-09T06:22:55+00:00"
 }
