@@ -8,12 +8,12 @@
   ],
   "evals": [],
   "done_when": "Story eval E1 passes.",
-  "status": "todo",
+  "status": "in-progress",
   "estimate": "20d",
   "tags": [],
   "next_action": "Implement server/src/gql/parser.rs with feature-named errors for unsupported syntax; seed tests/gql_conformance.rs from the matrix.",
   "next_action_set": "2026-10-06",
-  "version": 1,
+  "version": 2,
   "created": "2026-10-06T13:58:30+00:00",
-  "updated": "2026-10-06T13:58:30+00:00"
+  "updated": "2026-10-09T06:15:57+00:00"
 }
