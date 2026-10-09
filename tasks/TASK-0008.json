@@ -8,12 +8,12 @@
   ],
   "evals": [],
   "done_when": "Story evals E1 and E2 pass.",
-  "status": "todo",
+  "status": "in-progress",
   "estimate": "10d",
   "tags": [],
-  "next_action": "Implement server/src/placement/rebalancer.rs and size-based split in server/src/range/split.rs.",
-  "next_action_set": "2026-10-06",
-  "version": 1,
+  "next_action": "Step 1 done (24ce598): splits with interval persistence, record movement, RangeMismatch re-routing; tests/split.rs; list-append split nemesis under Elle in CI. Step 2: per-range replica sets, size-based split trigger, rebalancer for add-node (E1).",
+  "next_action_set": "2026-10-08",
+  "version": 2,
   "created": "2026-10-06T13:58:30+00:00",
-  "updated": "2026-10-06T13:58:30+00:00"
+  "updated": "2026-10-09T06:22:59+00:00"
 }
