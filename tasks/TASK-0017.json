@@ -8,12 +8,12 @@
   ],
   "evals": [],
   "done_when": "Story eval E1 passes; spec published.",
-  "status": "todo",
+  "status": "in-progress",
   "estimate": "6d",
   "tags": [],
   "next_action": "Decide transport (gRPC vs HTTP/2 vs binary), record it as a DEC, write docs/protocol/v1.md and server/src/protocol/.",
   "next_action_set": "2026-10-06",
-  "version": 1,
+  "version": 2,
   "created": "2026-10-06T13:58:30+00:00",
-  "updated": "2026-10-06T13:58:30+00:00"
+  "updated": "2026-10-09T06:16:01+00:00"
 }
