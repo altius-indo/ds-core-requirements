@@ -1,0 +1,716 @@
+{
+  "id": "CS-0011",
+  "title": "DS-CORE: fix DEC-0012 acceptance, link components to ds-core, sync story status",
+  "summary": "Accepts DEC-0012 (CS-0010's update was a no-op), points COMP-0001..0005 at the ds-core repo and GitHub remote, moves four stories with active tasks to in-progress, and refreshes state/HOT.md.",
+  "rationale": "CS-0010 intended to accept DEC-0012 but used `data` instead of `patch`, so DEC-0012 remains proposed. Components still have placeholder paths, so /reqforge:verify cannot scan the code that CI is already testing.",
+  "status": "pending",
+  "created": "2026-10-09T06:15:35+00:00",
+  "valid": true,
+  "ops": [
+    {
+      "op": "update",
+      "id": "DEC-0012",
+      "patch": {
+        "status": "accepted",
+        "accepted_at": "2026-10-07"
+      },
+      "reason": "Complete the acceptance intended in CS-0010 (PO approved 2026-10-07)."
+    },
+    {
+      "op": "update",
+      "id": "COMP-0001",
+      "patch": {
+        "path": "/Users/jyoti.sanyal/work/altius-indo/ds-core",
+        "repo_url": "https://github.com/altius-indo/ds-core",
+        "globs": [
+          "server/src/**",
+          "server/tests/**"
+        ]
+      },
+      "reason": "Real code location."
+    },
+    {
+      "op": "update",
+      "id": "COMP-0002",
+      "patch": {
+        "path": "/Users/jyoti.sanyal/work/altius-indo/ds-core",
+        "repo_url": "https://github.com/altius-indo/ds-core",
+        "globs": [
+          "importer/src/**",
+          "importer/tests/**"
+        ]
+      },
+      "reason": "Real code location."
+    },
+    {
+      "op": "update",
+      "id": "COMP-0003",
+      "patch": {
+        "path": "/Users/jyoti.sanyal/work/altius-indo/ds-core",
+        "repo_url": "https://github.com/altius-indo/ds-core",
+        "globs": [
+          "operator/**"
+        ]
+      },
+      "reason": "Planned location (directory not created yet)."
+    },
+    {
+      "op": "update",
+      "id": "COMP-0004",
+      "patch": {
+        "path": "/Users/jyoti.sanyal/work/altius-indo/ds-core",
+        "repo_url": "https://github.com/altius-indo/ds-core",
+        "globs": [
+          "drivers/**"
+        ]
+      },
+      "reason": "Planned location (directory not created yet)."
+    },
+    {
+      "op": "update",
+      "id": "COMP-0005",
+      "patch": {
+        "path": "/Users/jyoti.sanyal/work/altius-indo/ds-core",
+        "repo_url": "https://github.com/altius-indo/ds-core",
+        "globs": [
+          "harness/src/**",
+          "harness/tests/**"
+        ]
+      },
+      "reason": "Real code location."
+    },
+    {
+      "op": "update",
+      "id": "STORY-0002",
+      "patch": {
+        "status": "in-progress"
+      },
+      "reason": "TASK-0006 is in progress."
+    },
+    {
+      "op": "update",
+      "id": "STORY-0003",
+      "patch": {
+        "status": "in-progress"
+      },
+      "reason": "TASK-0007 is in progress."
+    },
+    {
+      "op": "update",
+      "id": "STORY-0006",
+      "patch": {
+        "status": "in-progress"
+      },
+      "reason": "TASK-0011 done; E4 Jepsen register run still pending."
+    },
+    {
+      "op": "update",
+      "id": "STORY-0007",
+      "patch": {
+        "status": "in-progress"
+      },
+      "reason": "TASK-0012 is in progress."
+    },
+    {
+      "op": "snapshot",
+      "content": "# DS-CORE project state\n\n## Now\n- Baseline: 49 requirements, 13 decisions (DEC-0012 TSO and DEC-0013 openraft accepted 2026-10-07), 17 findings; trace gate PASS (100% requirement and criteria coverage, 70 evals).\n- Code: github.com/altius-indo/ds-core (local ~/work/altius-indo/ds-core), toolchain 1.96.1; components COMP-0001..0005 point at it.\n- Done: TASK-0001, 0002, 0003, 0009, 0011, 0013, 0015, 0021, 0033; STORY-0021 and STORY-0036 done.\n- In progress: TASK-0004 Raft on RocksDB, TASK-0006 membership, TASK-0007 elections (defaults 150 ms / 1.5-3 s), TASK-0010 transactions, TASK-0012 graph keys, TASK-0038 arm64 matrix.\n- Durability dispatch 37732064883 is running the long evals: STORY-0001 E2 (1000 power cuts), STORY-0002 E1 (1 h), STORY-0003 E1 (100 kills), STORY-0007 E2 (1 h).\n\n## Next\n- Check durability dispatch 37732064883; mark TASK-0004, 0006, 0007 and 0012 done for each eval that passes, then run /reqforge:verify to record evidence.\n\n## Watch\n- TASK-0005 (Jepsen harness with Elle-style checker and cluster driver) blocks STORY-0005 E2, STORY-0008 E3, STORY-0027 E2 and STORY-0028 E3.\n- Open questions Q2-Q8 in design/raft-ranges.md and Q2-Q5 in design/transactions.md; open DECs: client transport (TASK-0017), analytical-query marking (TASK-0024), operator language, Linux kernel/glibc floor.\n- PO-unconfirmed thresholds: failover 10 s, 99.99% availability, RPO 5 min / 7-day PITR, 10% HTAP degradation, 30-day erasure, 16 MiB, one-hop 20 ms, 10M-edge supernodes, import 50k/s, operator ready in 10 min.\n- Five THIN findings (RF-0009, RF-0010, RF-0015, RF-0016, RF-0017) need re-verification.\n- Coverage waivers for 6 non-applicable taxonomy cells are not yet in reqforge.json.\n\nLast reconciled: 2026-10-08\n",
+      "reason": "Reflect progress since 2026-10-06."
+    }
+  ],
+  "impact_notes": {
+    "stories": "STORY-0002, 0003, 0006, 0007 move to in-progress (they already have active or finished tasks). No scope changes.",
+    "code": "Components resolve to ~/work/altius-indo/ds-core with globs per crate, so /reqforge:verify can scan trace tags and CI evidence. operator/ and drivers/ don't exist yet.",
+    "evals": "No eval changes.",
+    "risks": [
+      "Story statuses were lagging task statuses; whoever updates tasks should also update the story."
+    ]
+  },
+  "base_versions": {
+    "DEC-0012": 2,
+    "COMP-0001": 1,
+    "COMP-0002": 1,
+    "COMP-0003": 1,
+    "COMP-0004": 1,
+    "COMP-0005": 1,
+    "STORY-0002": 1,
+    "STORY-0003": 1,
+    "STORY-0006": 2,
+    "STORY-0007": 2,
+    "state/HOT.md": "1ee3f2af79b1bd77a9f61ceaaf2902de6dd17de26ea277125d00ec74b7d15c65"
+  },
+  "analysis": {
+    "valid": true,
+    "errors": [],
+    "ops": [
+      {
+        "i": 0,
+        "op": "update",
+        "kind": "decisions",
+        "id": "DEC-0012",
+        "title": "Raft-replicated timestamp oracle (TSO) as the transaction timestamp source",
+        "reason": "Complete the acceptance intended in CS-0010 (PO approved 2026-10-07).",
+        "changes": {
+          "status": [
+            "proposed",
+            "accepted"
+          ],
+          "accepted_at": [
+            null,
+            "2026-10-07"
+          ]
+        },
+        "base_version": 2
+      },
+      {
+        "i": 1,
+        "op": "update",
+        "kind": "components",
+        "id": "COMP-0001",
+        "title": "DS-CORE server",
+        "reason": "Real code location.",
+        "changes": {
+          "path": [
+            "server/",
+            "/Users/jyoti.sanyal/work/altius-indo/ds-core"
+          ],
+          "globs": [
+            [],
+            [
+              "server/src/**",
+              "server/tests/**"
+            ]
+          ],
+          "repo_url": [
+            null,
+            "https://github.com/altius-indo/ds-core"
+          ]
+        },
+        "base_version": 1
+      },
+      {
+        "i": 2,
+        "op": "update",
+        "kind": "components",
+        "id": "COMP-0002",
+        "title": "Bulk importer",
+        "reason": "Real code location.",
+        "changes": {
+          "path": [
+            "importer/",
+            "/Users/jyoti.sanyal/work/altius-indo/ds-core"
+          ],
+          "globs": [
+            [],
+            [
+              "importer/src/**",
+              "importer/tests/**"
+            ]
+          ],
+          "repo_url": [
+            null,
+            "https://github.com/altius-indo/ds-core"
+          ]
+        },
+        "base_version": 1
+      },
+      {
+        "i": 3,
+        "op": "update",
+        "kind": "components",
+        "id": "COMP-0003",
+        "title": "Kubernetes operator",
+        "reason": "Planned location (directory not created yet).",
+        "changes": {
+          "path": [
+            "operator/",
+            "/Users/jyoti.sanyal/work/altius-indo/ds-core"
+          ],
+          "globs": [
+            [],
+            [
+              "operator/**"
+            ]
+          ],
+          "repo_url": [
+            null,
+            "https://github.com/altius-indo/ds-core"
+          ]
+        },
+        "base_version": 1
+      },
+      {
+        "i": 4,
+        "op": "update",
+        "kind": "components",
+        "id": "COMP-0004",
+        "title": "Client drivers",
+        "reason": "Planned location (directory not created yet).",
+        "changes": {
+          "path": [
+            "drivers/",
+            "/Users/jyoti.sanyal/work/altius-indo/ds-core"
+          ],
+          "globs": [
+            [],
+            [
+              "drivers/**"
+            ]
+          ],
+          "repo_url": [
+            null,
+            "https://github.com/altius-indo/ds-core"
+          ]
+        },
+        "base_version": 1
+      },
+      {
+        "i": 5,
+        "op": "update",
+        "kind": "components",
+        "id": "COMP-0005",
+        "title": "Test harness",
+        "reason": "Real code location.",
+        "changes": {
+          "path": [
+            "harness/",
+            "/Users/jyoti.sanyal/work/altius-indo/ds-core"
+          ],
+          "globs": [
+            [],
+            [
+              "harness/src/**",
+              "harness/tests/**"
+            ]
+          ],
+          "repo_url": [
+            null,
+            "https://github.com/altius-indo/ds-core"
+          ]
+        },
+        "base_version": 1
+      },
+      {
+        "i": 6,
+        "op": "update",
+        "kind": "stories",
+        "id": "STORY-0002",
+        "title": "Joint-consensus membership change and learner promotion",
+        "reason": "TASK-0006 is in progress.",
+        "changes": {
+          "status": [
+            "todo",
+            "in-progress"
+          ]
+        },
+        "base_version": 1
+      },
+      {
+        "i": 7,
+        "op": "update",
+        "kind": "stories",
+        "id": "STORY-0003",
+        "title": "Leader failover within 10 s",
+        "reason": "TASK-0007 is in progress.",
+        "changes": {
+          "status": [
+            "todo",
+            "in-progress"
+          ]
+        },
+        "base_version": 1
+      },
+      {
+        "i": 8,
+        "op": "update",
+        "kind": "stories",
+        "id": "STORY-0006",
+        "title": "Safe internal retry and retryable conflict error",
+        "reason": "TASK-0011 done; E4 Jepsen register run still pending.",
+        "changes": {
+          "status": [
+            "todo",
+            "in-progress"
+          ]
+        },
+        "base_version": 2
+      },
+      {
+        "i": 9,
+        "op": "update",
+        "kind": "stories",
+        "id": "STORY-0007",
+        "title": "Node and edge key layout with bidirectional adjacency",
+        "reason": "TASK-0012 is in progress.",
+        "changes": {
+          "status": [
+            "todo",
+            "in-progress"
+          ]
+        },
+        "base_version": 2
+      },
+      {
+        "i": 10,
+        "op": "snapshot",
+        "kind": "snapshot",
+        "id": "state/HOT.md",
+        "reason": "Reflect progress since 2026-10-06.",
+        "bytes": 1730,
+        "last_reconciled": "2026-10-08",
+        "diff": [
+          {
+            "t": " ",
+            "line": "# DS-CORE project state"
+          },
+          {
+            "t": " ",
+            "line": ""
+          },
+          {
+            "t": " ",
+            "line": "## Now"
+          },
+          {
+            "t": "+",
+            "line": "- Baseline: 49 requirements, 13 decisions (DEC-0012 TSO and DEC-0013 openraft accepted 2026-10-07), 17 findings; trace gate PASS (100% requirement and criteria coverage, 70 evals)."
+          },
+          {
+            "t": "+",
+            "line": "- Code: github.com/altius-indo/ds-core (local ~/work/altius-indo/ds-core), toolchain 1.96.1; components COMP-0001..0005 point at it."
+          },
+          {
+            "t": "+",
+            "line": "- Done: TASK-0001, 0002, 0003, 0009, 0011, 0013, 0015, 0021, 0033; STORY-0021 and STORY-0036 done."
+          },
+          {
+            "t": "+",
+            "line": "- In progress: TASK-0004 Raft on RocksDB, TASK-0006 membership, TASK-0007 elections (defaults 150 ms / 1.5-3 s), TASK-0010 transactions, TASK-0012 graph keys, TASK-0038 arm64 matrix."
+          },
+          {
+            "t": "+",
+            "line": "- Durability dispatch 37732064883 is running the long evals: STORY-0001 E2 (1000 power cuts), STORY-0002 E1 (1 h), STORY-0003 E1 (100 kills), STORY-0007 E2 (1 h)."
+          },
+          {
+            "t": "-",
+            "line": "- Baseline approved: 49 requirements (REQ-0001..0049), 11 decisions (DEC-0001..0011), 17 research findings (RF-0001..0017)."
+          },
+          {
+            "t": "-",
+            "line": "- Plan in place: 5 components, 11 epics, 36 stories, 48 tasks, 70 evals; trace gate PASS (100% requirement and criteria coverage)."
+          },
+          {
+            "t": "-",
+            "line": "- Semantic trace review 2026-10-06 scored 0.81; all 15 weak eval links fixed in CS-0006."
+          },
+          {
+            "t": "-",
+            "line": "- In progress: TASK-0001 Rust workspace and CI skeleton; TASK-0003 Raft/range design; TASK-0009 transaction protocol design; TASK-0015 GQL conformance scope."
+          },
+          {
+            "t": "-",
+            "line": "- No code repository exists yet; component paths (server/, importer/, harness/, operator/, drivers/) are placeholders and verification shows 0/94 criteria verified."
+          },
+          {
+            "t": " ",
+            "line": ""
+          },
+          {
+            "t": " ",
+            "line": "## Next"
+          },
+          {
+            "t": "+",
+            "line": "- Check durability dispatch 37732064883; mark TASK-0004, 0006, 0007 and 0012 done for each eval that passes, then run /reqforge:verify to record evidence."
+          },
+          {
+            "t": "-",
+            "line": "- Create the code repository and run TASK-0001: Cargo.toml workspace with server/, importer/, harness/ and rust-toolchain.toml; then point COMP-0001..0005 at the real paths."
+          },
+          {
+            "t": " ",
+            "line": ""
+          },
+          {
+            "t": " ",
+            "line": "## Watch"
+          },
+          {
+            "t": "+",
+            "line": "- TASK-0005 (Jepsen harness with Elle-style checker and cluster driver) blocks STORY-0005 E2, STORY-0008 E3, STORY-0027 E2 and STORY-0028 E3."
+          },
+          {
+            "t": "+",
+            "line": "- Open questions Q2-Q8 in design/raft-ranges.md and Q2-Q5 in design/transactions.md; open DECs: client transport (TASK-0017), analytical-query marking (TASK-0024), operator language, Linux kernel/glibc floor."
+          },
+          {
+            "t": "+",
+            "line": "- PO-unconfirmed thresholds: failover 10 s, 99.99% availability, RPO 5 min / 7-day PITR, 10% HTAP degradation, 30-day erasure, 16 MiB, one-hop 20 ms, 10M-edge supernodes, import 50k/s, operator ready in 10 min."
+          },
+          {
+            "t": "+",
+            "line": "- Five THIN findings (RF-0009, RF-0010, RF-0015, RF-0016, RF-0017) need re-verification."
+          },
+          {
+            "t": "-",
+            "line": "- Open decisions to record as DECs: transaction timestamp source TSO vs HLC (TASK-0009), client transport (TASK-0017), how a query is marked analytical (TASK-0024), operator language (assumed Go), minimum Linux kernel/glibc and Rust MSRV."
+          },
+          {
+            "t": "-",
+            "line": "- PO-unconfirmed thresholds: failover 10 s, 99.99% availability, RPO 5 min / 7-day PITR, 10% HTAP degradation, 30-day erasure, 16 MiB property limit, one-hop 20 ms, 10M-edge supernodes, import 50k elements/s, operator ready in 10 min."
+          },
+          {
+            "t": "-",
+            "line": "- Five findings graded THIN (RF-0009, RF-0010, RF-0015, RF-0016, RF-0017) need re-verification before external commitments."
+          },
+          {
+            "t": " ",
+            "line": "- Coverage waivers for 6 non-applicable taxonomy cells are not yet in reqforge.json."
+          },
+          {
+            "t": "-",
+            "line": "- Jepsen-style and 30-minute performance evals should run nightly, not per commit, when /reqforge:cicd generates the pipeline."
+          },
+          {
+            "t": " ",
+            "line": ""
+          },
+          {
+            "t": "+",
+            "line": "Last reconciled: 2026-10-08"
+          },
+          {
+            "t": "-",
+            "line": "Last reconciled: 2026-10-06"
+          }
+        ],
+        "base_version": "1ee3f2af79b1bd77a9f61ceaaf2902de6dd17de26ea277125d00ec74b7d15c65"
+      }
+    ],
+    "refmap": {},
+    "lint": {
+      "before": {
+        "error": 0,
+        "warning": 6,
+        "info": 0
+      },
+      "after": {
+        "error": 0,
+        "warning": 6,
+        "info": 0
+      },
+      "new": [],
+      "resolved": [],
+      "gaps_before": 6,
+      "gaps_after": 6,
+      "mece_ok": true
+    },
+    "trace": {
+      "ok_before": true,
+      "ok_after": true,
+      "metrics_before": {
+        "requirements": 49,
+        "active": 49,
+        "epics": 11,
+        "stories": 36,
+        "tasks": 48,
+        "evals": 70,
+        "requirement_coverage": 1.0,
+        "criteria_coverage": 1.0
+      },
+      "metrics_after": {
+        "requirements": 49,
+        "active": 49,
+        "epics": 11,
+        "stories": 36,
+        "tasks": 48,
+        "evals": 70,
+        "requirement_coverage": 1.0,
+        "criteria_coverage": 1.0
+      },
+      "delta": []
+    },
+    "impact": {
+      "requirements": [],
+      "children": [],
+      "stories": [
+        {
+          "id": "STORY-0002",
+          "title": "Joint-consensus membership change and learner promotion",
+          "status": "in-progress",
+          "component": "server",
+          "via": []
+        },
+        {
+          "id": "STORY-0003",
+          "title": "Leader failover within 10 s",
+          "status": "in-progress",
+          "component": "server",
+          "via": []
+        },
+        {
+          "id": "STORY-0006",
+          "title": "Safe internal retry and retryable conflict error",
+          "status": "in-progress",
+          "component": "server",
+          "via": []
+        },
+        {
+          "id": "STORY-0007",
+          "title": "Node and edge key layout with bidirectional adjacency",
+          "status": "in-progress",
+          "component": "server",
+          "via": []
+        }
+      ],
+      "tasks": [
+        {
+          "id": "TASK-0006",
+          "title": "Implement joint consensus and learner promotion",
+          "kind": "code",
+          "status": "in-progress",
+          "story": "STORY-0002"
+        },
+        {
+          "id": "TASK-0007",
+          "title": "Tune elections and validate timeout config",
+          "kind": "code",
+          "status": "in-progress",
+          "story": "STORY-0003"
+        },
+        {
+          "id": "TASK-0011",
+          "title": "Implement retry policy and conflict error code",
+          "kind": "code",
+          "status": "done",
+          "story": "STORY-0006"
+        },
+        {
+          "id": "TASK-0012",
+          "title": "Implement node/edge encoding with in/out adjacency",
+          "kind": "code",
+          "status": "in-progress",
+          "story": "STORY-0007"
+        }
+      ],
+      "evals": [
+        {
+          "story": "STORY-0002",
+          "id": "E1",
+          "name": "jepsen membership churn",
+          "kind": "e2e",
+          "command": "cargo run -p dscore-harness --release -- jepsen --workload membership --duration 1h --check single-leader,learner-promotion",
+          "covers": [
+            "REQ-0017#AC1",
+            "REQ-0017#AC2"
+          ]
+        },
+        {
+          "story": "STORY-0003",
+          "id": "E1",
+          "name": "leader kill failover p99",
+          "kind": "e2e",
+          "command": "cargo run -p dscore-harness --release -- fault leader-kill --trials 100 --assert-p99-secs 10",
+          "covers": [
+            "REQ-0018#AC1"
+          ]
+        },
+        {
+          "story": "STORY-0003",
+          "id": "E2",
+          "name": "election timeout config validation",
+          "kind": "unit",
+          "command": "cargo test -p dscore-server raft::config::election_timeout",
+          "covers": [
+            "REQ-0018#AC2"
+          ]
+        },
+        {
+          "story": "STORY-0006",
+          "id": "E1",
+          "name": "forced conflict returns conflict code",
+          "kind": "integration",
+          "command": "cargo test -p dscore-server --test txn -- forced_write_write_conflict_code",
+          "covers": [
+            "REQ-0005#AC1"
+          ]
+        },
+        {
+          "story": "STORY-0006",
+          "id": "E2",
+          "name": "non-retryable failures never use conflict code",
+          "kind": "integration",
+          "command": "cargo test -p dscore-server --test txn -- syntax_permission_constraint_not_conflict",
+          "covers": [
+            "REQ-0005#AC2"
+          ]
+        },
+        {
+          "story": "STORY-0006",
+          "id": "E3",
+          "name": "interactive txn with changed read set not retried",
+          "kind": "integration",
+          "command": "cargo test -p dscore-server --test txn -- interactive_readset_changed_no_retry",
+          "covers": [
+            "REQ-0015#AC1"
+          ]
+        },
+        {
+          "story": "STORY-0006",
+          "id": "E4",
+          "name": "jepsen with internal retry",
+          "kind": "e2e",
+          "command": "cargo run -p dscore-harness --release -- jepsen --workload register --internal-retry on --duration 1h --check lost-update,serializable",
+          "covers": [
+            "REQ-0015#AC2"
+          ]
+        },
+        {
+          "story": "STORY-0007",
+          "id": "E1",
+          "name": "node and edge round-trip",
+          "kind": "integration",
+          "command": "cargo test -p dscore-server --test graph_model -- node_edge_roundtrip",
+          "covers": [
+            "REQ-0006#AC1",
+            "REQ-0007#AC1",
+            "REQ-0007#AC2",
+            "REQ-0010#AC1"
+          ]
+        },
+        {
+          "story": "STORY-0007",
+          "id": "E2",
+          "name": "jepsen one-sided edge check",
+          "kind": "e2e",
+          "command": "cargo run -p dscore-harness --release -- jepsen --workload edges --duration 1h --check bidirectional",
+          "covers": [
+            "REQ-0010#AC2"
+          ]
+        },
+        {
+          "story": "STORY-0007",
+          "id": "E3",
+          "name": "duplicate node id rejected",
+          "kind": "integration",
+          "command": "cargo test -p dscore-server --test graph_model -- duplicate_node_id_rejected",
+          "covers": [
+            "REQ-0006#AC2"
+          ]
+        }
+      ],
+      "components": [
+        "server"
+      ],
+      "in_progress_work": [
+        "TASK-0006",
+        "TASK-0007",
+        "TASK-0011",
+        "TASK-0012",
+        "STORY-0002",
+        "STORY-0003",
+        "STORY-0006",
+        "STORY-0007"
+      ]
+    }
+  }
+}
