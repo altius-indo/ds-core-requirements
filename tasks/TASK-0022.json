@@ -8,12 +8,12 @@
   ],
   "evals": [],
   "done_when": "Dashboards for latency, commit/fsync, aborts, leader changes; alerts for fsync p99 and leader flapping.",
-  "status": "todo",
+  "status": "in-progress",
   "estimate": "2d",
   "tags": [],
   "next_action": "Create ops/dashboards/core.json and ops/alerts/core.yaml from the REQ-0034 metric names.",
   "next_action_set": "2026-10-06",
-  "version": 1,
+  "version": 2,
   "created": "2026-10-06T13:58:30+00:00",
-  "updated": "2026-10-06T13:58:30+00:00"
+  "updated": "2026-10-09T06:16:03+00:00"
 }
