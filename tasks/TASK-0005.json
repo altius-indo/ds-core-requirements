@@ -8,12 +8,12 @@
   ],
   "evals": [],
   "done_when": "Harness supports power-cut, leader-kill, partition, clock-skew nemeses and an Elle-style checker.",
-  "status": "in-progress",
+  "status": "done",
   "estimate": "10d",
   "tags": [],
-  "next_action": "Create harness/src/nemesis.rs with partition, crash, power-cut and clock-skew; integrate the Elle checker via elle-cli.",
-  "next_action_set": "2026-10-06",
-  "version": 2,
+  "next_action": "Done. dscore-harness: fault power-cut (LazyFS), fault leader-kill, jepsen nemeses partition/crash/clock/split, Elle checker via elle-cli 0.1.11 (list-append, serializable). Mutation check: Elle flags disabled validation. All in durability CI.",
+  "next_action_set": "2026-10-08",
+  "version": 3,
   "created": "2026-10-06T13:58:30+00:00",
-  "updated": "2026-10-09T06:15:45+00:00"
+  "updated": "2026-10-09T06:22:55+00:00"
 }
