@@ -9,12 +9,12 @@
   ],
   "evals": [],
   "done_when": "Story eval E1 passes.",
-  "status": "todo",
+  "status": "done",
   "estimate": "3d",
   "tags": [],
-  "next_action": "Implement server/src/gql/exec/delete.rs checking incident edges and detaching across shards in one txn.",
-  "next_action_set": "2026-10-06",
-  "version": 1,
+  "next_action": "Done. STORY-0013 E1 `cargo test -p dscore-server --test gql_delete` green in CI: reject_connected_node_delete, detach_atomic_across_three_shards, detach_atomic_against_concurrent_edge_inserts.",
+  "next_action_set": "2026-10-09",
+  "version": 2,
   "created": "2026-10-06T13:58:30+00:00",
-  "updated": "2026-10-06T13:58:30+00:00"
+  "updated": "2026-10-09T07:49:30+00:00"
 }
