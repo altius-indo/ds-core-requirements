@@ -1,0 +1,18 @@
+{
+  "id": "DEC-0013",
+  "title": "openraft as the Raft implementation",
+  "context": "TASK-0003 recommended raft-rs; TASK-0004 found raft-rs 0.7.0 fails the advisory gate (protobuf 2.28 RUSTSEC-2024-0437, fxhash RUSTSEC-2025-0057) and does not build with current protoc. DS-CORE runs many Raft groups per store and must fsync before ack (REQ-0016).",
+  "decision": "Use openraft 0.9 (stable line) with the storage-v2 API. The RocksDB log store signals append completion only after the store-wide fsync, so a node counts toward a quorum only for entries it has made durable; appends from many groups share one synced WriteBatch. Joint consensus and learners come from openraft's membership API. Revisit when openraft 0.10 is stable.",
+  "status": "accepted",
+  "requirements": [
+    "REQ-0001",
+    "REQ-0016",
+    "REQ-0017",
+    "REQ-0018"
+  ],
+  "accepted_at": "2026-10-07",
+  "tags": [],
+  "version": 1,
+  "created": "2026-10-09T06:14:44+00:00",
+  "updated": "2026-10-09T06:14:44+00:00"
+}

@@ -3,7 +3,7 @@
   "title": "Accept TSO (DEC-0012) and record openraft as the Raft library",
   "summary": "",
   "rationale": "PO approved proceeding on the TASK-0003/0009 drafts on 2026-10-07. Implementation (TASK-0004) found that raft-rs 0.7.0, its latest crates.io release, pulls protobuf 2.28 (RUSTSEC-2024-0437) and fxhash (RUSTSEC-2025-0057, unmaintained), fails cargo-deny, and its build script rejects current protoc; TiKV uses it from git, which deny.toml forbids. openraft 0.9.25 is pure Rust, passes cargo-deny and the native allow-list, and its storage-v2 API lets the log store complete appends only after fsync, so fsync-before-ack and cross-group batching stay in DS-CORE code. design/raft-ranges.md §4 is updated to match.",
-  "status": "pending",
+  "status": "applied",
   "created": "2026-10-08T01:45:28+00:00",
   "valid": true,
   "ops": [
@@ -128,5 +128,8 @@
       "components": [],
       "in_progress_work": []
     }
-  }
+  },
+  "applied_at": "2026-10-09T06:14:44+00:00",
+  "excluded_ops": [],
+  "assigned_ids": {}
 }
