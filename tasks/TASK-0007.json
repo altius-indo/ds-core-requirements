@@ -8,12 +8,12 @@
   ],
   "evals": [],
   "done_when": "Story evals E1 and E2 pass.",
-  "status": "in-progress",
+  "status": "done",
   "estimate": "3d",
   "tags": [],
-  "next_action": "server/src/raft/config.rs: STORY-0003 E2 green; defaults changed to 150 ms / 1.5-3 s after the drafted 3-6 s measured p99 11.7 s. E1 leader-kill 10 trials p99 5.90 s in CI; full 100 trials in durability dispatch 37732064883.",
-  "next_action_set": "2026-10-07",
-  "version": 2,
+  "next_action": "Done. STORY-0003 E1 in durability dispatch 37732064883: 100 leader kills, kill-to-first-write p50 5.18 s, p99 5.87 s (< 10 s), defaults heartbeat 150 ms, election 1.5-3 s; E2 green in CI.",
+  "next_action_set": "2026-10-08",
+  "version": 3,
   "created": "2026-10-06T13:58:30+00:00",
-  "updated": "2026-10-08T05:23:12+00:00"
+  "updated": "2026-10-09T06:22:55+00:00"
 }
